@@ -643,6 +643,3 @@
     }
   }
 </script>
-<style></style>
-
-
