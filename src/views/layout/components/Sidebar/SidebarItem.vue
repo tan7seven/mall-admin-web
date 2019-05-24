@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     hasOneShowingChildren(children) {
-      debugger;
       const showingChildren = children.filter(item => {
         return !item.hidden
       })

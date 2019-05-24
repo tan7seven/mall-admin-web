@@ -100,7 +100,7 @@
   import {fetchList,deleteProductCate,updateShowStatus,updateNavStatus} from '@/api/productCate'
 
   export default {
-    name: "productCateList",
+    name: "productTypeList",
     data() {
       return {
         list: null,

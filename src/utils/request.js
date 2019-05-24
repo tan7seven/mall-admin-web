@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
@@ -6,7 +7,26 @@ import { getToken } from '@/utils/auth'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 15000 // 请求超时时间
+  timeout: 15000, // 请求超时时间
+  // `paramsSerializer` 是一个负责 `params` 序列化的函数
+  // (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)
+  paramsSerializer: function(params) {
+    return qs.stringify(params, {arrayFormat: 'brackets'})
+  },
+  // `transformRequest` 允许在向服务器发送前，修改请求数据
+  // 只能用在 'PUT', 'POST' 和 'PATCH' 这几个请求方法
+  // 后面数组中的函数必须返回一个字符串，或 ArrayBuffer，或 Stream
+  transformRequest: [function (data) {
+    // 对 data 进行任意转换处理
+
+    return qs.stringify(data);
+  }],
+  // `transformResponse` 在传递给 then/catch 前，允许修改响应数据
+  transformResponse: [function (data) {
+    // 对 data 进行任意转换处理
+
+    return data;
+  }],
 })
 
 // request拦截器
@@ -27,8 +47,15 @@ service.interceptors.response.use(
   /**
   * code为非200是抛错 可结合自己业务进行修改
   */
-    const res = response.data
-    if (res.code !== 200) {
+    const res = response.data;
+    let resJson;
+    if(typeof res =="string"){
+      resJson = JSON.parse(res);
+    }else{
+      resJson = res;
+    }
+
+    if ( resJson.code!==200) {
       Message({
         message: res.message,
         type: 'error',
@@ -49,7 +76,7 @@ service.interceptors.response.use(
       }
       return Promise.reject('error')
     } else {
-      return response.data
+      return resJson
     }
   },
   error => {
