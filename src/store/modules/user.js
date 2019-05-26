@@ -46,9 +46,7 @@ const user = {
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        debugger;
         getInfo().then(response => {
-          debugger;
           const data = response.data
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
@@ -59,7 +57,6 @@ const user = {
           commit('SET_AVATAR', data.icon)
           resolve(response)
         }).catch(error => {
-          debugger;
           reject(error)
         })
       })

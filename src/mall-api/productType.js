@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 export function getList(parentId,params) {
   return request({
-    url:'/productType/getList.do/'+parentId,
+    url:'/productType/getPage.do/'+parentId,
     method:'get',
     params:params
   })
 }
 export function deleteProductType(id) {
   return request({
-    url:'/productCategory/delete/'+id,
-    method:'post'
+    url:'/productType/delete.do/'+id,
+    method:'get'
   })
 }
 
@@ -21,9 +21,9 @@ export function createProductType(data) {
   })
 }
 
-export function updateProductType(id,data) {
+export function updateProductType(typeId,data) {
   return request({
-    url:'/productCategory/update/'+id,
+    url:'/productType/updateProductType.do/'+typeId,
     method:'post',
     data:data
   })
@@ -31,22 +31,22 @@ export function updateProductType(id,data) {
 
 export function getProductType(id) {
   return request({
-    url:'/productCategory/'+id,
+    url:'/productType/getById.do/'+id,
     method:'get',
   })
 }
 
-export function updateShowStatus(data) {
+export function updateStatus(data) {
   return request({
-    url:'/productCategory/update/showStatus',
+    url:'/productType/update/status.do',
     method:'post',
     data:data
   })
 }
 
-export function updateNavStatus(data) {
+export function updateNavigationBar(data) {
   return request({
-    url:'/productCategory/update/navStatus',
+    url:'/productType/update/isNavigationBar.do',
     method:'post',
     data:data
   })
@@ -54,7 +54,7 @@ export function updateNavStatus(data) {
 
 export function fetchListWithChildren() {
   return request({
-    url:'/productCategory/list/withChildren',
+    url:'/productType/list/withChildren',
     method:'get'
   })
 }

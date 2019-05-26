@@ -72,16 +72,23 @@ export const constantRouterMap = [
         hidden: true
       },
       {
-        path: 'productCate',
-        name: 'productCate',
+        path: 'productType',
+        name: 'productType',
         component: () => import('@/views/product/productType/index'),
         meta: {title: '商品分类', icon: 'product-cate'}
       },
       {
-        path: 'addProductCate',
-        name: 'addProductCate',
+        path: 'addProductType',
+        name: 'addProductType',
         component: () => import('@/views/product/productType/add'),
         meta: {title: '添加商品分类'},
+        hidden: true
+      },
+      {
+        path: 'updateProductType',
+        name: 'updateProductType',
+        component: () => import('@/views/product/productType/update'),
+        meta: {title: '修改商品分类'},
         hidden: true
       },
       {

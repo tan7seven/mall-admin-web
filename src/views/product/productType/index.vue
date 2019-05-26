@@ -5,69 +5,55 @@
       <span style="margin-top: 5px">数据列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddProductCate()"
+        @click="handleAddProductType()"
         size="mini">
         添加
       </el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="productCateTable"
+      <el-table ref="productTypeTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{scope.row.typeId}}</template>
         </el-table-column>
         <el-table-column label="分类名称" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
+          <template slot-scope="scope">{{scope.row.typeName}}</template>
         </el-table-column>
         <el-table-column label="级别" width="100" align="center">
           <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
         </el-table-column>
-        <el-table-column label="商品数量" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.productCount }}</template>
-        </el-table-column>
-        <el-table-column label="数量单位" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.productUnit }}</template>
-        </el-table-column>
-        <el-table-column label="导航栏" width="100" align="center">
+        <el-table-column label="是否显示在导航栏" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleNavStatusChange(scope.$index, scope.row)"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="scope.row.navStatus">
+              @change="handleNavigationBarChange(scope.$index, scope.row)"
+              active-value="0"
+              inactive-value="1"
+              v-model="scope.row.isNavigationBar">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="是否显示" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleShowStatusChange(scope.$index, scope.row)"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="scope.row.showStatus">
+              @change="handleStatusChange(scope.$index, scope.row)"
+              active-value="0"
+              inactive-value="1"
+              v-model="scope.row.status">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="排序" width="100" align="center">
           <template slot-scope="scope">{{scope.row.sort }}</template>
         </el-table-column>
-        <el-table-column label="设置" width="200" align="center">
+        <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
               :disabled="scope.row.level | disableNextLevel"
               @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
             </el-button>
-            <el-button
-              size="mini"
-              @click="handleTransferProduct(scope.$index, scope.row)">转移商品
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
-          <template slot-scope="scope">
             <el-button
               size="mini"
               @click="handleUpdate(scope.$index, scope.row)">编辑
@@ -97,7 +83,7 @@
 </template>
 
 <script>
-  import {fetchList,deleteProductCate,updateShowStatus,updateNavStatus} from '@/api/productCate'
+  import {getList,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
 
   export default {
     name: "productTypeList",
@@ -113,12 +99,13 @@
         parentId: 0
       }
     },
-    /*created() {
+    created() {
       this.resetParentId();
       this.getList();
-    },*/
+    },
     watch: {
-      $route(route) {
+      $route(to, from) {
+        console.info(to+"监听$route"+from)
         this.resetParentId();
         this.getList();
       }
@@ -127,16 +114,20 @@
       resetParentId(){
         if (this.$route.query.parentId != null) {
           this.parentId = this.$route.query.parentId;
+          this. listQuery = {
+              pageNum: 1,
+              pageSize: 5
+          }
         } else {
           this.parentId = 0;
         }
       },
-      handleAddProductCate() {
-        this.$router.push('/pms/addProductCate');
+      handleAddProductType() {
+        this.$router.push('/pms/addProductType');
       },
       getList() {
         this.listLoading = true;
-        fetchList(this.parentId, this.listQuery).then(response => {
+        getList(this.parentId, this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;
@@ -151,13 +142,12 @@
         this.listQuery.pageNum = val;
         this.getList();
       },
-      handleNavStatusChange(index, row) {
-        let data = new URLSearchParams();
-        let ids=[];
-        ids.push(row.id)
-        data.append('ids',ids);
-        data.append('navStatus',row.navStatus);
-        updateNavStatus(data).then(response=>{
+      handleNavigationBarChange(index, row) {
+        let data = {
+          'typeId':row.typeId,
+          'isNavigationBar':row.isNavigationBar
+        };
+        updateNavigationBar(data).then(response=>{
           this.$message({
             message: '修改成功',
             type: 'success',
@@ -165,13 +155,17 @@
           });
         });
       },
-      handleShowStatusChange(index, row) {
-        let data = new URLSearchParams();
-        let ids=[];
-        ids.push(row.id)
-        data.append('ids',ids);
-        data.append('showStatus',row.showStatus);
-        updateShowStatus(data).then(response=>{
+      handleStatusChange(index, row) {
+        // let data = new URLSearchParams();
+        // let ids=[];
+        // ids.push(row.typeId)
+        // data.append('ids',ids);
+        // data.append('status',row.status);
+        let data = {
+          'typeId':row.typeId,
+          'status':row.status
+        };
+        updateStatus(data).then(response=>{
           this.$message({
             message: '修改成功',
             type: 'success',
@@ -180,13 +174,10 @@
         });
       },
       handleShowNextLevel(index, row) {
-        this.$router.push({path: '/pms/productCate', query: {parentId: row.id}})
-      },
-      handleTransferProduct(index, row) {
-        console.log('handleAddProductCate');
+        this.$router.push({path: '/pms/productType', query: {parentId: row.typeId}})
       },
       handleUpdate(index, row) {
-        this.$router.push({path:'/pms/updateProductCate',query:{id:row.id}});
+        this.$router.push({path:'/pms/updateProductType',query:{typeId:row.typeId}});
       },
       handleDelete(index, row) {
         this.$confirm('是否要删除该品牌', '提示', {
@@ -194,7 +185,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteProductCate(row.id).then(response => {
+          deleteProductType(row.typeId).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
