@@ -52,9 +52,9 @@ export function updateNavigationBar(data) {
   })
 }
 
-export function fetchListWithChildren() {
+export function getProductTypeCascader() {
   return request({
-    url:'/productType/list/withChildren',
+    url:'/productType/getProductTypeCascader.do',
     method:'get'
   })
 }
