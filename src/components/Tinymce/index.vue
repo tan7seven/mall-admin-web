@@ -1,4 +1,5 @@
 <template>
+  <!--富文本编辑器-->
   <div class="tinymce-container editor-container">
     <textarea class="tinymce-textarea" :id="tinymceId"></textarea>
     <div class="editor-custom-btn-container">

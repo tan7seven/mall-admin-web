@@ -1,7 +1,7 @@
 <template>
   <div class="menu-wrapper">
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
-
+        <!--如果只有一个children-->
       <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.path+'/'+item.children[0].path"
         :key="item.children[0].name">
         <el-menu-item :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
@@ -45,6 +45,7 @@ export default {
     }
   },
   methods: {
+    //是否只有一个children
     hasOneShowingChildren(children) {
       const showingChildren = children.filter(item => {
         return !item.hidden

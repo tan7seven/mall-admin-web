@@ -23,34 +23,34 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="销售属性名：" v-if="propertyNamesIsSale.length != 0 && parentId != 0">
-        <el-checkbox-group v-model="productType.propertyNameCheckedIsSale" >
-          <el-checkbox v-for="propertyName in propertyNamesIsSale" :label="propertyName" :key="propertyName">{{propertyName}}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item  label="添加销售属性：" v-if="parentId != 0">
-          <el-input
-            style="width: 60%"
-            placeholder="添加销售属性"
-            v-model="propertyNameAddIsSale"
-            clearable>
-          </el-input>
-          <el-button style="margin-left: 20px" @click="addPropertyNameIsSale()">添加</el-button>
-      </el-form-item>
-      <el-form-item label="显示参数名：" v-if="propertyNamesNotSale.length != 0 && parentId != 0">
-        <el-checkbox-group v-model="productType.propertyNameCheckedNotSale" >
-          <el-checkbox v-for="propertyName in propertyNamesNotSale" :label="propertyName" :key="propertyName">{{propertyName}}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item  label="添加显示参数：" v-if="parentId != 0">
-        <el-input
-          style="width: 60%"
-          placeholder="添加显示参数"
-          v-model="propertyNameAddNotSale"
-          clearable>
-        </el-input>
-        <el-button style="margin-left: 20px" @click="addPropertyNameNotSale()">添加</el-button>
-      </el-form-item>
+      <!--<el-form-item label="销售属性名：" v-if="propertyNamesIsSale.length != 0 && parentId != 0">
+         <el-checkbox-group v-model="productType.propertyNameCheckedIsSale" >
+           <el-checkbox v-for="propertyName in propertyNamesIsSale" :label="propertyName" :key="propertyName">{{propertyName}}</el-checkbox>
+         </el-checkbox-group>
+       </el-form-item>
+       <el-form-item  label="添加销售属性：" v-if="parentId != 0">
+           <el-input
+             style="width: 60%"
+             placeholder="添加销售属性"
+             v-model="propertyNameAddIsSale"
+             clearable>
+           </el-input>
+           <el-button style="margin-left: 20px" @click="addPropertyNameIsSale()">添加</el-button>
+       </el-form-item>
+       <el-form-item label="显示参数名：" v-if="propertyNamesNotSale.length != 0 && parentId != 0">
+         <el-checkbox-group v-model="productType.propertyNameCheckedNotSale" >
+           <el-checkbox v-for="propertyName in propertyNamesNotSale" :label="propertyName" :key="propertyName">{{propertyName}}</el-checkbox>
+         </el-checkbox-group>
+       </el-form-item>
+       <el-form-item  label="添加显示参数：" v-if="parentId != 0">
+         <el-input
+           style="width: 60%"
+           placeholder="添加显示参数"
+           v-model="propertyNameAddNotSale"
+           clearable>
+         </el-input>
+         <el-button style="margin-left: 20px" @click="addPropertyNameNotSale()">添加</el-button>
+       </el-form-item>-->
       <el-form-item label="排序：">
         <el-input v-model="productType.sort" type="number" min="1" placeholder="默认999"></el-input>
       </el-form-item>
@@ -82,8 +82,8 @@
     parentId : 0,
     status : "0",
     isNavigationBar : "0",
-    propertyNameCheckedIsSale:[],
-    propertyNameCheckedNotSale:[]
+    // propertyNameCheckedIsSale:[],
+    // propertyNameCheckedNotSale:[]
   };
   export default {
     name: "productTypeDetail",
@@ -98,10 +98,10 @@
       return {
         productTypeForm:{},
         parentId : 0,
-        propertyNameAddIsSale:null,
-        propertyNameAddNotSale:null,
-        propertyNamesIsSale:[],
-        propertyNamesNotSale:[],
+        // propertyNameAddIsSale:null,
+        // propertyNameAddNotSale:null,
+        // propertyNamesIsSale:[],
+        // propertyNamesNotSale:[],
         loading: false,
         productType: Object.assign({}, defaultProductType),
         selectProductTypeList: [],
@@ -118,8 +118,8 @@
         getProductType(this.$route.query.typeId).then(response => {
           this.productType = response.data;
           this.parentId = response.data.parentId;
-          this.propertyNamesIsSale = response.data.propertyNameCheckedIsSale;
-          this.propertyNamesNotSale = response.data.propertyNameCheckedNotSale;
+          // this.propertyNamesIsSale = response.data.propertyNameCheckedIsSale;
+          // this.propertyNamesNotSale = response.data.propertyNameCheckedNotSale;
         });
       } else {
         this.productType = Object.assign({}, defaultProductType);
@@ -143,7 +143,7 @@
       parentIdChange(parentId){
         this.parentId = parentId;
       },
-      //添加销售属性名
+     /*//添加销售属性名
       addPropertyNameIsSale(){
         if(this.propertyNamesIsSale.indexOf(this.propertyNameAddIsSale)> -1){
           return;
@@ -156,7 +156,7 @@
           return;
         }
         this.propertyNamesNotSale.push(this.propertyNameAddNotSale);
-      },
+      },*/
       //获取类目信息列表
       getSelectProductTypeList() {
         this.selectProductTypeList=[];
@@ -212,8 +212,8 @@
         this.$refs[formName].resetFields();
         this.productType = Object.assign({}, defaultProductType);
         this.parentId = 0;
-        this.propertyNamesIsSale = [];
-        this.propertyNamesNotSale = [];
+        // this.propertyNamesIsSale = [];
+        // this.propertyNamesNotSale = [];
         this.getSelectProductTypeList();
 
       },

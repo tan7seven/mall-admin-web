@@ -205,9 +205,7 @@
 </template>
 <script>
   import {
-    getPage,
-    updateDeleteStatus,
-    updatePublishStatus
+    getPage
   } from '@/mall-api/product'
   import {fetchList as fetchSkuStockList,update as updateSkuStockList} from '@/api/skuStock'
   import {fetchList as fetchProductAttrList} from '@/api/productAttr'

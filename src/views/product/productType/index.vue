@@ -47,7 +47,16 @@
         <el-table-column label="排序" width="100" align="center">
           <template slot-scope="scope">{{scope.row.sort }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column label="属性操作" width="120" align="center">
+          <template slot-scope="scope" >
+            <el-button
+              size="mini"
+              :disabled="scope.row.level | disableFirstLevel"
+              @click="getPropertyList(scope.$index, scope.row)">属性列表
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="类目操作" width="300" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -176,6 +185,9 @@
       handleShowNextLevel(index, row) {
         this.$router.push({path: '/pms/productType', query: {parentId: row.typeId}})
       },
+      getPropertyList(index, row){
+        this.$router.push({path: '/pms/productProperty', query: {parentId: row.parentId, typeId:row.typeId}})
+      },
       handleUpdate(index, row) {
         this.$router.push({path:'/pms/updateProductType',query:{typeId:row.typeId}});
       },
@@ -202,6 +214,13 @@
           return '一级';
         } else if (value === 1) {
           return '二级';
+        }
+      },
+      disableFirstLevel(value){
+        if (value === 1) {
+          return false;
+        } else {
+          return true;
         }
       },
       disableNextLevel(value) {

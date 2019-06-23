@@ -36,6 +36,13 @@ export function getProductType(id) {
   })
 }
 
+export function getProductTypeProperty(id) {
+  return request({
+    url:'/productType/getProductTypeProperty.do/'+id,
+    method:'get',
+  })
+}
+
 export function updateStatus(data) {
   return request({
     url:'/productType/update/status.do',

@@ -57,7 +57,7 @@ service.interceptors.response.use(
 
     if ( resJson.code!==200) {
       Message({
-        message: res.message,
+        message: resJson.message,
         type: 'error',
         duration: 3 * 1000
       })
