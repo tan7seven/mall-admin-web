@@ -23,18 +23,16 @@
           <el-form-item label="商品名称：">
             <el-input style="width: 203px" v-model="listQuery.productName" placeholder="商品名称"></el-input>
           </el-form-item>
-          <el-form-item label="商品编号：">
-            <el-input style="width: 203px" v-model="listQuery.productId" placeholder="商品编号"></el-input>
-          </el-form-item>
+
           <el-form-item label="商品分类：">
-            <el-cascader
+            <el-cascader style="width: 203px"
               clearable
               v-model="selectProductTypeValue"
               :options="productTypeOptions">
             </el-cascader>
           </el-form-item>
           <el-form-item label="上架状态：">
-            <el-select v-model="listQuery.status" placeholder="全部" clearable>
+            <el-select style="width: 203px" v-model="listQuery.status" placeholder="全部" clearable>
               <el-option
                 v-for="item in statusOptions"
                 :key="item.value"
@@ -73,9 +71,17 @@
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
-        <el-table-column label="SKU库存" width="100" align="center">
+        <el-table-column label="商品类目" align="center">
+          <template slot-scope="scope">{{scope.row.typeName}}</template>
+        </el-table-column>
+        <el-table-column label="是否上架" width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click="handleShowSku(scope.$index, scope.row)" circle></el-button>
+            <el-switch
+              @change="handleIsShowChange(scope.$index, scope.row)"
+              active-value="0"
+              inactive-value="1"
+              v-model="scope.row.status">
+            </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="最低价格" width="100" align="center">
@@ -84,17 +90,26 @@
         <el-table-column label="点击量" width="100" align="center">
           <template slot-scope="scope">{{scope.row.hits}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="160" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
+            <p>
+              <el-button type="primary" size="mini" @click="handleShowSku(scope.$index, scope.row)">库存编辑</el-button>
               <el-button
                 size="mini"
-                @click="handleUpdateProduct(scope.$index, scope.row)">编辑
+                @click="handleUpdateProduct(scope.$index, scope.row)">查看
+              </el-button>
+            </p>
+            <p>
+              <el-button
+                size="mini"
+                @click="handleUpdateProduct(scope.$index, scope.row)">商品编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)">删除
               </el-button>
+            </p>
           </template>
         </el-table-column>
       </el-table>
@@ -181,10 +196,10 @@
         multipleSelection: [],
         productTypeOptions: [],
         statusOptions: [{
-          value: 1,
+          value: 0,
           label: '上架'
         },{
-          value: 0,
+          value: 1,
           label: '下架'
         }]
       }
