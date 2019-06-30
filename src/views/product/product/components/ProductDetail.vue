@@ -15,6 +15,7 @@
       v-model="productParam"
       :is-edit="isEdit"
       @prevStep="prevStep"
+      ref="productPropertyDetail"
       @finishCommit="finishCommit">
     </product-property-detail>
   </el-card>
@@ -37,6 +38,8 @@
     sort : "",
     //分类ID,
     productTypeId:"",
+    //类目父类ID
+    productTypeParentId:"",
     //销售属性值
     productPropertyIsSaleChecked : [],
     //非销售属性值
@@ -62,6 +65,17 @@
       if(this.isEdit){
         getProduct(this.$route.query.id).then(response=>{
           this.productParam=response.data;
+          //防止商品没有属性值的时候报错
+          if(!this.productParam.productPropertyIsSaleChecked){
+            //销售属性值
+            this.productParam.productPropertyIsSaleChecked = [];
+          }
+          if(!this.productParam.productPropertyNotSaleChecked){
+            //非销售属性值
+            this.productParam.productPropertyNotSaleChecked = [];
+          }
+          //调用子组件方法
+          this.$refs.productPropertyDetail.setEditData(this.productParam)
         });
       }
     },

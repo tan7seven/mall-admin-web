@@ -308,19 +308,18 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
       handleDelete(index, row){
-        this.$confirm('是否要进行删除操作?', '提示', {
+        this.$confirm('将同时删除商品的SKU库存信息，请确认?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           let ids = [];
           ids.push(row.productId);
-          debugger;
           this.deleteProduct(ids);
         });
       },
       handleUpdateProduct(index,row){
-        this.$router.push({path:'/pms/updateProduct',query:{id:row.id}});
+        this.$router.push({path:'/pms/updateProduct',query:{id:row.productId}});
       },
       updatePublishStatus(publishStatus, ids) {
         let params = new URLSearchParams();

@@ -5,6 +5,7 @@
         <el-cascader
           clearable
           v-model="selectProductTypeValue"
+          :disabled="disabled"
           :options="productTypeOptions">
         </el-cascader>
       </el-form-item>
@@ -54,8 +55,9 @@
         rules: {
           productTypeId: [{required: true, message: '请选择商品类别', trigger: 'blur'}],
         },
+        disabled:false,
         productTypeId:'',
-        selectProductTypeValue: null,
+        selectProductTypeValue: [],
         productTypeOptions: [],
         propertyNameAddIsSale:[],
         productPropertyIsSale : [],
@@ -104,8 +106,12 @@
       //获取分类属性
       handleGetProductTypeProperty(){
         getProductTypeProperty(this.productTypeId).then(response => {
-          this.productPropertyIsSale = response.data.productPropertyIsSale;
-          this.productPropertyNotSale = response.data.productPropertyNotSale;
+          if(response.data.productPropertyIsSale){
+            this.productPropertyIsSale = response.data.productPropertyIsSale;
+          }
+          if(response.data.productPropertyNotSale){
+            this.productPropertyNotSale = response.data.productPropertyNotSale;
+          }
         });
       },
       //添加属性值
@@ -134,9 +140,23 @@
       handleFinishCommit(){
         this.$emit('finishCommit',this.isEdit);
       },
+      //修改时设置数据
+      setEditData(value){
+        if(this.isEdit){
+          this.productTypeId = value.productTypeId;
+          this.selectProductTypeValue.push(value.productTypeParentId.toString());
+          this.selectProductTypeValue.push(value.productTypeId.toString());
+          this.productPropertyIsSaleChecked = value.productPropertyIsSaleChecked;
+          this.productPropertyNotSaleChecked = value.productPropertyNotSaleChecked;
+          this.disabled = true;
+          this.getProductTypeList();
+        }
+      },
       //属性值不能输入非法字符
       verifypropertyName(index){
-        this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '').replace(/\s/g, "");
+        // this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '').replace(/\s/g, "");
+        //属性值不能输：：号
+        this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`:：]/g, '').replace(/\s/g, "");
         return this.propertyNameAddIsSale[index];
       }
     }

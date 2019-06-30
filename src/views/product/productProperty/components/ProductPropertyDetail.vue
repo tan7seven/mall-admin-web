@@ -125,7 +125,7 @@
                     type: 'success',
                     duration: 1000
                   });
-                  this.$router.back();
+                  // this.$router.back();
                 });
               } else {
                 createProductProperty(this.productProperty).then(response => {
@@ -168,7 +168,6 @@
         }
       },
       productTypeChange(){
-        debugger;
         if(this.productProperty.typeIdValue[1]){
           this.productProperty.typeId = this.productProperty.typeIdValue[1];
         }

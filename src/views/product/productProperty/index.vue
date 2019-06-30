@@ -162,7 +162,6 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          debugger;
           updateIsSale(data).then(response => {
             this.$message({
               message: '修改成功',

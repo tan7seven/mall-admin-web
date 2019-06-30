@@ -17,7 +17,7 @@ export function createProduct(data) {
 
 export function updateProduct(id,data) {
   return request({
-    url:'/productController/update/'+id,
+    url:'/productController/update.do/'+id,
     method:'post',
     data:data
   })
@@ -38,7 +38,6 @@ export function getProductByName(name) {
   })
 }
 export function deleteProduct(params) {
-  debugger;
   return request({
     url:'/productController/delete.do',
     method:'post',
