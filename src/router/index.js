@@ -60,6 +60,12 @@ export const constantRouterMap = [
         meta: {title: '添加商品库存'},
         hidden: true
       },{
+      path: 'updateProductSku',
+      name: 'updateProductSku',
+      component: () => import('@/views/product/productSku/update'),
+      meta: {title: '修改商品库存'},
+      hidden: true
+    },{
         path: 'productType',
         name: 'productType',
         component: () => import('@/views/product/productType/index'),

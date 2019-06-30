@@ -7,7 +7,20 @@ export function getPage(params) {
   })
 }
 
-export function create(data) {
+export function findById(id) {
+  return request({
+    url:'/productSkuController/findById.do/'+id,
+    method:'get'
+  })
+}
+export function updateProductSku(id, data) {
+  return request({
+    url:'/productSkuController/update.do/'+id,
+    method:'post',
+    data:data
+  })
+}
+export function createProductSku(data) {
   return request({
     url:'/productSkuController/create.do',
     method:'post',
@@ -15,13 +28,10 @@ export function create(data) {
   })
 }
 
-export function update(id,data) {
+export function deleteSku(id ){
   return request({
-    url:'/productSkuController/update/'+id,
-    method:'post',
-    data:data
+    url:'/productSkuController/delete.do/'+id,
+    method:'get'
   })
 }
-
-
 

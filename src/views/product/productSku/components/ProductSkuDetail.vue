@@ -6,7 +6,7 @@
              label-width="150px">
       <el-form-item label="商品名称：" prop="productName">
         <el-select
-          v-model="productSku.productId"
+          v-model="productSku.productName"
           filterable
           remote
           placeholder="请输入关键词"
@@ -15,14 +15,50 @@
           :loading="loading" >
           <el-option
             v-for="(item,index) in productNameOptions"
-            :key="index"
+            :key="item.productId"
             :label="item.productName"
             :value="item.productId">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="商品类目：">
-        <el-input v-model="productSku.typeName" ></el-input>
+        <el-input v-model="productSku.typeName" :readonly="readonly"></el-input>
+      </el-form-item>
+      <el-form-item :label="productSku.propertyValueAOptions[0].propertyName+'：'" v-if="productSku.propertyValueAOptions && productSku.propertyValueAOptions.length > 0">
+        <el-select
+          v-model="productSku.propertyValueA" :clearable="clearable"
+          placeholder="请选择属性值" >
+          <el-option
+            v-for="(item,index) in productSku.propertyValueAOptions"
+            :key="item.propertyNameId+':'+item.propertyValueId"
+            :label="item.value"
+            :value="item.propertyNameId+':'+item.propertyValueId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="productSku.propertyValueBOptions[0].propertyName+'：'" v-if="productSku.propertyValueBOptions && productSku.propertyValueBOptions.length > 0">
+        <el-select
+          v-model="productSku.propertyValueB"  :clearable="clearable"
+          placeholder="请选择属性值" >
+          <el-option
+            v-for="(item,index) in productSku.propertyValueBOptions"
+            :key="item.propertyNameId+':'+item.propertyValueId"
+            :label="item.value"
+            :value="item.propertyNameId+':'+item.propertyValueId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="productSku.propertyValueCOptions[0].propertyName+'：'" v-if="productSku.propertyValueCOptions && productSku.propertyValueCOptions.length > 0">
+        <el-select
+          v-model="productSku.propertyValueC"  :clearable="clearable"
+          placeholder="请选择属性值" >
+          <el-option
+            v-for="(item,index) in productSku.propertyValueCOptions"
+            :key="item.propertyNameId+':'+item.propertyValueId"
+            :label="item.value"
+            :value="item.propertyNameId+':'+item.propertyValueId">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="商品价格：" prop="price">
         <el-input v-model="productSku.price"  type="number" step="0.01"></el-input>
@@ -42,17 +78,24 @@
 </template>
 
 <script>
-  import {create, update} from '@/mall-api/productSku';
-  import {getProductByName} from '@/mall-api/product';
+  import {createProductSku, updateProductSku, update, findById} from '@/mall-api/productSku';
+  import {getProductByName, getProduct} from '@/mall-api/product';
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultProductSku = {
+    skuId:null,
     productId:null,
     productName:null,
     price:null,
     typeName:null,
     cost:0,
     stock:0,
+    propertyValueA:null,
+    propertyValueB:null,
+    propertyValueC:null,
+    propertyValueAOptions:[],
+    propertyValueBOptions:[],
+    propertyValueCOptions:[],
   };
   export default {
     name: "productSkuDetail",
@@ -66,6 +109,8 @@
     data() {
       return {
         productSkuForm:{},
+        clearable:true,
+        readonly: true,
         loading: false,
         productSku: Object.assign({}, defaultProductSku),
         //商品名称下拉框
@@ -82,6 +127,9 @@
       }
     },
     created() {
+      if (this.isEdit) {
+        this.findProductSku();
+      }
       this.findProductName();
     },
     methods: {
@@ -96,7 +144,7 @@
             }).then(() => {
               console.info(this.productSku);
               if (this.isEdit) {
-                updateProductProperty(this.$route.query.propertyNameId, this.productSku).then(response => {
+                updateProductSku(this.$route.query.skuId, this.productSku).then(response => {
                   this.$message({
                     message: '修改成功',
                     type: 'success',
@@ -105,7 +153,7 @@
                   this.$router.back();
                 });
               } else {
-                createProductProperty(this.productSku).then(response => {
+                createProductSku(this.productSku).then(response => {
                   this.$refs[formName].resetFields();
                   this.resetForm(formName);
                   this.$message({
@@ -128,19 +176,30 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-        this.productSku = Object.assign({}, defaultProductProperty);
+        this.productSku = Object.assign({}, defaultProductSku);
       },
       //根据名称获取商品名称列表
       findProductName(query){
+        let name = query?query:"";
         this.loading = true;
-        getProductByName(query).then(response => {
+        getProductByName(name).then(response => {
           this.loading = false;
           let list = response.data;
           this.productNameOptions = list;
         });
       },
       productNameChange(newValue){
-        console.info(this.productNameOptions[newValue].typeName)
+        getProduct(newValue).then(response =>{
+          let list = response.data;
+          this.productSku = list;
+        });
+      },
+      findProductSku(){
+        let skuId = this.$route.query.skuId;
+        findById(skuId).then(response =>{
+          let list = response.data;
+          this.productSku = list;
+        })
       }
     }
   }

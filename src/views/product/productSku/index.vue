@@ -21,27 +21,10 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="商品名称：">
-            <el-input style="width: 203px" v-model="listQuery.productName" placeholder="商品名称"></el-input>
-          </el-form-item>
-          <el-form-item label="商品编号：">
-            <el-input style="width: 203px" v-model="listQuery.productId" placeholder="商品编号"></el-input>
+            <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称"></el-input>
           </el-form-item>
           <el-form-item label="商品分类：">
-            <el-cascader
-              clearable
-              v-model="selectProductTypeValue"
-              :options="productTypeOptions">
-            </el-cascader>
-          </el-form-item>
-          <el-form-item label="上架状态：">
-            <el-select v-model="listQuery.status" placeholder="全部" clearable>
-              <el-option
-                v-for="item in statusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -83,10 +66,10 @@
           <template slot-scope="scope">{{scope.row.priceMin}}</template>
         </el-table-column>
         <el-table-column label="商品成本" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.priceMin}}</template>
+          <template slot-scope="scope">{{scope.row.cost}}</template>
         </el-table-column>
-        <el-table-column label="SKU历史总数" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.sum}}</template>
+        <el-table-column label="历史销售总数" width="120" align="center">
+          <template slot-scope="scope">{{scope.row.sellSum}}</template>
         </el-table-column>
         <el-table-column label="SKU库存" width="100" align="center">
           <template slot-scope="scope">{{scope.row.stock}}</template>
@@ -95,7 +78,7 @@
           <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleUpdateProduct(scope.$index, scope.row)">编辑
+                @click="handleUpdate(scope.$index, scope.row)">编辑
               </el-button>
               <el-button
                 size="mini"
@@ -121,7 +104,7 @@
   </div>
 </template>
 <script>
-  import { getPage } from '@/mall-api/productSku'
+  import { getPage, deleteSku} from '@/mall-api/productSku'
   import {getProductTypeCascader} from '@/mall-api/productType'
 
   const defaultListQuery = {
@@ -130,16 +113,18 @@
     skuId: null,
     properties: null,
     productName: null,
+    productId:null,
     price: null,
     priceMin:null,
     cost:null,
-    sum:null,
+    sellSum:null,
     stock:null,
   };
   export default {
     name: "productSku",
     data() {
       return {
+        clearable:true,
         listQuery: Object.assign({}, defaultListQuery),
         list: null,
         total: null,
@@ -148,16 +133,13 @@
         //表格选中的值
         multipleSelection: [],
         productTypeOptions: [],
-        statusOptions: [{
-          value: 1,
-          label: '上架'
-        },{
-          value: 0,
-          label: '下架'
-        }]
       }
     },
     created() {
+      if(this.$route.query.id){
+        let productId = this.$route.query.id;
+        this.listQuery.productId = productId;
+      }
       this.getPage();
       this.getProductTypeList();
     },
@@ -235,13 +217,18 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          let ids = [];
-          ids.push(row.id);
-          this.updateDeleteStatus(1,ids);
+          deleteSku(row.skuId).then(response =>{
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
+          });
         });
       },
-      handleUpdateProduct(index,row){
-        this.$router.push({path:'/pms/updateProduct',query:{id:row.id}});
+      handleUpdate(index,row){
+        this.$router.push({path:'/pms/updateProductSku',query:{skuId:row.skuId}});
       },
     }
   }

@@ -4,7 +4,7 @@ export function login(username, password) {
   return request({
     url: '/admin/login.do',
     method: 'post',
-    data: {
+    params: {
       username,
       password
     }

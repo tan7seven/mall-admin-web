@@ -1,11 +1,11 @@
 <template> 
-  <product-detail :is-edit='true'></product-detail>
+  <product-sku-detail :is-edit='true'></product-sku-detail>
 </template>
 <script>
-  import ProductDetail from './components/ProductDetail'
+  import ProductSkuDetail from './components/ProductSkuDetail'
   export default {
     name: 'updateProduct',
-    components: { ProductDetail }
+    components: { ProductSkuDetail }
   }
 </script>
 <style>

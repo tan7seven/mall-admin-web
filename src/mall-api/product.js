@@ -25,7 +25,7 @@ export function updateProduct(id,data) {
 
 export function getProduct(id) {
   return request({
-    url:'/product/updateInfo/'+id,
+    url:'/productController/getProduct.do/'+id,
     method:'get',
   })
 }
@@ -37,4 +37,11 @@ export function getProductByName(name) {
     data:{name:name}
   })
 }
-
+export function deleteProduct(params) {
+  debugger;
+  return request({
+    url:'/productController/delete.do',
+    method:'post',
+    params:params
+  })
+}
