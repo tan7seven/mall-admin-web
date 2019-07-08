@@ -32,9 +32,9 @@
             </el-cascader>
           </el-form-item>
           <el-form-item label="上架状态：">
-            <el-select style="width: 203px" v-model="listQuery.status" placeholder="全部" clearable>
+            <el-select style="width: 203px" v-model="listQuery.isPutaway" placeholder="全部" clearable>
               <el-option
-                v-for="item in statusOptions"
+                v-for="item in isPutawayOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -77,10 +77,10 @@
         <el-table-column label="是否上架" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleIsShowChange(scope.$index, scope.row)"
+              @change="handleIsPutawayChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.status">
+              v-model="scope.row.isPutaway">
             </el-switch>
           </template>
         </el-table-column>
@@ -150,7 +150,7 @@
 </template>
 <script>
   import {
-    getPage, deleteProduct
+    getPage, deleteProduct, updateIsPutaway
   } from '@/mall-api/product'
   import {getProductTypeCascader} from '@/mall-api/productType'
 
@@ -160,7 +160,7 @@
     pageSize: 5,
     typeId: null,
     productName: null,
-    status: null
+    isPutaway: null
   };
   export default {
     name: "productList",
@@ -195,7 +195,7 @@
         //表格选中的值
         multipleSelection: [],
         productTypeOptions: [],
-        statusOptions: [{
+        isPutawayOptions: [{
           value: 0,
           label: '上架'
         },{
@@ -251,6 +251,7 @@
           }
         });
       },
+
       //查看SKU
       handleShowSku(index,row){
         this.$router.push({path:'/pms/productSku',query:{id:row.productId}});
@@ -286,25 +287,23 @@
         }).then(() => {
           let ids=[];
           for(let i=0;i<this.multipleSelection.length;i++){
-            ids.push(this.multipleSelection[i].id);
+            ids.push(this.multipleSelection[i].productId);
           }
           switch (this.operateType) {
             case this.operates[0].value:
-              this.updatePublishStatus(1,ids);
+              this.updateIsPutAwayList(0,ids);
               break;
             case this.operates[1].value:
-              this.updatePublishStatus(0,ids);
+              this.updateIsPutAwayList(1,ids);
               break;
-            case this.operates[6].value:
-              break;
-            case this.operates[7].value:
-              this.updateDeleteStatus(1,ids);
+            case this.operates[2].value:
+              this.deleteProduct(ids);
               break;
             default:
               break;
           }
-          this.getPage();
         });
+        this.getPage();
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
@@ -336,16 +335,30 @@
       handleUpdateProduct(index,row){
         this.$router.push({path:'/pms/updateProduct',query:{id:row.productId}});
       },
-      updatePublishStatus(publishStatus, ids) {
+      //修改上下架状态
+      handleIsPutawayChange(index, row){
         let params = new URLSearchParams();
-        params.append('ids', ids);
-        params.append('publishStatus', publishStatus);
-        updatePublishStatus(params).then(response => {
+        params.append('ids', row.productId);
+        params.append('isPutaway', row.isPutaway);
+        updateIsPutaway(params).then(response=>{
           this.$message({
             message: '修改成功',
             type: 'success',
             duration: 1000
           });
+        });
+      },
+      updateIsPutAwayList(isPutaway, ids) {
+        let params = new URLSearchParams();
+        params.append('ids', ids);
+        params.append('isPutaway', isPutaway);
+        updateIsPutaway(params).then(response => {
+          this.$message({
+            message: '修改成功',
+            type: 'success',
+            duration: 1000
+          });
+          this.getPage();
         });
       },
       deleteProduct(ids) {

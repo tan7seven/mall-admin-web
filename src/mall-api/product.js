@@ -44,3 +44,10 @@ export function deleteProduct(params) {
     params:params
   })
 }
+export function updateIsPutaway(params) {
+  return request({
+    url:'/productController/updateIsPutaway.do',
+    method:'post',
+    params:params
+  })
+}
