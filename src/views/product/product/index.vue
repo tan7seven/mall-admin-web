@@ -66,7 +66,7 @@
           <template slot-scope="scope">{{scope.row.productId}}</template>
         </el-table-column>
         <el-table-column label="商品图片" width="120" align="center">
-          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.imgUrl"></template>
+          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl | getOnePic"></template>
         </el-table-column>
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
@@ -370,8 +370,15 @@
             type: 'success',
             duration: 1000
           });
+          this.getPage();
         });
-        this.getPage();
+
+      }
+    },
+    filters: {
+      getOnePic(value) {
+        let result = value.split(',')
+        return result[0];
       }
     }
   }

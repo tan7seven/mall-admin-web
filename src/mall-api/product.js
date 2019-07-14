@@ -51,3 +51,11 @@ export function updateIsPutaway(params) {
     params:params
   })
 }
+
+export  function deletePic(picUrl){
+  return request({
+    url:'/productController/deletePic.do',
+    method:'post',
+    params:{picUrl:picUrl}
+  })
+}

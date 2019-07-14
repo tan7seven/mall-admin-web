@@ -8,6 +8,7 @@
       v-show="showStatus[0]"
       v-model="productParam"
       :is-edit="isEdit"
+      ref="ProductInfoDetail"
       @nextStep="nextStep">
     </product-info-detail>
     <product-property-detail
@@ -23,7 +24,7 @@
 <script>
   import ProductInfoDetail from './ProductInfoDetail';
   import ProductPropertyDetail from './ProductPropertyDetail';
-  import {createProduct,getProduct,updateProduct} from '@/mall-api/product';
+  import {createProduct,getProduct,updateProduct, deletePic} from '@/mall-api/product';
 
   const defaultProductParam = {
     //商品名称
@@ -40,6 +41,9 @@
     productTypeId:"",
     //类目父类ID
     productTypeParentId:"",
+    //图片路径
+    picUrl:null,
+    picUrlArray:[],
     //销售属性值
     productPropertyIsSaleChecked : [],
     //非销售属性值
@@ -76,6 +80,7 @@
           }
           //调用子组件方法
           this.$refs.productPropertyDetail.setEditData(this.productParam)
+          this.$refs.ProductInfoDetail.setPicFileList(this.productParam)
         });
       }
     },

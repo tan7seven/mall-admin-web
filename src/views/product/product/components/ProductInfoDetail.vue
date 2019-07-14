@@ -28,7 +28,7 @@
           list-type="picture-card"
           :headers="authorization"
           :limit="5"
-          :file-list="fileList"
+          :file-list="picFileList"
           :on-exceed="onExceed"
           :before-upload="beforeUpload"
           :on-preview="handlePreview"
@@ -49,6 +49,7 @@
 
 <script>
 
+  import {deletePic} from '@/mall-api/product';
   export default {
     name: "ProductInfoDetail",
     props: {
@@ -64,7 +65,7 @@
         //文件上传的参数
         dialogImageUrl: '',
         dialogVisible: false,
-        fileList: [{name: '', url: ''}],
+        picFileList: [],
         rules: {
           productName: [
             {required: true, message: '请输入商品名称', trigger: 'blur'},
@@ -100,17 +101,20 @@
         message: '图片上传成功',
         duration: 6000
       });
-      if (file.response.success) {
-        this.editor.picture = file.response.message; //将返回的文件储存路径赋值picture字段
+      if ('success' == file.status) {
+        this.value.picUrlArray.push(file.response.data); //将返回的文件储存路径赋值picture字段
       }
     },
     //删除文件之前的钩子函数
-    handleRemove(file, fileList) {
-      /*this.$message({
-        type: 'info',
-        message: '已删除原有图片',
-        duration: 6000
-      });*/
+    handleRemove(file, picFileList) {
+      if(file.response){
+        // deletePic(file.response.data);
+        this.value.picUrlArray.remove(file.response.data);
+      }else{
+        // deletePic(file.url);
+        this.value.picUrlArray.remove(file.url);
+      }
+
     },
     //点击列表中已上传的文件事的钩子函数
     handlePreview(file) {
@@ -118,7 +122,7 @@
       this.dialogVisible = true;
     },
     //上传的文件个数超出设定时触发的函数
-    onExceed(files, fileList) {
+    onExceed(files, picFileList) {
       this.$message({
         type: 'info',
         message: '最多只能上传一个图片',
@@ -143,7 +147,18 @@
       }
       return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
     },
-  }
+    setPicFileList(productParam){
+      if(this.isEdit && productParam.picUrlArray){
+        let picUrlArray = productParam.picUrlArray;
+        for (let i = 0; i< picUrlArray.length; i++) {
+          let picFile={};
+          picFile.name = picUrlArray[i];
+          picFile.url = picUrlArray[i];
+          this.picFileList.push(picFile);
+        }
+      }
+    },
+  },
 }
 </script>
 
