@@ -50,6 +50,9 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.skuId}}</template>
         </el-table-column>
+        <el-table-column label="商品图片" width="120" align="center">
+          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
+        </el-table-column>
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>

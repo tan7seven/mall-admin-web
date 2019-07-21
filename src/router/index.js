@@ -118,13 +118,13 @@ export const constantRouterMap = [
       {
         path: 'order',
         name: 'order',
-        component: () => import('@/views/oms/order/index'),
+        component: () => import('@/views/orders/orders/index'),
         meta: {title: '订单列表', icon: 'product-list'}
       },
       {
         path: 'orderDetail',
         name: 'orderDetail',
-        component: () => import('@/views/oms/order/orderDetail'),
+        component: () => import('@/views/orders/orders/orderDetail'),
         meta: {title: '订单详情'},
         hidden:true
       },

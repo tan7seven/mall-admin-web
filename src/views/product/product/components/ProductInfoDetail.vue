@@ -125,7 +125,7 @@
     onExceed(files, picFileList) {
       this.$message({
         type: 'info',
-        message: '最多只能上传一个图片',
+        message: '最多只能上传5个图片',
         duration: 6000
       });
     },
@@ -148,6 +148,7 @@
       return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
     },
     setPicFileList(productParam){
+
       if(this.isEdit && productParam.picUrlArray){
         let picUrlArray = productParam.picUrlArray;
         for (let i = 0; i< picUrlArray.length; i++) {
