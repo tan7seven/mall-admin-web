@@ -31,6 +31,10 @@
           <el-button size="mini" @click="showMarkOrderDialog">备注订单</el-button>
         </div>
       </div>
+      <div class="operate-container" style="margin-top: 10px">
+        <i class="el-icon-message" style="margin-left: 20px; color: #409EFF"></i>
+        <span style="color: #409EFF">当前订单备注：{{order.ordersRemark}}</span>
+      </div>
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
         <span class="font-small">基本信息</span>
@@ -145,7 +149,7 @@
         <el-row>
           <el-col :span="6" class="table-cell-title">积分抵扣</el-col>
           <el-col :span="6" class="table-cell-title">活动抵扣金额</el-col>
-          <el-col :span="6" class="table-cell-title">管理员折扣金额金额</el-col>
+          <el-col :span="6" class="table-cell-title">管理员折扣金额</el-col>
           <el-col :span="6" class="table-cell-title">应付款金额</el-col>
         </el-row>
         <el-row>
