@@ -20,3 +20,31 @@ export function updateReceiverInfo(data) {
   })
 }
 
+export function updateMoneyInfo(data) {
+  return request({
+    url:'/ordersController/updateMoneyInfo.do',
+    method:'post',
+    data:data
+  })
+}
+export function updateRemarkInfo(params) {
+  return request({
+    url:'/ordersController/updateRemarkInfo.do',
+    method:'post',
+    params:params
+  })
+}
+export function closeOrders(params) {
+  return request({
+    url:'/ordersController/closeOrders.do',
+    method:'post',
+    params:params
+  })
+}
+export function deleteOrders(params) {
+  return request({
+    url:'/ordersController/deleteOrders.do',
+    method:'post',
+    params:params
+  })
+}

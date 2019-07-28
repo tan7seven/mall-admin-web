@@ -21,7 +21,7 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.ordersCode" class="input-width" placeholder="订单编号"></el-input>
+            <el-input v-model="listQuery.ordersId" class="input-width" placeholder="订单编号"></el-input>
           </el-form-item>
           <el-form-item label="收货人：">
             <el-input v-model="listQuery.receiverKeyword" class="input-width" placeholder="收货人姓名/手机号码"></el-input>
@@ -78,9 +78,6 @@
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="80" align="center">
           <template slot-scope="scope">{{scope.row.ordersId}}</template>
-        </el-table-column>
-        <el-table-column label="订单编号" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.ordersCode}}</template>
         </el-table-column>
         <el-table-column label="提交时间" width="180" align="center">
           <template slot-scope="scope">{{scope.row.createTime | formatCreateTime}}</template>
@@ -188,7 +185,7 @@
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
-    ordersCode: null,
+    ordersId: null,
     receiverKeyword: null,
     ordersStatus: null,
     payType: null,
@@ -449,7 +446,7 @@
         let address=order.receiverProvince+order.receiverCity+order.receiverRegion+order.receiverDetailAddress;
         let listItem={
           orderId:order.ordersId,
-          ordersCode:order.ordersCode,
+          ordersId:order.ordersId,
           receiverName:order.receiverName,
           receiverPhone:order.receiverPhone,
           receiverPostCode:order.receiverPostCode,
