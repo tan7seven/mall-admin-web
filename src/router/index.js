@@ -19,7 +19,7 @@ import Layout from '../views/layout/Layout'
   }
  **/
 export const constantRouterMap = [
-  {path: '/login', component: () => import('@/views/login/index'), hidden: true},
+  {path: '/login', component: () => import('@/views/login/index.vue'), hidden: true},
   {path: '/404', component: () => import('@/views/404'), hidden: true},
   {
     path: '',
@@ -28,7 +28,7 @@ export const constantRouterMap = [
     children: [{
       path: 'home',
       name: 'home',
-      component: () => import('@/views/home/index'),
+      component: () => import('@/views/home/index.vue'),
       meta: {title: '首页', icon: 'home'}
     }]
   },
@@ -41,7 +41,7 @@ export const constantRouterMap = [
     children: [{
       path: 'product',
       name: 'product',
-      component: () => import('@/views/product/product/index'),
+      component: () => import('@/views/product/product/index.vue'),
       meta: {title: '商品列表', icon: 'product-list'}
       },{
         path: 'addProduct',
@@ -57,7 +57,7 @@ export const constantRouterMap = [
     },{
         path: 'productSku',
         name: 'productSku',
-        component: () => import('@/views/product/productSku/index'),
+        component: () => import('@/views/product/productSku/index.vue'),
         meta: {title: '商品库存', icon: 'product-list'}
       },{
         path: 'addProductSku',
@@ -74,7 +74,7 @@ export const constantRouterMap = [
     },{
         path: 'productType',
         name: 'productType',
-        component: () => import('@/views/product/productType/index'),
+        component: () => import('@/views/product/productType/index.vue'),
         meta: {title: '商品分类', icon: 'product-cate'}
       },{
         path: 'addProductType',
@@ -91,7 +91,7 @@ export const constantRouterMap = [
       },{
         path: 'productProperty',
         name: 'productProperty',
-        component: () => import('@/views/product/productProperty/index'),
+        component: () => import('@/views/product/productProperty/index.vue'),
         meta: {title: '分类属性', icon: 'product-attr'}
       },{
         path: 'addProductProperty',
@@ -118,7 +118,7 @@ export const constantRouterMap = [
       {
         path: 'order',
         name: 'order',
-        component: () => import('@/views/orders/orders/index'),
+        component: () => import('@/views/orders/orders/index.vue'),
         meta: {title: '订单列表', icon: 'product-list'}
       },
       {
@@ -137,7 +137,7 @@ export const constantRouterMap = [
       {
         path: 'returnApply',
         name: 'returnApply',
-        component: () => import('@/views/orders/return/index'),
+        component: () => import('@/views/orders/return/index.vue'),
         meta: {title: '退货申请处理', icon: 'order-return'}
       },
       {
@@ -165,7 +165,7 @@ export const constantRouterMap = [
       {
         path: 'flash',
         name: 'flash',
-        component: () => import('@/views/sms/flash/index'),
+        component: () => import('@/views/sms/flash/index.vue'),
         meta: {title: '秒杀活动列表', icon: 'sms-flash'}
       },
       {
@@ -192,7 +192,7 @@ export const constantRouterMap = [
       {
         path: 'coupon',
         name: 'coupon',
-        component: () => import('@/views/sms/coupon/index'),
+        component: () => import('@/views/sms/coupon/index.vue'),
         meta: {title: '优惠券列表', icon: 'sms-coupon'}
       },
       {
@@ -219,31 +219,31 @@ export const constantRouterMap = [
       {
         path: 'brand',
         name: 'homeBrand',
-        component: () => import('@/views/sms/brand/index'),
+        component: () => import('@/views/sms/brand/index.vue'),
         meta: {title: '品牌推荐', icon: 'product-brand'}
       },
       {
         path: 'new',
         name: 'homeNew',
-        component: () => import('@/views/sms/new/index'),
+        component: () => import('@/views/sms/new/index.vue'),
         meta: {title: '新品推荐', icon: 'sms-new'}
       },
       {
         path: 'hot',
         name: 'homeHot',
-        component: () => import('@/views/sms/hot/index'),
+        component: () => import('@/views/sms/hot/index.vue'),
         meta: {title: '人气推荐', icon: 'sms-hot'}
       },
       {
         path: 'subject',
         name: 'homeSubject',
-        component: () => import('@/views/sms/subject/index'),
+        component: () => import('@/views/sms/subject/index.vue'),
         meta: {title: '专题推荐', icon: 'sms-subject'}
       },
       {
         path: 'advertise',
         name: 'homeAdvertise',
-        component: () => import('@/views/sms/advertise/index'),
+        component: () => import('@/views/sms/advertise/index.vue'),
         meta: {title: '广告列表', icon: 'sms-ad'}
       },
       {

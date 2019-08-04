@@ -20,11 +20,11 @@ export function getApplyById(id) {
     method:'get',
   })
 }
-export function updateApplyStatus(params) {
+export function updateApplyStatus(id, data) {
   return request({
-    url:'/ordersReturnApplyController/updateApplyStatus.do',
+    url:'/ordersReturnApplyController/updateApplyStatus.do/'+id,
     method:'post',
-    params:params
+    data:data
   })
 }
 

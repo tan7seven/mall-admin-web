@@ -82,7 +82,7 @@
           </el-col>
           <el-col class="form-border font-small" style="height:52px" :span="18">
             ￥
-            <el-input size="small" v-model="updateStatusParam.returnPrice"
+            <el-input size="small" v-model="updateStatusParam.realReturnPrice"
                       :disabled="ordersReturnApply.returnStatus!=0"
                       style="width:200px;margin-left: 10px"></el-input>
           </el-col>
@@ -97,8 +97,8 @@
                        :disabled="ordersReturnApply.returnStatus!=0"
                        v-model="updateStatusParam.addressId">
               <el-option v-for="address in companyAddressList"
-                         :key="address.id"
-                         :value="address.id"
+                         :key="address.addressId"
+                         :value="address.addressId"
                          :label="address.addressName">
               </el-option>
             </el-select>
@@ -125,7 +125,7 @@
       <div class="form-container-border" v-show="ordersReturnApply.returnStatus!=0">
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">处理人员</el-col>
-          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.handlePerson}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.handlePersonName}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">处理时间</el-col>
@@ -139,7 +139,7 @@
       <div class="form-container-border" v-show="ordersReturnApply.returnStatus==2">
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">收货人员</el-col>
-          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.receivePerson}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.receivePersonName}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6" >收货时间</el-col>
@@ -187,12 +187,12 @@
     handleRemark: null,
     receivePerson: '',
     receiveRemark: null,
-    returnPrice: 0,
+    realReturnPrice: 0,
     returnStatus: 0
   };
   const defaultOrdersReturnApply = {
     applyId: null,
-    orderId: null,
+    ordersId: null,
     addressId: null,
     productId: null,
     createTime: null,
@@ -227,8 +227,8 @@
     },
     computed: {
       currentAddress() {
+        console.log("currentAddress()");
         let addressId = this.updateStatusParam.addressId;
-        debugger;
         if(this.companyAddressList==null)return [];
         for (let i = 0; i < this.companyAddressList.length; i++) {
           let address = this.companyAddressList[i];
@@ -269,7 +269,7 @@
     },
     methods: {
       handleViewOrder(){
-        this.$router.push({path:'/oms/orderDetail',query:{id:this.ordersReturnApply.orderId}});
+        this.$router.push({path:'/oms/orderDetail',query:{id:this.ordersReturnApply.ordersId}});
       },
       getDetail() {
         getApplyById(this.id).then(response => {
@@ -281,12 +281,13 @@
           }
           //退货中和完成
           if(this.ordersReturnApply.returnStatus==1||this.ordersReturnApply.returnStatus==2){
-            this.updateStatusParam.returnPrice=this.ordersReturnApply.returnPrice;
+            this.updateStatusParam.realReturnPrice=this.ordersReturnApply.realReturnPrice;
             this.updateStatusParam.addressId=this.ordersReturnApply.addressId;
           }
           this.getCompanyAddressList();
         });
       },
+      //获取公司收货地址列表
       getCompanyAddressList() {
         getCompanyAddressList().then(response => {
           this.companyAddressList = response.data;
@@ -334,6 +335,7 @@
     border-right: 1px solid #DCDFE6;
     border-bottom: 1px solid #DCDFE6;
     padding: 10px;
+    min-height: 37px;
   }
 
   .form-container-border {

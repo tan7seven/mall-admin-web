@@ -119,7 +119,7 @@
         if(this.productPropertyIsSaleChecked.indexOf(property.name+':'+this.propertyNameAddIsSale[index])> -1){
           return;
         }
-        // this.productPropertyIsSale[index].value.push(this.propertyNameAddIsSale[index]);
+        // this.productPropertyIsSale[index.vue].value.push(this.propertyNameAddIsSale[index.vue]);
         this.$set(this.productPropertyIsSaleChecked,this.productPropertyIsSaleChecked.length,property.name+':'+this.propertyNameAddIsSale[index])
       },
       //上一步
@@ -154,7 +154,7 @@
       },
       //属性值不能输入非法字符
       verifypropertyName(index){
-        // this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '').replace(/\s/g, "");
+        // this.propertyNameAddIsSale[index.vue]=this.propertyNameAddIsSale[index.vue].replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '').replace(/\s/g, "");
         //属性值不能输：：号
         this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`:：]/g, '').replace(/\s/g, "");
         return this.propertyNameAddIsSale[index];
