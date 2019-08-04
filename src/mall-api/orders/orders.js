@@ -48,3 +48,17 @@ export function deleteOrders(params) {
     params:params
   })
 }
+export function closeOrdersList(params) {
+  return request({
+    url:'/ordersController/closeOrdersList.do',
+    method:'post',
+    params:params
+  })
+}
+export function deliveryOrders(data) {
+  return request({
+    url:'/ordersController/deliveryOrders.do',
+    method:'post',
+    data:data
+  })
+}

@@ -38,7 +38,7 @@
       <div class="form-container-border">
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">服务单号</el-col>
-          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.applyCode}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{ordersReturnApply.applyId}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">申请状态</el-col>

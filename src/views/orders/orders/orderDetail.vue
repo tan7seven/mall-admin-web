@@ -361,7 +361,7 @@
         }
       },
       formatLongText(value) {
-        if(value===undefined||value===null||value===''){
+        if(value==undefined||value==null||value==''){
           return '暂无';
         }else if(value.length>8){
           return value.substr(0, 8) + '...';

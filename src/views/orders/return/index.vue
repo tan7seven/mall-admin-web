@@ -24,7 +24,7 @@
             <el-input v-model="listQuery.applyId" class="input-width" placeholder="服务单号"></el-input>
           </el-form-item>
           <el-form-item label="处理状态：">
-            <el-select v-model="listQuery.status" placeholder="全部" clearable class="input-width">
+            <el-select v-model="listQuery.returnStatus" placeholder="全部" clearable class="input-width">
               <el-option v-for="item in statusOptions"
                          :key="item.value"
                          :label="item.label"
@@ -35,7 +35,7 @@
           <el-form-item label="申请时间：">
             <el-date-picker
               class="input-width"
-              v-model="listQuery.createTime"
+              v-model="listQuery.createTimeQuery"
               value-format="yyyy-MM-dd"
               type="date"
               placeholder="请选择时间">
@@ -44,7 +44,7 @@
           <el-form-item label="处理时间：">
             <el-date-picker
               class="input-width"
-              v-model="listQuery.handleTime"
+              v-model="listQuery.handleTimeQuery"
               value-format="yyyy-MM-dd"
               type="date"
               placeholder="请选择时间">
@@ -65,7 +65,7 @@
                 v-loading="listLoading" border>
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="服务单号" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.applyCode}}</template>
+          <template slot-scope="scope">{{scope.row.applyId}}</template>
         </el-table-column>
         <el-table-column label="申请时间" width="180" align="center">
           <template slot-scope="scope">{{scope.row.createTime | formatTime}}</template>
@@ -133,10 +133,10 @@
     pageSize: 10,
     applyId: null,
     receiverKeyword: null,
-    status: null,
-    createTime: null,
+    returnStatus: null,
+    createTimeQuery: null,
     handleMan: null,
-    handleTime: null
+    handleTimeQuery: null
   };
   const defaultStatusOptions=[
     {
@@ -203,7 +203,7 @@
       },
       handleSearchList() {
         this.listQuery.pageNum = 1;
-        this.getList();
+        this.getPage();
       },
       handleViewDetail(index,row){
         this.$router.push({path:'/oms/returnApplyDetail',query:{id:row.applyId}})
@@ -217,9 +217,9 @@
           });
           return;
         }
-        if(this.operateType===1){
+        if(this.operateType==1){
           //批量删除
-          this.$confirm('是否要进行删除操作?', '提示', {
+          this.$confirm('只会删除（已完成、已拒绝）的退货申请，是否要进行删除操作?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -227,11 +227,14 @@
             let params = new URLSearchParams();
             let ids=[];
             for(let i=0;i<this.multipleSelection.length;i++){
-              ids.push(this.multipleSelection[i].applyId);
+              if(this.multipleSelection[i].returnStatus == 3 || this.multipleSelection[i].returnStatus == 2){
+                ids.push(this.multipleSelection[i].applyId);
+              }
+
             }
             params.append("ids",ids);
             deleteApply(params).then(response=>{
-              this.getList();
+              this.getPage();
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -243,11 +246,11 @@
       handleSizeChange(val){
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
-        this.getList();
+        this.getPage();
       },
       handleCurrentChange(val){
         this.listQuery.pageNum = val;
-        this.getList();
+        this.getPage();
       },
       getPage(){
         this.listLoading=true;

@@ -9,7 +9,7 @@
                 style="width: 100%;"
                 :data="list" border>
         <el-table-column label="订单编号" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.orderSn}}</template>
+          <template slot-scope="scope">{{scope.row.ordersId}}</template>
         </el-table-column>
         <el-table-column label="收货人" width="180" align="center">
           <template slot-scope="scope">{{scope.row.receiverName}}</template>
@@ -38,7 +38,7 @@
         </el-table-column>
         <el-table-column label="物流单号" width="180" align="center">
           <template slot-scope="scope">
-            <el-input size="small" v-model="scope.row.deliverySn"></el-input>
+            <el-input size="small" v-model="scope.row.deliveryCode"></el-input>
           </template>
         </el-table-column>
       </el-table>
@@ -50,7 +50,7 @@
   </div>
 </template>
 <script>
-  import {deliveryOrder} from '@/api/order'
+  import {deliveryOrders} from '@/mall-api/orders/orders'
   const defaultLogisticsCompanies=["顺丰快递","圆通快递","中通快递","韵达快递"];
   export default {
     name: 'deliverOrderList',
@@ -73,7 +73,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deliveryOrder(this.list).then(response=>{
+          deliveryOrders(this.list).then(response=>{
             this.$router.back();
             this.$message({
               type: 'success',
