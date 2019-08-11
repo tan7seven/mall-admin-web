@@ -139,7 +139,7 @@ export const constantRouterMap = [
         path: 'orderSetting',
         name: 'orderSetting',
         component: () => import('@/views/orders/orders/setting'),
-        meta: {title: '订单设置', icon: 'order-setting'}
+        meta: {title: '订单设置', icon: 'setting'}
       },
       {
         path: 'returnApply',
@@ -268,6 +268,31 @@ export const constantRouterMap = [
         hidden:true
       }
     ]
+  },
+  {
+    path:'/sys',
+    component: Layout,
+    redirect: '/sys/admin',
+    name: 'sys',
+    meta: {title: '系统管理', icon: 'setting'},
+    children: [
+      {
+        path: 'user',
+        name: 'user',
+        component: () => import('@/views/sms/flash/index.vue'),
+        meta: {title: '用户列表', icon: 'user'}
+      },{
+        path: 'menu',
+        name: 'menu',
+        component: () => import('@/views/sms/flash/index.vue'),
+        meta: {title: '菜单列表', icon: 'menu-list'}
+      },{
+        path: 'flash',
+        name: 'flash',
+        component: () => import('@/views/sms/flash/index.vue'),
+        meta: {title: '权限管理', icon: 'tree'}
+      },
+      ]
   },
   {path: '*', redirect: '/404', hidden: true}
 ]
