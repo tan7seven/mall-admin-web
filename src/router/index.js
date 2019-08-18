@@ -270,25 +270,31 @@ export const constantRouterMap = [
     ]
   },
   {
-    path:'/sys',
+    path:'/system',
     component: Layout,
     redirect: '/sys/admin',
-    name: 'sys',
+    name: 'system',
     meta: {title: '系统管理', icon: 'setting'},
     children: [
       {
-        path: 'user',
-        name: 'user',
-        component: () => import('@/views/sms/flash/index.vue'),
+        path: 'admin',
+        name: 'admin',
+        component: () => import('@/views/system/admin/index.vue'),
         meta: {title: '用户列表', icon: 'user'}
+      },{
+        path: 'updateAdmin',
+        name: 'updateAdmin',
+        component: () => import('@/views/system/admin/update.vue'),
+        meta: {title: '修改信息用户'},
+        hidden:true
       },{
         path: 'menu',
         name: 'menu',
         component: () => import('@/views/sms/flash/index.vue'),
         meta: {title: '菜单列表', icon: 'menu-list'}
       },{
-        path: 'flash',
-        name: 'flash',
+        path: 'authority',
+        name: 'authority',
         component: () => import('@/views/sms/flash/index.vue'),
         meta: {title: '权限管理', icon: 'tree'}
       },

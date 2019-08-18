@@ -66,6 +66,7 @@
       }
     },
     created(){
+      this.productParam=defaultProductParam;
       if(this.isEdit){
         getProduct(this.$route.query.id).then(response=>{
           this.productParam=response.data;
@@ -118,6 +119,7 @@
                 duration:1000
               });
               this.$router.back();
+              this.productParam=defaultProductParam;
             });
           }else{
             createProduct(this.productParam).then(response=>{
@@ -127,6 +129,7 @@
                 duration:1000
               });
               this.$router.back();
+              this.productParam=defaultProductParam;
             });
           }
         })

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+/*params紧跟url后面，data设置form表单里，需要加@RequestBody*/
 export function getPage(params) {
   return request({
     url:'/productPropertyController/getPage.do/',
@@ -20,38 +21,38 @@ export function getProductProperty(id) {
   })
 }
 
-export function updateProductProperty(id, params){
+export function updateProductProperty(id, data){
   return request({
     url:'/productPropertyController/update.do/'+id,
     method :"post",
-    params:params
+    data:data
   })
 }
-export function createProductProperty(params){
+export function createProductProperty(data){
   return request({
     url:'/productPropertyController/create.do/',
     method :"post",
-    params:params
+    data:data
   })
 }
-export function updateIsSale(params){
+export function updateIsSale(data){
   return request({
     url:'/productPropertyController/updateIsSale.do/',
     method :"post",
-    params:params
+    data:data
   })
 }
-export function updateIsShow(params){
+export function updateIsShow(data){
   return request({
     url:'/productPropertyController/updateIsShow.do/',
     method :"post",
-    params:params
+    data:data
   })
 }
-export function updateIsUsable(params){
+export function updateIsUsable(data){
   return request({
     url:'/productPropertyController/updateIsUsable.do/',
     method :"post",
-    params:params
+    data:data
   })
 }

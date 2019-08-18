@@ -377,8 +377,9 @@
     },
     filters: {
       getOnePic(value) {
-        let result = value.split(',')
-        return result[0];
+        return value;
+        /*let result = value.split(',')
+        return result[0];*/
       }
     }
   }

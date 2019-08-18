@@ -125,7 +125,7 @@
                     type: 'success',
                     duration: 1000
                   });
-                  // this.$router.back();
+                  this.$router.back();
                 });
               } else {
                 createProductProperty(this.productProperty).then(response => {
@@ -136,6 +136,7 @@
                     type: 'success',
                     duration: 1000
                   });
+                  this.$router.back();
                 });
               }
             });

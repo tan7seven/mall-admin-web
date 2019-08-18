@@ -175,6 +175,7 @@
                     duration: 1000
                   });
                   this.$router.back();
+                  this.productSkuForm = defaultProductSku;
                 });
               } else {
                 createProductSku(this.productSku).then(response => {
@@ -185,6 +186,7 @@
                     type: 'success',
                     duration: 1000
                   });
+                  this.productSkuForm = defaultProductSku;
                 });
               }
             });
@@ -273,7 +275,6 @@
         return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
       },
       setPicFileList(){
-        debugger;
         if(this.isEdit && this.productSku.picUrl){
             let picFile={};
             picFile.name = this.productSku.picUrl;

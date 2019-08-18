@@ -21,10 +21,10 @@
         <el-table-column label="姓名" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="电话号码" width="100" align="center">
+        <el-table-column label="电话号码" width="150" align="center">
           <template slot-scope="scope">{{scope.row.phone}}</template>
         </el-table-column>
-        <el-table-column label="是否显示" width="100" align="center">
+        <el-table-column label="是否可用" width="80" align="center">
           <template slot-scope="scope">
             <el-switch
               @change="handleStatusChange(scope.$index, scope.row)"
@@ -34,10 +34,10 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="100" align="center">
+        <el-table-column label="创建时间" width="180" align="center">
           <template slot-scope="scope">{{scope.row.createTime | formatTime}}</template>
         </el-table-column>
-        <el-table-column label="修改时间" width="100" align="center">
+        <el-table-column label="修改时间" width="180" align="center">
           <template slot-scope="scope">{{scope.row.modifyTime | formatTime}}</template>
         </el-table-column>
         <el-table-column label="操作" width="300" align="center">
@@ -71,10 +71,10 @@
 </template>
 
 <script>
-  import {getList,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
-
+  import {getPage} from '@/mall-api/system/admin'
+  import {formatDate} from '@/utils/date';
   export default {
-    name: "userList",
+    name: "admin",
     data() {
       return {
         list: null,
@@ -87,15 +87,19 @@
       }
     },
     created() {
+      this.getPage();
     },
     methods: {
       getPage() {
         this.listLoading = true;
-        getList(this.parentId, this.listQuery).then(response => {
+        getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;
         });
+      },
+      handleUpdate(index, row){
+        this.$router.push({path:'/system/updateAdmin',query:{userId:row.userId}});
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
