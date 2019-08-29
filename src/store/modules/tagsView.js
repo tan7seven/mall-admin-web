@@ -5,7 +5,7 @@ const tagsView = {
   },
   mutations: {
     ADD_VISITED_VIEWS: (state, view) => {
-      if (state.visitedViews.some(v => v.path === view.path)) return
+      if (state.visitedViews.some(v => v.path === view.path)) return;
       state.visitedViews.push({
         name: view.name,
         path: view.path,

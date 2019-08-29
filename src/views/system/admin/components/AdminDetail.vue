@@ -4,13 +4,13 @@
              :rules="rules"
              ref="adminModelForm"
              label-width="150px">
-      <el-form-item label="登录账号：" prop="typeName">
+      <el-form-item label="登录账号：" prop="loginCode">
         <el-input v-model="adminModel.loginCode"></el-input>
       </el-form-item>
-      <el-form-item label="姓名：">
+      <el-form-item label="姓名：" prop="name">
         <el-input v-model="adminModel.name"></el-input>
       </el-form-item>
-      <el-form-item label="商品图片：">
+      <el-form-item label="头像：">
         <el-upload
           ref="upload"
           action="/commonController/upload.do"
@@ -30,8 +30,8 @@
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <el-form-item label="电话号码：">
-          <el-input v-model="adminModel.phone" type="number"></el-input>
+      <el-form-item label="电话号码：" prop="phone">
+          <el-input v-model="adminModel.phone" ></el-input>
       </el-form-item>
       <el-form-item label="是否可用：">
         <el-radio-group v-model="adminModel.isUsable">
@@ -48,13 +48,15 @@
 </template>
 
 <script>
-  import {getList, createProductType, updateProductType, getProductType} from '@/mall-api/productType';
+  import {getPage, updateAdmin, createAdmin, getAdminInfo} from '@/mall-api/system/admin'
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultAdminModel = {
     loginCode : null,
-    status : "0",
-    isNavigationBar : "0",
+    picUrl:null,
+    name : null,
+    phone : null,
+    isUsable:"0",
   };
   export default {
     name: "adminDetail",
@@ -72,12 +74,49 @@
         dialogImageUrl:"",
         picFileList: [],
         dialogVisible:false,
+        rules: {
+          loginCode: [{
+            required: true,
+            message: '请输入登录账号',
+            trigger: 'blur'
+          }, {
+            min: 4,
+            max: 30,
+            message: '长度在 4 到 30 个字符'
+          }, {
+            pattern: /^(\w){4,20}$/,
+            message: '只能输入4-20个字母、数字、下划线'
+          }],
+          name:[{
+            required: true,
+            message: '请输入姓名',
+            trigger: 'blur'
+          }],
+          phone:[{
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'blur'
+          },{validator:function(rule,value,callback){
+                if(/^1[345789]\d{9}$/.test(value) == false){
+                  callback(new Error("请输入正确的手机号"));
+                }else{
+                  callback();
+                }
+              }, trigger: 'blur'}
+          ],
+        }
       }
     },
     created() {
-
+      if (this.isEdit) {
+        getAdminInfo(this.$route.query.userId).then(response => {
+          this.adminModel = response.data;
+          this.setPicFileList();
+        })
+      }
     },
     methods: {
+
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -86,9 +125,8 @@
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              console.info(this.productType);
               if (this.isEdit) {
-                updateProductType(this.$route.query.typeId, this.productType).then(response => {
+                updateAdmin(this.$route.query.userId, this.adminModel).then(response => {
                   this.$message({
                     message: '修改成功',
                     type: 'success',
@@ -97,16 +135,17 @@
                   this.$router.back();
                 });
               } else {
-                createProductType(this.productType).then(response => {
-                  this.$refs[formName].resetFields();
+                createAdmin(this.adminModel).then(response => {
                   this.resetForm(formName);
                   this.$message({
                     message: '提交成功',
                     type: 'success',
                     duration: 1000
                   });
+                  this.$router.back();
                 });
               }
+
             });
 
           } else {
@@ -131,12 +170,12 @@
           duration: 6000
         });
         if ('success' == file.status) {
-          this.productSku.picUrl=file.response.data; //将返回的文件储存路径赋值picture字段
+          this.adminModel.picUrl=file.response.data; //将返回的文件储存路径赋值picture字段
         }
       },
       //删除文件之前的钩子函数
       handleRemove(file, picFileList) {
-        this.productSku.picUrl="";
+        this.adminModel.picUrl="";
       },
       //点击列表中已上传的文件事的钩子函数
       handlePreview(file) {
@@ -170,10 +209,10 @@
         return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
       },
       setPicFileList(){
-        if(this.isEdit && this.productSku.picUrl){
+        if(this.isEdit && this.adminModel.picUrl){
           let picFile={};
-          picFile.name = this.productSku.picUrl;
-          picFile.url = this.productSku.picUrl;
+          picFile.name = this.adminModel.picUrl;
+          picFile.url = this.adminModel.picUrl;
           this.picFileList.push(picFile);
         }
       },

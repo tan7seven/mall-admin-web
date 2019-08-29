@@ -45,7 +45,7 @@
   import {getProductProperty, updateProductProperty, createProductProperty} from '@/mall-api/productProperty';
   import SingleUpload from '@/components/Upload/singleUpload';
   import {getProductTypeCascader} from '@/mall-api/productType';
-
+  
   const defaultProductProperty = {
     typeIdValue:[],
     typeId:null,
@@ -125,7 +125,6 @@
                     type: 'success',
                     duration: 1000
                   });
-                  this.$router.back();
                 });
               } else {
                 createProductProperty(this.productProperty).then(response => {
@@ -136,11 +135,10 @@
                     type: 'success',
                     duration: 1000
                   });
-                  this.$router.back();
                 });
               }
+              this.$router.back();
             });
-
           } else {
             this.$message({
               message: '验证失败',

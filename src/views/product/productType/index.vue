@@ -152,34 +152,49 @@
         this.getList();
       },
       handleNavigationBarChange(index, row) {
-        let data = {
-          'typeId':row.typeId,
-          'isNavigationBar':row.isNavigationBar
-        };
-        updateNavigationBar(data).then(response=>{
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-            duration: 1000
+        this.$confirm('是否要修改', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let data = {
+            'typeId':row.typeId,
+            'isNavigationBar':row.isNavigationBar
+          };
+          updateNavigationBar(data).then(response=>{
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getList();
           });
+        }).catch(() => {
+          this.getList();
         });
+
       },
+      //是否显示
       handleStatusChange(index, row) {
-        // let data = new URLSearchParams();
-        // let ids=[];
-        // ids.push(row.typeId)
-        // data.append('ids',ids);
-        // data.append('status',row.status);
-        let data = {
-          'typeId':row.typeId,
-          'status':row.status
-        };
-        updateStatus(data).then(response=>{
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-            duration: 1000
+        this.$confirm('是否要修改', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let data = {
+            'typeId':row.typeId,
+            'status':row.status
+          };
+          updateStatus(data).then(response=>{
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getList();
           });
+        }).catch(() => {
+          this.getList();
         });
       },
       handleShowNextLevel(index, row) {

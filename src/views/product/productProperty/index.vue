@@ -170,6 +170,8 @@
             });
             this.getPage();
           });
+        }).catch(() => {
+          this.getPage();
         });
       },
       //是否显示
@@ -191,6 +193,8 @@
             });
             this.getPage();
           });
+        }).catch(() => {
+          this.getPage();
         });
       },
       //是否可用
@@ -212,6 +216,8 @@
             });
             this.getPage();
           });
+        }).catch(() => {
+          this.getPage();
         });
       },
       //分页插件

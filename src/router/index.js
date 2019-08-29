@@ -52,7 +52,7 @@ export const constantRouterMap = [
       path: 'updateProduct',
       name: 'updateProduct',
       component: () => import('@/views/product/product/update'),
-      meta: {title: '修改商品'},
+      meta: {title: '修改商品', hiddenTag:true},
       hidden: true
     },{
         path: 'productSku',
@@ -63,13 +63,13 @@ export const constantRouterMap = [
         path: 'addProductSku',
         name: 'addProductSku',
         component: () => import('@/views/product/productSku/add'),
-        meta: {title: '添加商品库存'},
+        meta: {title: '添加商品库存', hiddenTag:true},
         hidden: true
       },{
       path: 'updateProductSku',
       name: 'updateProductSku',
       component: () => import('@/views/product/productSku/update'),
-      meta: {title: '修改商品库存'},
+      meta: {title: '修改商品库存', hiddenTag:true},
       hidden: true
     },{
         path: 'productType',
@@ -80,13 +80,13 @@ export const constantRouterMap = [
         path: 'addProductType',
         name: 'addProductType',
         component: () => import('@/views/product/productType/add'),
-        meta: {title: '添加商品分类'},
+        meta: {title: '添加商品分类', hiddenTag:true},
         hidden: true
       }, {
         path: 'updateProductType',
         name: 'updateProductType',
         component: () => import('@/views/product/productType/update'),
-        meta: {title: '修改商品分类'},
+        meta: {title: '修改商品分类', hiddenTag:true},
         hidden: true
       },{
         path: 'productProperty',
@@ -97,13 +97,13 @@ export const constantRouterMap = [
         path: 'addProductProperty',
         name: 'addProductProperty',
         component: () => import('@/views/product/productProperty/add'),
-        meta: {title: '添加商品分类属性'},
+        meta: {title: '添加商品分类属性', hiddenTag:true},
         hidden: true
       },{
         path: 'updateProductProperty',
         name: 'updateProductProperty',
         component: () => import('@/views/product/productProperty/update'),
-        meta: {title: '修改商品分类属性'},
+        meta: {title: '修改商品分类属性', hiddenTag:true},
         hidden: true
       }
     ]
@@ -125,14 +125,14 @@ export const constantRouterMap = [
         path: 'orderDetail',
         name: 'orderDetail',
         component: () => import('@/views/orders/orders/orderDetail'),
-        meta: {title: '订单详情'},
+        meta: {title: '订单详情', hiddenTag:true},
         hidden:true
       },
       {
         path: 'deliverOrderList',
         name: 'deliverOrderList',
         component: () => import('@/views/orders/orders/deliverOrderList'),
-        meta: {title: '订单发货'},
+        meta: {title: '订单发货', hiddenTag:true},
         hidden:true
       },
       {
@@ -157,7 +157,7 @@ export const constantRouterMap = [
         path: 'returnApplyDetail',
         name: 'returnApplyDetail',
         component: () => import('@/views/orders/return/applyDetail'),
-        meta: {title: '退货原因详情'},
+        meta: {title: '退货原因详情', hiddenTag:true},
         hidden:true
       }
     ]
@@ -285,13 +285,31 @@ export const constantRouterMap = [
         path: 'updateAdmin',
         name: 'updateAdmin',
         component: () => import('@/views/system/admin/update.vue'),
-        meta: {title: '修改信息用户'},
+        meta: {title: '修改信息用户', hiddenTag:true},
+        hidden:true
+      },{
+        path: 'createAdmin',
+        name: 'createAdmin',
+        component: () => import('@/views/system/admin/add.vue'),
+        meta: {title: '新增信息用户', hiddenTag:true},
         hidden:true
       },{
         path: 'menu',
         name: 'menu',
-        component: () => import('@/views/sms/flash/index.vue'),
+        component: () => import('@/views/system/menu/index.vue'),
         meta: {title: '菜单列表', icon: 'menu-list'}
+      },{
+        path: 'updateMenu',
+        name: 'updateMenu',
+        component: () => import('@/views/system/menu/update.vue'),
+        meta: {title: '修改菜单信息', hiddenTag:true},
+        hidden:true
+      },{
+        path: 'createMenu',
+        name: 'createMenu',
+        component: () => import('@/views/system/menu/add.vue'),
+        meta: {title: '新增菜单信息', hiddenTag:true},
+        hidden:true
       },{
         path: 'authority',
         name: 'authority',

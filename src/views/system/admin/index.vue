@@ -5,7 +5,7 @@
       <span style="margin-top: 5px">数据列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddProductType()"
+        @click="handleAddAdmin()"
         size="mini">
         添加
       </el-button>
@@ -27,7 +27,7 @@
         <el-table-column label="是否可用" width="80" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleStatusChange(scope.$index, scope.row)"
+              @change="handleUsableChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
               v-model="scope.row.isUsable">
@@ -42,15 +42,25 @@
         </el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
+            <p><el-button
+              size="mini"
+              @click="handleMenuAuthority(scope.$index, scope.row)">页面授权
+            </el-button>
             <el-button
               size="mini"
               @click="handleUpdate(scope.$index, scope.row)">编辑
+            </el-button>
+            </p>
+            <p><el-button
+              size="mini"
+              @click="handleButtonAuthority(scope.$index, scope.row)">按钮授权
             </el-button>
             <el-button
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
+            </p>
           </template>
         </el-table-column>
       </el-table>
@@ -67,16 +77,58 @@
         :total="total">
       </el-pagination>
     </div>
+    <el-dialog title="页面授权"
+               :visible.sync="menuDialogVisible"
+               v-loading="menuDialogLoading"
+               element-loading-text="拼命加载中"
+               element-loading-spinner="el-icon-loading"
+               element-loading-background="rgba(0, 0, 0, 0.8)"
+               width="50%">
+      <el-form label-width="150px">
+        <el-form-item label="账号：" prop="loginCode">
+          <el-input v-model="menuDialog.loginCode"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="name">
+          <el-input v-model="menuDialog.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-tree
+        :data="menuDialogTree"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        highlight-current>
+      </el-tree>
+      <div slot="footer">
+        <el-button  size="small" @click="menuDialogVisible = false">取 消</el-button>
+        <el-button  size="small" type="primary" @click="handleMenuDialogConfirm()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import {getPage} from '@/mall-api/system/admin'
+  import {getPage, deleteAdmin, updateIsUsable, menuAuthorityConfirm ,getAdminMenuAuthority} from '@/mall-api/system/admin'
+  import {getMenuTree} from '@/mall-api/system/menu'
   import {formatDate} from '@/utils/date';
+
+
+  const defaultMenuDialog = {
+    loginCode : null,
+    name : null,
+    userId:null,
+    menuList:[],
+  };
+
   export default {
     name: "admin",
     data() {
       return {
+        menuDialogVisible:false,
+        menuDialog:defaultMenuDialog,
+        menuDialogTree:null,
+        menuDialogLoading:false,
         list: null,
         total: null,
         listLoading: true,
@@ -101,15 +153,95 @@
       handleUpdate(index, row){
         this.$router.push({path:'/system/updateAdmin',query:{userId:row.userId}});
       },
+      handleAddAdmin(){
+        this.$router.push({path:'/system/createAdmin'});
+      },
+      handleButtonAuthority(index, row){
+        this.$router.push({path:'/system/updateAdmin',query:{userId:row.userId}});
+      },
+      handleMenuAuthority(index, row){
+        this.menuDialogLoading = true;
+        this.menuDialog.loginCode = row.loginCode;
+        this.menuDialog.name = row.name;
+        this.menuDialog.userId = row.userId;
+        getMenuTree().then(response => {
+          this.menuDialogTree = response.data;
+        });
+        getAdminMenuAuthority(row.userId).then(response =>{
+          this.$refs.tree.setCheckedKeys(response.data);
+          this.menuDialogLoading = false;
+        });
+        this.menuDialogVisible = true;
+      },
+      handleDelete(index, row){
+        this.$confirm('是否要进行删除操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let ids = [];
+          ids.push(row.userId);
+          let params = new URLSearchParams();
+          params.append("ids",ids);
+          deleteAdmin(params).then(response => {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
+          });
+        });
+      },
+      handleMenuDialogConfirm(){
+        this.$confirm('是否要提交', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.menuDialog.menuList = this.$refs.tree.getCheckedKeys();
+          menuAuthorityConfirm(this.menuDialog).then(response => {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.menuDialogVisible = false;
+          });
+        }).catch(() => {
+          this.getPage();
+        });
+      },
+      handleUsableChange(index, row){
+        let data = {
+          'userId':row.userId,
+          'isUsable':row.isUsable
+        };
+        this.$confirm('是否要修改', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          updateIsUsable(data).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
+          });
+        });
+      },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
-        this.getList();
+        this.getPage();
       },
       handleCurrentChange(val) {
         this.listQuery.pageNum = val;
-        this.getList();
+        this.getPage();
       },
+
     },
     filters: {
       formatTime(time) {
