@@ -9,7 +9,7 @@
       text-color="#bfcbd9"
       active-text-color="#409EFF"
     >
-      <sidebar-item :routes="routes"></sidebar-item>
+      <sidebar-item :routes="routes" :menuList="menuList"></sidebar-item>
     </el-menu>
   </scroll-bar>
 </template>
@@ -30,6 +30,9 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    menuList(){
+      return this.$store.state.user.menuList;
     }
   }
 }

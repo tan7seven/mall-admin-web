@@ -57,9 +57,19 @@ export function getMenuList(id, data) {
   })
 }
 
-export function getMenuTree() {
+export function getMenuTree(params) {
+  params?params:{};
   return request({
-    url:'/menuController/getMenuTree.do/',
+    url:'/menuController/getMenuTree.do',
     method:'get',
+    params:params,
+  })
+}
+
+export function getButtonList(params) {
+  return request({
+    url:'/menuController/getButtonList.do',
+    method:'post',
+    params:params,
   })
 }

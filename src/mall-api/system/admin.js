@@ -50,6 +50,13 @@ export function menuAuthorityConfirm(data) {
     data:data
   })
 }
+export function buttonAuthorityConfirm(data) {
+  return request({
+    url:'/adminController/buttonAuthorityConfirm.do',
+    method:'post',
+    data:data
+  })
+}
 export function getAdminMenuAuthority(id) {
   return request({
     url:'/adminController/getAdminMenuAuthority.do/'+id,

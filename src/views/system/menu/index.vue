@@ -162,10 +162,6 @@
         this.getMenuListById();
       },*/
       loadChildren(tree, treeNode, resolve){
-        console.info(tree);
-        console.info(treeNode);
-        console.info(resolve);
-        debugger
         this.listLoading = true;
         getMenuListById(tree).then(response => {
           this.listLoading = false;

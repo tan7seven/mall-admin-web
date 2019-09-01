@@ -19,7 +19,7 @@
         <template v-for="child in item.children" v-if="!child.hidden">
           <sidebar-item :is-nest="true" class="nest-menu" v-if="child.children&&child.children.length>0" :routes="[child]" :key="child.path"></sidebar-item>
 
-          <router-link v-else :to="item.path+'/'+child.path" :key="child.name">
+          <router-link v-else :to="item.path+'/'+child.path" :key="child.name" v-if="checkMenu(child)">
             <el-menu-item :index="item.path+'/'+child.path">
               <svg-icon v-if="child.meta&&child.meta.icon" :icon-class="child.meta.icon"></svg-icon>
               <span v-if="child.meta&&child.meta.title" slot="title">{{child.meta.title}}</span>
@@ -42,7 +42,14 @@ export default {
     isNest: {
       type: Boolean,
       default: false
+    },
+    menuList:{
+      type: Array
     }
+  },
+
+  computed: {
+
   },
   methods: {
     //是否只有一个children
@@ -54,7 +61,15 @@ export default {
         return true
       }
       return false
-    }
+    },
+    //验证用户是否有菜单权限
+    checkMenu: function (item) {
+      let menuList = this.menuList;
+      if (menuList && item.code && menuList.indexOf(item.code.toLocaleUpperCase()) != -1) {
+        return true;
+      }
+      return false;
+    },
   }
 }
 </script>

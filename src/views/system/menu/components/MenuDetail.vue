@@ -37,12 +37,12 @@
           <el-radio label="1">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="按钮列表：">
+      <el-form-item label="按钮列表：" v-if="menuModel.parentId != 0">
         <el-checkbox-group v-model="buttonListSelect" >
           <el-checkbox v-for="buttonName in buttonList" :label="buttonName" :key="buttonName">{{buttonName}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item  label="添加按钮：">
+      <el-form-item  label="添加按钮："  v-if="menuModel.parentId != 0">
         <el-select v-model="buttonPut"
                    filterable
                    :loading="loading"
@@ -162,7 +162,7 @@
         this.parentOptions=[];
         var page = this;
         getMenuList(0, {menuTitle:query}).then(response => {
-          page.parentOptions = response.data.list;
+          page.parentOptions = response.data?response.data:[];
           page.parentOptions.unshift({menuId: '0', menuTitle: '无上级分类'});
           this.loading = false;
         });
@@ -182,6 +182,10 @@
               type: 'warning'
             }).then(() => {
               this.menuModel.buttonList = this.buttonListSelect;
+              //一级菜单没有按钮
+              if(this.menuModel.parentId == 0){
+                this.menuModel.buttonList = [];
+              }
               if (this.isEdit) {
                 updateMenu(this.$route.query.menuId, this.menuModel).then(response => {
                   this.$message({

@@ -11,7 +11,7 @@ router.beforeEach((to, from, next) => {
   if (getToken()) {
     next();
     //验证用户信息
-    /*if (to.path === '/login') {
+    if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
       } else {
         next()
       }
-    }*/
+    }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
       next()

@@ -4,8 +4,8 @@
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <!--<img class="admin-avatar" :src="avatar">-->
-        <img class="user-avatar" :src="logo">
+        <img class="user-avatar" :src="avatar">
+        <!--<img class="user-avatar" :src="logo">-->
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">

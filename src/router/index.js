@@ -28,6 +28,7 @@ export const constantRouterMap = [
     children: [{
       path: 'home',
       name: 'home',
+      code:'HOME',
       component: () => import('@/views/home/index.vue'),
       meta: {title: '首页', icon: 'home'}
     }]
@@ -37,15 +38,18 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/pms/product',
     name: 'pms',
+    code:'PMS',
     meta: {title: '商品', icon: 'product'},
     children: [{
       path: 'product',
       name: 'product',
+      code:'PMS:PRODUCT',
       component: () => import('@/views/product/product/index.vue'),
       meta: {title: '商品列表', icon: 'product-list'}
       },{
         path: 'addProduct',
-        name: 'addProduct',
+        name: 'pms:addProduct',
+        code:'PMS:ADDPRODUCT',
         component: () => import('@/views/product/product/add'),
         meta: {title: '添加商品', icon: 'product-add'}
       },{
@@ -56,7 +60,8 @@ export const constantRouterMap = [
       hidden: true
     },{
         path: 'productSku',
-        name: 'productSku',
+        name: 'pms:productSku',
+        code:'PMS:PRODUCTSKU',
         component: () => import('@/views/product/productSku/index.vue'),
         meta: {title: '商品库存', icon: 'product-list'}
       },{
@@ -73,7 +78,8 @@ export const constantRouterMap = [
       hidden: true
     },{
         path: 'productType',
-        name: 'productType',
+        name: 'pms:productType',
+        code:'PMS:PRODUCTTYPE',
         component: () => import('@/views/product/productType/index.vue'),
         meta: {title: '商品分类', icon: 'product-cate'}
       },{
@@ -90,7 +96,8 @@ export const constantRouterMap = [
         hidden: true
       },{
         path: 'productProperty',
-        name: 'productProperty',
+        name: 'pms:productProperty',
+        code:'PMS:PRODUCTPROPERTY',
         component: () => import('@/views/product/productProperty/index.vue'),
         meta: {title: '分类属性', icon: 'product-attr'}
       },{
@@ -113,11 +120,13 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/oms/order',
     name: 'oms',
+    code:'OMS',
     meta: {title: '订单', icon: 'order'},
     children: [
       {
         path: 'order',
         name: 'order',
+        code:'OMS:ORDER',
         component: () => import('@/views/orders/orders/index.vue'),
         meta: {title: '订单列表', icon: 'product-list'}
       },
@@ -138,12 +147,14 @@ export const constantRouterMap = [
       {
         path: 'orderSetting',
         name: 'orderSetting',
+        code:'OMS:ORDERSETTING',
         component: () => import('@/views/orders/orders/setting'),
         meta: {title: '订单设置', icon: 'setting'}
       },
       {
         path: 'returnApply',
         name: 'returnApply',
+        code:'OMS:RETURNAPPLY',
         component: () => import('@/views/orders/return/index.vue'),
         meta: {title: '退货申请处理', icon: 'order-return'}
       },
@@ -274,11 +285,13 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/sys/admin',
     name: 'system',
+    code:'SYSTEM',
     meta: {title: '系统管理', icon: 'setting'},
     children: [
       {
         path: 'admin',
         name: 'admin',
+        code:'SYSTEM:ADMIN',
         component: () => import('@/views/system/admin/index.vue'),
         meta: {title: '用户列表', icon: 'user'}
       },{
@@ -296,6 +309,7 @@ export const constantRouterMap = [
       },{
         path: 'menu',
         name: 'menu',
+        code:'SYSTEM:MENU',
         component: () => import('@/views/system/menu/index.vue'),
         meta: {title: '菜单列表', icon: 'menu-list'}
       },{
