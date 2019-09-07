@@ -14,21 +14,21 @@
         <i class="el-icon-warning color-danger" style="margin-left: 20px"></i>
         <span class="color-danger">当前订单状态：{{order.ordersStatus | formatStatus}}</span>
         <div class="operate-button-container" v-show="order.ordersStatus==0">
-          <el-button size="mini" @click="showUpdateReceiverDialog">修改收货人信息</el-button>
-          <el-button size="mini" @click="showUpdateMoneyDialog">修改费用信息</el-button>
-          <el-button size="mini" @click="showCloseOrderDialog">关闭订单</el-button>
-          <el-button size="mini" @click="showRemarkOrderDialog">备注订单</el-button>
+          <el-button size="mini" @click="showUpdateReceiverDialog" :disabled="updateAuthority">修改收货人信息</el-button>
+          <el-button size="mini" @click="showUpdateMoneyDialog" :disabled="updateAuthority">修改费用信息</el-button>
+          <el-button size="mini" @click="showCloseOrderDialog" :disabled="updateAuthority">关闭订单</el-button>
+          <el-button size="mini" @click="showRemarkOrderDialog" :disabled="updateAuthority">备注订单</el-button>
         </div>
         <div class="operate-button-container" v-show="order.ordersStatus==1">
-          <el-button size="mini" @click="showUpdateReceiverDialog">修改收货人信息</el-button>
-          <el-button size="mini" @click="showRemarkOrderDialog">备注订单</el-button>
+          <el-button size="mini" @click="showUpdateReceiverDialog" :disabled="updateAuthority">修改收货人信息</el-button>
+          <el-button size="mini" @click="showRemarkOrderDialog" :disabled="updateAuthority">备注订单</el-button>
         </div>
         <div class="operate-button-container" v-show="order.ordersStatus==2||order.ordersStatus==3">
-          <el-button size="mini" @click="showRemarkOrderDialog">备注订单</el-button>
+          <el-button size="mini" @click="showRemarkOrderDialog" :disabled="updateAuthority">备注订单</el-button>
         </div>
         <div class="operate-button-container" v-show="order.ordersStatus==4">
-          <el-button size="mini" @click="handleDeleteOrder">删除订单</el-button>
-          <el-button size="mini" @click="showRemarkOrderDialog">备注订单</el-button>
+          <el-button size="mini" @click="handleDeleteOrder" :disabled="deleteAuthority">删除订单</el-button>
+          <el-button size="mini" @click="showRemarkOrderDialog" :disabled="updateAuthority">备注订单</el-button>
         </div>
       </div>
       <div class="operate-container" style="margin-top: 10px">
@@ -306,6 +306,8 @@
   import LogisticsDialog from '@/views/oms/order/components/logisticsDialog';
   import {formatDate} from '@/utils/date';
   import VDistpicker from 'v-distpicker';
+  import auth from '@/utils/auth'
+
   const defaultReceiverInfo = {
     ordersId:null,
     receiverName:null,
@@ -337,6 +339,9 @@
         //订单备注
         markOrderDialogVisible:false,
         remarkInfo:{remark:null},
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
@@ -344,6 +349,7 @@
       getOrdersDetail(this.id).then(response => {
         this.order = response.data;
       });
+      this.checkButtonAuthority();
     },
     filters: {
       isPay(value){
@@ -595,6 +601,26 @@
             this.$router.back();
           });
         })
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
       },
     }
   }

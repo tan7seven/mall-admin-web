@@ -6,7 +6,8 @@
       <el-button
         class="btn-add"
         @click="handleAddProductProperty()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -30,7 +31,8 @@
               @change="handleIsSaleChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isSale">
+              v-model="scope.row.isSale"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -40,17 +42,8 @@
               @change="handleIsShowChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isShow">
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="是否可用" width="100" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              @change="handleIsUsableChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isUsable">
+              v-model="scope.row.isShow"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -58,12 +51,14 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleUpdate(scope.$index, scope.row)">编辑
+              @click="handleUpdate(scope.$index, scope.row)"
+              :disabled="updateAuthority">编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="handleDelete(scope.$index, scope.row)"
+              :disabled="deleteAuthority">删除
             </el-button>
           </template>
         </el-table-column>
@@ -86,6 +81,7 @@
 
 <script>
   import {getPage, deleteProductProperty, updateIsSale, updateIsShow, updateIsUsable} from '@/mall-api/productProperty'
+  import auth from '@/utils/auth'
 
   export default {
     name: "productPropertyList",
@@ -100,12 +96,16 @@
           pageNum: 1,
           pageSize: 5
         },
-        parentId:null
+        parentId:null,
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.resetTypeId();
       this.getPage();
+      this.checkButtonAuthority();
     },
     methods: {
       handleAddProductProperty() {
@@ -197,29 +197,6 @@
           this.getPage();
         });
       },
-      //是否可用
-      handleIsUsableChange(index, row){
-        let data = {
-          'propertyNameId':row.propertyNameId,
-          'isUsable':row.isUsable
-        };
-        this.$confirm('是否要修改', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          updateIsUsable(data).then(response => {
-            this.$message({
-              message: '修改成功',
-              type: 'success',
-              duration: 1000
-            });
-            this.getPage();
-          });
-        }).catch(() => {
-          this.getPage();
-        });
-      },
       //分页插件
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
@@ -230,6 +207,26 @@
       handleCurrentChange(val) {
         this.listQuery.pageNum = val;
         this.getPage();
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
       },
     }
   }

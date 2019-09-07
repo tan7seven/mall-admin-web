@@ -67,7 +67,7 @@
 <script>
   import {getPage, updateMenu, createMenu, getMenuInfo, getMenuList} from '@/mall-api/system/menu'
   import SingleUpload from '@/components/Upload/singleUpload';
-  import ButtonList from '@/utils/buttonList';
+  import auth from '@/utils/auth';
 
   const defaultMenuModel = {
     menuId:null,
@@ -144,7 +144,7 @@
     },
     created() {
       this.grtParentMenu();
-      this.buttonOptions = ButtonList;
+      this.buttonOptions = auth.buttonList;
       if (this.isEdit) {
         getMenuInfo(this.$route.query.menuId).then(response => {
           this.menuModel = response.data;

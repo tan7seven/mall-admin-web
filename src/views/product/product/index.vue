@@ -50,7 +50,8 @@
       <el-button
         class="btn-add"
         @click="handleAddProduct()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -80,7 +81,8 @@
               @change="handleIsPutawayChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isPutaway">
+              v-model="scope.row.isPutaway"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -93,7 +95,8 @@
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <p>
-              <el-button type="primary" size="mini" @click="handleShowSku(scope.$index, scope.row)">库存编辑</el-button>
+              <el-button type="primary" size="mini" @click="handleShowSku(scope.$index, scope.row)"
+                         :disabled="updateAuthority">库存编辑</el-button>
               <el-button
                 size="mini"
                 @click="handleUpdateProduct(scope.$index, scope.row)">查看
@@ -102,12 +105,14 @@
             <p>
               <el-button
                 size="mini"
-                @click="handleUpdateProduct(scope.$index, scope.row)">商品编辑
+                @click="handleUpdateProduct(scope.$index, scope.row)"
+                :disabled="updateAuthority">商品编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除
+                @click="handleDelete(scope.$index, scope.row)"
+                :disabled="deleteAuthority">删除
               </el-button>
             </p>
           </template>
@@ -130,7 +135,8 @@
         class="search-button"
         @click="handleBatchOperate()"
         type="primary"
-        size="small">
+        size="small"
+        :disabled="updateAuthority">
         确定
       </el-button>
     </div>
@@ -153,6 +159,7 @@
     getPage, deleteProduct, updateIsPutaway
   } from '@/mall-api/product'
   import {getProductTypeCascader} from '@/mall-api/productType'
+  import auth from '@/utils/auth'
 
   const defaultListQuery = {
     productId: null,
@@ -201,12 +208,16 @@
         },{
           value: 1,
           label: '下架'
-        }]
+        }],
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.getPage();
       this.getProductTypeList();
+      this.checkButtonAuthority();
     },
     watch: {
       selectProductTypeValue: function (newValue) {
@@ -302,8 +313,8 @@
             default:
               break;
           }
+          this.getPage();
         });
-        this.getPage();
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
@@ -373,7 +384,27 @@
           this.getPage();
         });
 
-      }
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+      },
     },
     filters: {
       getOnePic(value) {

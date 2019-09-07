@@ -34,7 +34,7 @@ export function getProductByName(name) {
   return request({
     url:'/productController/findProductByName.do',
     method:'post',
-    data:{name:name}
+    params:{name:name}
   })
 }
 export function deleteProduct(params) {

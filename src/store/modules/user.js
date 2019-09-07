@@ -6,8 +6,9 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: [],
+    role: '',
     menuList:[],
+    buttonList:[],
   },
 
   mutations: {
@@ -20,11 +21,14 @@ const user = {
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
+    SET_ROLE: (state, role) => {
+      state.role = role
     },
-    SET_MENULIST: (state, roles) => {
-      state.menuList = roles
+    SET_MENU_LIST: (state, menuList) => {
+      state.menuList = menuList
+    },
+    SET_BUTTON_LIST: (state, buttonList) => {
+      state.buttonList = buttonList
     }
   },
 
@@ -36,17 +40,19 @@ const user = {
         login(username, userInfo.password).then(response => {
           const data = response.data;
           const tokenStr = response.jwtToken;
-          console.info(tokenStr);
+          if (data.role) { //用户角色
+            commit('SET_ROLE', data.role)
+          } else {
+            reject('Login: role must be a non-null array !')
+          }
+          if (data.menuList && data.menuList.length > 0) { //菜单权限
+            commit('SET_MENU_LIST', data.menuList)
+          }
+          if (data.buttonList && data.buttonList.length > 0) { //按钮权限
+            commit('SET_BUTTON_LIST', data.buttonList)
+          }
           setToken(tokenStr);
           commit('SET_TOKEN', tokenStr);
-          if (data.permissionCodeList && data.permissionCodeList.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.permissionCodeList)
-          } else {
-            reject('Login: roles must be a non-null array !')
-          }
-          if (data.menuList && data.menuList.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_MENULIST', data.menuList)
-          }
           commit('SET_NAME', data.username);
           commit('SET_AVATAR', data.icon);
           resolve()
@@ -61,13 +67,16 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const data = response.data
-          if (data.permissionCodeList && data.permissionCodeList.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.permissionCodeList)
+          if (data.role) { //用户角色
+            commit('SET_ROLE', data.role)
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('Login: roles must be a non-null array !')
           }
-          if (data.menuList && data.menuList.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_MENULIST', data.menuList)
+          if (data.menuList && data.menuList.length > 0) { //菜单权限
+            commit('SET_MENU_LIST', data.menuList)
+          }
+          if (data.buttonList && data.buttonList.length > 0) { //按钮权限
+            commit('SET_BUTTON_LIST', data.buttonList)
           }
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', data.icon)
@@ -82,9 +91,11 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
+          commit('SET_TOKEN', '');
+          commit('SET_ROLE', '');
+          commit('SET_MENU_LIST', []);
+          commit('SET_BUTTON_LIST', []);
+          removeToken();
           resolve()
         }).catch(error => {
           reject(error)

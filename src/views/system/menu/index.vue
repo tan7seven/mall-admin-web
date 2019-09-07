@@ -6,7 +6,8 @@
       <el-button
         class="btn-add"
         @click="handleAddMenu()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -35,7 +36,8 @@
               @change="handleHiddenChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isHidden">
+              v-model="scope.row.isHidden"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -49,12 +51,14 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleUpdate(scope.$index, scope.row)">编辑
+              @click="handleUpdate(scope.$index, scope.row)"
+              :disabled="updateAuthority">编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="handleDelete(scope.$index, scope.row)"
+              :disabled="deleteAuthority">删除
             </el-button>
           </template>
         </el-table-column>
@@ -78,6 +82,8 @@
 <script>
   import {getPage, deleteMenu, updateIsHidden, getMenuListById} from '@/mall-api/system/menu'
   import {formatDate} from '@/utils/date';
+  import auth from '@/utils/auth'
+
   export default {
     name: "menuIndex",
     data() {
@@ -90,10 +96,14 @@
          /* pageNum: 1,
           pageSize: 5*/
         },
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.getMenuListById();
+      this.checkButtonAuthority();
     },
     methods: {
       getMenuListById() {
@@ -168,6 +178,27 @@
           resolve(response.data);
           this.total = response.data.total;
         });
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+
       },
     },
     filters: {

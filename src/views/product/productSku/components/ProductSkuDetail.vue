@@ -179,7 +179,6 @@
                 });
               } else {
                 createProductSku(this.productSku).then(response => {
-                  this.$refs[formName].resetFields();
                   this.resetForm(formName);
                   this.$message({
                     message: '提交成功',
@@ -187,8 +186,10 @@
                     duration: 1000
                   });
                   this.productSkuForm = defaultProductSku;
+                  this.$router.back();
                 });
               }
+
             });
           } else {
             this.$message({

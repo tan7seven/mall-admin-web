@@ -30,7 +30,7 @@
       </el-form-item>
       <el-form-item style="text-align: center">
         <el-button size="medium" @click="handlePrev('productPropertyForm')">上一步，填写商品信息</el-button>
-        <el-button type="primary" size="medium" @click="handleFinishCommit">提交</el-button>
+        <el-button type="primary" size="medium" @click="handleFinishCommit" :disabled="updateAuthority">提交</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -39,6 +39,7 @@
 <script>
   import SingleUpload from '@/components/Upload/singleUpload'
   import {getProductTypeCascader, getProductTypeProperty} from '@/mall-api/productType'
+  import auth from '@/utils/auth'
 
   export default {
     name: "ProductPropertyDetail",
@@ -64,6 +65,9 @@
         productPropertyNotSale : [],
         productPropertyIsSaleChecked : [],
         productPropertyNotSaleChecked : [],
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     watch: {
@@ -85,6 +89,7 @@
     },
     created() {
       this.getProductTypeList();
+      this.checkButtonAuthority();
     },
     methods: {
       //获取分类信息
@@ -158,7 +163,27 @@
         //属性值不能输：：号
         this.propertyNameAddIsSale[index]=this.propertyNameAddIsSale[index].replace(/[`:：]/g, '').replace(/\s/g, "");
         return this.propertyNameAddIsSale[index];
-      }
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+      },
     }
   }
 </script>

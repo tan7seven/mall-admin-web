@@ -9,31 +9,34 @@
       text-color="#bfcbd9"
       active-text-color="#409EFF"
     >
-      <sidebar-item :routes="routes" :menuList="menuList"></sidebar-item>
+      <sidebar-item :routes="routes" :menuList="menuList" :role="role"></sidebar-item>
     </el-menu>
   </scroll-bar>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import SidebarItem from './SidebarItem'
-import ScrollBar from '@/components/ScrollBar'
+  import { mapGetters } from 'vuex'
+  import SidebarItem from './SidebarItem'
+  import ScrollBar from '@/components/ScrollBar'
 
-export default {
-  components: { SidebarItem, ScrollBar },
-  computed: {
-    ...mapGetters([
-      'sidebar'
-    ]),
-    routes() {
-      return this.$router.options.routes
-    },
-    isCollapse() {
-      return !this.sidebar.opened
-    },
-    menuList(){
-      return this.$store.state.user.menuList;
+  export default {
+    components: { SidebarItem, ScrollBar },
+    computed: {
+      ...mapGetters([
+        'sidebar'
+      ]),
+      routes() {
+        return this.$router.options.routes
+      },
+      isCollapse() {
+        return !this.sidebar.opened
+      },
+      menuList(){
+        return this.$store.state.user.menuList;
+      },
+      role(){
+        return this.$store.state.user.role;
+      }
     }
   }
-}
 </script>

@@ -35,7 +35,8 @@
       <el-button
         class="btn-add"
         @click="handleAddProduct()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -81,12 +82,14 @@
           <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleUpdate(scope.$index, scope.row)">编辑
+                @click="handleUpdate(scope.$index, scope.row)"
+                :disabled="updateAuthority">编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除
+                @click="handleDelete(scope.$index, scope.row)"
+                :disabled="deleteAuthority">删除
               </el-button>
           </template>
         </el-table-column>
@@ -109,6 +112,8 @@
 <script>
   import { getPage, deleteSku} from '@/mall-api/productSku'
   import {getProductTypeCascader} from '@/mall-api/productType'
+  import auth from '@/utils/auth'
+
 
   const defaultListQuery = {
     pageNum: 1,
@@ -136,6 +141,10 @@
         //表格选中的值
         multipleSelection: [],
         productTypeOptions: [],
+        parentId:null,
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
@@ -145,6 +154,7 @@
       }
       this.getPage();
       this.getProductTypeList();
+      this.checkButtonAuthority();
     },
     watch: {
       selectProductTypeValue: function (newValue) {
@@ -232,6 +242,26 @@
       },
       handleUpdate(index,row){
         this.$router.push({path:'/pms/updateProductSku',query:{skuId:row.skuId}});
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
       },
     }
   }

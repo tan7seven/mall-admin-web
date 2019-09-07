@@ -6,7 +6,8 @@
       <el-button
         class="btn-add"
         @click="handleAddAdmin()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -30,7 +31,8 @@
               @change="handleUsableChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isUsable">
+              v-model="scope.row.isUsable"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -44,21 +46,25 @@
           <template slot-scope="scope">
             <p><el-button
               size="mini"
-              @click="handleMenuAuthority(scope.$index, scope.row)">页面授权
+              @click="handleMenuAuthority(scope.$index, scope.row)"
+              :disabled="updateAuthority">页面授权
             </el-button>
             <el-button
               size="mini"
-              @click="handleUpdate(scope.$index, scope.row)">编辑
+              @click="handleUpdate(scope.$index, scope.row)"
+              :disabled="updateAuthority">编辑
             </el-button>
             </p>
             <p><el-button
               size="mini"
-              @click="handleButtonAuthority(scope.$index, scope.row)">按钮授权
+              @click="handleButtonAuthority(scope.$index, scope.row)"
+              :disabled="updateAuthority">按钮授权
             </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="handleDelete(scope.$index, scope.row)"
+              :disabled="deleteAuthority">删除
             </el-button>
             </p>
           </template>
@@ -149,7 +155,7 @@
   import {getPage, deleteAdmin, updateIsUsable, menuAuthorityConfirm, buttonAuthorityConfirm, getAdminMenuAuthority} from '@/mall-api/system/admin'
   import {getMenuTree, getButtonList} from '@/mall-api/system/menu'
   import {formatDate} from '@/utils/date';
-
+  import auth from '@/utils/auth'
 
   const defaultMenuDialog = {
     loginCode : null,
@@ -188,10 +194,14 @@
           pageNum: 1,
           pageSize: 5
         },
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.getPage();
+      this.checkButtonAuthority();
     },
     methods: {
       getPage() {
@@ -354,7 +364,27 @@
         this.listQuery.pageNum = val;
         this.getPage();
       },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+            this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+            this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
 
+      },
     },
     filters: {
       formatTime(time) {

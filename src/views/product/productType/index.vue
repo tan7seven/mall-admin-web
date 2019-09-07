@@ -6,7 +6,8 @@
       <el-button
         class="btn-add"
         @click="handleAddProductType()"
-        size="mini">
+        size="mini"
+        :disabled="addAuthority">
         添加
       </el-button>
     </el-card>
@@ -30,17 +31,19 @@
               @change="handleNavigationBarChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.isNavigationBar">
+              v-model="scope.row.isNavigationBar"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="是否显示" width="100" align="center">
+        <el-table-column label="是否可用" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
               @change="handleStatusChange(scope.$index, scope.row)"
               active-value="0"
               inactive-value="1"
-              v-model="scope.row.status">
+              v-model="scope.row.isUsable"
+              :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
@@ -65,12 +68,14 @@
             </el-button>
             <el-button
               size="mini"
-              @click="handleUpdate(scope.$index, scope.row)">编辑
+              @click="handleUpdate(scope.$index, scope.row)"
+              :disabled="updateAuthority">编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="handleDelete(scope.$index, scope.row)"
+              :disabled="deleteAuthority">删除
             </el-button>
           </template>
         </el-table-column>
@@ -93,6 +98,7 @@
 
 <script>
   import {getList,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
+  import auth from '@/utils/auth'
 
   export default {
     name: "productTypeList",
@@ -105,12 +111,16 @@
           pageNum: 1,
           pageSize: 5
         },
-        parentId: 0
+        parentId: 0,
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.resetParentId();
       this.getList();
+      this.checkButtonAuthority();
     },
     watch: {
       $route(to, from) {
@@ -183,7 +193,7 @@
         }).then(() => {
           let data = {
             'typeId':row.typeId,
-            'status':row.status
+            'isUsable':row.isUsable
           };
           updateStatus(data).then(response=>{
             this.$message({
@@ -221,7 +231,27 @@
             this.getList();
           });
         });
-      }
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+      },
     },
     filters: {
       levelFilter(value) {

@@ -21,18 +21,12 @@
           <el-radio label="1">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否可用：">
+      <el-form-item label="是否显示：">
       <el-radio-group v-model="productProperty.isShow">
         <el-radio label="0">是</el-radio>
         <el-radio label="1">否</el-radio>
       </el-radio-group>
     </el-form-item>
-      <el-form-item label="是否显示：">
-        <el-radio-group v-model="productProperty.isUsable">
-          <el-radio label="0">是</el-radio>
-          <el-radio label="1">否</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit('productPropertyForm')">提交</el-button>
         <el-button v-if="!isEdit" @click="resetForm('productPropertyForm')">重置</el-button>
@@ -45,14 +39,13 @@
   import {getProductProperty, updateProductProperty, createProductProperty} from '@/mall-api/productProperty';
   import SingleUpload from '@/components/Upload/singleUpload';
   import {getProductTypeCascader} from '@/mall-api/productType';
-  
+
   const defaultProductProperty = {
     typeIdValue:[],
     typeId:null,
     name : "",
     isSale : "0",
     isShow : "0",
-    isUsable : "0"
   };
   export default {
     name: "productPropertyDetail",
@@ -117,7 +110,6 @@
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              console.info(this.productProperty);
               if (this.isEdit) {
                 updateProductProperty(this.$route.query.propertyNameId, this.productProperty).then(response => {
                   this.$message({
@@ -128,16 +120,15 @@
                 });
               } else {
                 createProductProperty(this.productProperty).then(response => {
-                  this.$refs[formName].resetFields();
                   this.resetForm(formName);
                   this.$message({
                     message: '提交成功',
                     type: 'success',
                     duration: 1000
                   });
+                  this.$router.back();
                 });
               }
-              this.$router.back();
             });
           } else {
             this.$message({

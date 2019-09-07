@@ -55,7 +55,7 @@
         <el-input v-model="productType.sort" type="number" min="1" placeholder="默认999"></el-input>
       </el-form-item>
       <el-form-item label="状态：">
-        <el-radio-group v-model="productType.status">
+        <el-radio-group v-model="productType.isUsable">
           <el-radio label="0">正常</el-radio>
           <el-radio label="1">禁用</el-radio>
         </el-radio-group>
@@ -80,7 +80,7 @@
 
   const defaultProductType = {
     parentId : 0,
-    status : "0",
+    isUsable : "0",
     isNavigationBar : "0",
     // propertyNameCheckedIsSale:[],
     // propertyNameCheckedNotSale:[]

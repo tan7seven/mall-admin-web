@@ -86,7 +86,8 @@
           <template slot-scope="scope">
             <el-button
             size="mini"
-            @click="handleViewDetail(scope.$index, scope.row)">查看详情</el-button>
+            @click="handleViewDetail(scope.$index, scope.row)"
+            :disabled="updateAuthority">订单操作</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,7 +108,8 @@
         class="search-button"
         @click="handleBatchOperate()"
         type="primary"
-        size="small">
+        size="small"
+        :disabled="updateAuthority">
         确定
       </el-button>
     </div>
@@ -128,6 +130,8 @@
 <script>
   import {formatDate} from '@/utils/date';
   import {getPage,deleteApply} from '@/mall-api/orders/returnApply';
+  import auth from '@/utils/auth'
+
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -173,10 +177,14 @@
             value: 1
           }
         ],
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created(){
       this.getPage();
+      this.checkButtonAuthority();
     },
     filters:{
       formatTime(time) {
@@ -259,7 +267,27 @@
           this.list = response.data.list;
           this.total = response.data.total;
         });
-      }
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+      },
     }
   }
 </script>

@@ -109,20 +109,24 @@
             <el-button
               size="mini"
               @click="handleCloseOrder(scope.$index, scope.row)"
-              v-show="scope.row.ordersStatus==0">关闭订单</el-button>
+              v-show="scope.row.ordersStatus==0"
+              :disabled="updateAuthority">关闭订单</el-button>
             <el-button
               size="mini"
               @click="handleDeliveryOrder(scope.$index, scope.row)"
-              v-show="scope.row.ordersStatus==1">订单发货</el-button>
+              v-show="scope.row.ordersStatus==1"
+              :disabled="updateAuthority">订单发货</el-button>
             <el-button
               size="mini"
               @click="handleViewLogistics(scope.$index, scope.row)"
-              v-show="scope.row.ordersStatus==2||scope.row.ordersStatus==3">订单跟踪</el-button>
+              v-show="scope.row.ordersStatus==2||scope.row.ordersStatus==3"
+              :disabled="updateAuthority">订单跟踪</el-button>
             <el-button
               size="mini"
               type="danger"
               @click="handleDeleteOrder(scope.$index, scope.row)"
-              v-show="scope.row.ordersStatus==4">删除订单</el-button>
+              v-show="scope.row.ordersStatus==4"
+              :disabled="updateAuthority">删除订单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -143,7 +147,8 @@
         class="search-button"
         @click="handleBatchOperate()"
         type="primary"
-        size="small">
+        size="small"
+        :disabled="updateAuthority">
         确定
       </el-button>
     </div>
@@ -182,6 +187,8 @@
   import {getPage, deleteOrders, closeOrdersList} from '@/mall-api/orders/orders'
   import {formatDate} from '@/utils/date';
   import LogisticsDialog from '@/views/oms/order/components/logisticsDialog';
+  import auth from '@/utils/auth'
+
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -268,11 +275,15 @@
             value: 3
           }
         ],
-        logisticsDialogVisible:false
+        logisticsDialogVisible:false,
+        addAuthority:true,
+        updateAuthority:true,
+        deleteAuthority:true,
       }
     },
     created() {
       this.getPage();
+      this.checkButtonAuthority();
     },
     filters: {
       formatCreateTime(time) {
@@ -471,7 +482,27 @@
           deliverySn:null
         };
         return listItem;
-      }
+      },
+      //验证按钮权限
+      checkButtonAuthority(){
+        let buttonCodeList = this.$store.getters.buttonList;
+        let role = this.$store.getters.role;
+        let thisMenuCode = this.$route.query.code;
+        if(auth.adminRole.indexOf(role) != -1){
+          this.addAuthority = false;
+          this.updateAuthority = false;
+          this.deleteAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.ADD_CODE) != -1){
+          this.addAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.UPDATE_CODE) != -1){
+          this.updateAuthority = false;
+        }
+        if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
+          this.deleteAuthority = false;
+        }
+      },
     }
   }
 </script>
