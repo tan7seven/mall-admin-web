@@ -1,15 +1,38 @@
 <template>
   <div class="app-container">
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets" style="margin-top: 5px"></i>
-      <span style="margin-top: 5px">数据列表</span>
-      <el-button
-        class="btn-add"
-        @click="handleAddProductType()"
-        size="mini"
-        :disabled="addAuthority">
-        添加
-      </el-button>
+    <el-card class="filter-container" shadow="never">
+      <div>
+        <i class="el-icon-search"></i>
+        <span>筛选搜索</span>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleAddProductType()"
+          size="small"
+          type="primary"
+          :disabled="addAuthority">
+          添加
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleSearchList()"
+          type="primary"
+          size="small">
+          查询结果
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleResetSearch()"
+          size="small">
+          重置
+        </el-button>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
+          <el-form-item label="类目名称：">
+            <el-input style="width: 203px" v-model="listQuery.typeName" placeholder="类目名称" clearable> </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
     <div class="table-container">
       <el-table ref="productTypeTable"
@@ -97,9 +120,13 @@
 </template>
 
 <script>
-  import {getList,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
+  import {getPage,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
   import auth from '@/utils/auth'
-
+  const defaultListQuery = {
+    pageNum: 1,
+    pageSize: 5,
+    typeName: null,
+  };
   export default {
     name: "productTypeList",
     data() {
@@ -107,10 +134,7 @@
         list: null,
         total: null,
         listLoading: true,
-        listQuery: {
-          pageNum: 1,
-          pageSize: 5
-        },
+        listQuery: Object.assign({}, defaultListQuery),
         parentId: 0,
         addAuthority:true,
         updateAuthority:true,
@@ -119,14 +143,14 @@
     },
     created() {
       this.resetParentId();
-      this.getList();
+      this.getPage();
       this.checkButtonAuthority();
     },
     watch: {
       $route(to, from) {
         console.info(to+"监听$route"+from)
         this.resetParentId();
-        this.getList();
+        this.getPage();
       }
     },
     methods: {
@@ -144,9 +168,9 @@
       handleAddProductType() {
         this.$router.push('/pms/addProductType');
       },
-      getList() {
+      getPage() {
         this.listLoading = true;
-        getList(this.parentId, this.listQuery).then(response => {
+        getPage(this.parentId, this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;
@@ -155,11 +179,18 @@
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
-        this.getList();
+        this.getPage();
       },
       handleCurrentChange(val) {
         this.listQuery.pageNum = val;
-        this.getList();
+        this.getPage();
+      },
+      handleResetSearch() {
+        this.listQuery = Object.assign({}, defaultListQuery);
+      },
+      handleSearchList() {
+        this.listQuery.pageNum = 1;
+        this.getPage();
       },
       handleNavigationBarChange(index, row) {
         this.$confirm('是否要修改', '提示', {
@@ -177,10 +208,10 @@
               type: 'success',
               duration: 1000
             });
-            this.getList();
+            this.getPage();
           });
         }).catch(() => {
-          this.getList();
+          this.getPage();
         });
 
       },
@@ -201,10 +232,10 @@
               type: 'success',
               duration: 1000
             });
-            this.getList();
+            this.getPage();
           });
         }).catch(() => {
-          this.getList();
+          this.getPage();
         });
       },
       handleShowNextLevel(index, row) {
@@ -228,7 +259,7 @@
               type: 'success',
               duration: 1000
             });
-            this.getList();
+            this.getPage();
           });
         });
       },

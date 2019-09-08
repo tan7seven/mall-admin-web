@@ -5,7 +5,15 @@
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
         <el-button
-          style="float: right"
+          style="float: right;margin-right: 15px"
+          @click="handleAddProduct()"
+          size="small"
+          type="primary"
+          :disabled="addAuthority">
+          添加
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
           @click="handleSearchList()"
           type="primary"
           size="small">
@@ -21,14 +29,13 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="商品名称：">
-            <el-input style="width: 203px" v-model="listQuery.productName" placeholder="商品名称"></el-input>
+            <el-input style="width: 203px" v-model="listQuery.productName" placeholder="商品名称" clearable></el-input>
           </el-form-item>
-
           <el-form-item label="商品分类：">
             <el-cascader style="width: 203px"
               clearable
               v-model="selectProductTypeValue"
-              :options="productTypeOptions">
+              :options="productTypeOptions" clearable>
             </el-cascader>
           </el-form-item>
           <el-form-item label="上架状态：">
@@ -43,17 +50,6 @@
           </el-form-item>
         </el-form>
       </div>
-    </el-card>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        class="btn-add"
-        @click="handleAddProduct()"
-        size="mini"
-        :disabled="addAuthority">
-        添加
-      </el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="productTable"
@@ -86,6 +82,16 @@
             </el-switch>
           </template>
         </el-table-column>
+        <el-table-column label="是否可用" width="100" align="center">
+          <template slot-scope="scope">
+            <el-switch
+              active-value="0"
+              inactive-value="1"
+              v-model="scope.row.isUsable"
+              disabled>
+            </el-switch>
+          </template>
+        </el-table-column>
         <el-table-column label="最低价格" width="100" align="center">
           <template slot-scope="scope">{{scope.row.priceMin}}</template>
         </el-table-column>
@@ -95,7 +101,9 @@
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <p>
-              <el-button type="primary" size="mini" @click="handleShowSku(scope.$index, scope.row)"
+              <el-button type="primary"
+                         size="mini"
+                         @click="handleShowSku(scope.$index, scope.row)"
                          :disabled="updateAuthority">库存编辑</el-button>
               <el-button
                 size="mini"
@@ -106,6 +114,7 @@
               <el-button
                 size="mini"
                 @click="handleUpdateProduct(scope.$index, scope.row)"
+                type="primary"
                 :disabled="updateAuthority">商品编辑
               </el-button>
               <el-button
@@ -357,6 +366,9 @@
             type: 'success',
             duration: 1000
           });
+          this.getPage();
+        }).catch(() => {
+          this.getPage();
         });
       },
       updateIsPutAwayList(isPutaway, ids) {

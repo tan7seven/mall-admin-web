@@ -1,15 +1,41 @@
 <template>
   <div class="app-container">
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets" style="margin-top: 5px"></i>
-      <span style="margin-top: 5px">数据列表</span>
-      <el-button
-        class="btn-add"
-        @click="handleAddProductProperty()"
-        size="mini"
-        :disabled="addAuthority">
-        添加
-      </el-button>
+    <el-card class="filter-container" shadow="never">
+      <div>
+        <i class="el-icon-search"></i>
+        <span>筛选搜索</span>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleAddProductProperty()"
+          size="small"
+          type="primary"
+          :disabled="addAuthority">
+          添加
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleSearchList()"
+          type="primary"
+          size="small">
+          查询结果
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
+          @click="handleResetSearch()"
+          size="small">
+          重置
+        </el-button>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
+          <el-form-item label="属性名称：">
+            <el-input style="width: 203px" v-model="listQuery.name" placeholder="属性名称" clearable> </el-input>
+          </el-form-item>
+          <el-form-item label="类目名称：">
+            <el-input style="width: 203px" v-model="listQuery.typeName" placeholder="类目名称" clearable> </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
     <div class="table-container">
       <el-table ref="productPropertyTable"
@@ -22,8 +48,8 @@
         <el-table-column label="属性名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="分类ID" align="center" width="100">
-          <template slot-scope="scope">{{scope.row.typeId}}</template>
+        <el-table-column label="分类名称" align="center" width="100">
+          <template slot-scope="scope">{{scope.row.typeName}}</template>
         </el-table-column>
         <el-table-column label="是否销售属性" width="150" align="center">
           <template slot-scope="scope">
@@ -82,7 +108,13 @@
 <script>
   import {getPage, deleteProductProperty, updateIsSale, updateIsShow, updateIsUsable} from '@/mall-api/productProperty'
   import auth from '@/utils/auth'
-
+  const defaultListQuery = {
+    typeId:null,
+    pageNum: 1,
+    pageSize: 5,
+    typeName: null,
+    name:null,
+  };
   export default {
     name: "productPropertyList",
     data() {
@@ -91,11 +123,7 @@
         list: null,
         total: null,
         listLoading: true,
-        listQuery: {
-          typeId:null,
-          pageNum: 1,
-          pageSize: 5
-        },
+        listQuery: Object.assign({}, defaultListQuery),
         parentId:null,
         addAuthority:true,
         updateAuthority:true,
@@ -157,7 +185,7 @@
           'propertyNameId':row.propertyNameId,
           'isSale':row.isSale
         };
-        this.$confirm('是否要修改', '提示', {
+        this.$confirm('修改销售属性会删除对应的商品属性跟商品库存，是否要修改', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -206,6 +234,14 @@
       //分页插件
       handleCurrentChange(val) {
         this.listQuery.pageNum = val;
+        this.getPage();
+      },
+      //筛选查询
+      handleResetSearch() {
+        this.listQuery = Object.assign({}, defaultListQuery);
+      },
+      handleSearchList() {
+        this.listQuery.pageNum = 1;
         this.getPage();
       },
       //验证按钮权限

@@ -75,7 +75,7 @@
 </template>
 
 <script>
-  import {getList, createProductType, updateProductType, getProductType} from '@/mall-api/productType';
+  import {getPage, createProductType, updateProductType, getProductType} from '@/mall-api/productType';
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultProductType = {
@@ -133,7 +133,7 @@
         this.loading = true;
         this.selectProductTypeList=[];
         var page = this;
-        getList(0, {typeName:query}).then(response => {
+        getPage(0, {typeName:query}).then(response => {
           page.selectProductTypeList = response.data.list;
           page.selectProductTypeList.unshift({typeId: 0, typeName: '无上级分类'});
           this.loading = false;
@@ -162,7 +162,7 @@
         this.selectProductTypeList=[];
         var page = this;
         console.info("获取类目信息！")
-        getList(0, {}).then(response => {
+        getPage(0, {}).then(response => {
           page.selectProductTypeList = response.data.list;
           page.selectProductTypeList.unshift({typeId: 0, typeName: '无上级分类'});
         });

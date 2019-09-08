@@ -5,7 +5,15 @@
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
         <el-button
-          style="float: right"
+          style="float: right;margin-right: 15px"
+          type="primary"
+          @click="handleAddProduct()"
+          size="small"
+          :disabled="addAuthority">
+          添加
+        </el-button>
+        <el-button
+          style="float: right;margin-right: 15px"
           @click="handleSearchList()"
           type="primary"
           size="small">
@@ -21,25 +29,15 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="商品名称：">
-            <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称"></el-input>
+            <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="商品分类：">
-            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类"></el-input>
+            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类" clearable></el-input>
           </el-form-item>
         </el-form>
       </div>
     </el-card>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        class="btn-add"
-        @click="handleAddProduct()"
-        size="mini"
-        :disabled="addAuthority">
-        添加
-      </el-button>
-    </el-card>
+
     <div class="table-container">
       <el-table ref="productTable"
                 :data="list"
@@ -83,6 +81,7 @@
               <el-button
                 size="mini"
                 @click="handleUpdate(scope.$index, scope.row)"
+                type="primary"
                 :disabled="updateAuthority">编辑
               </el-button>
               <el-button

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
-export function getList(parentId,params) {
+export function getPage(parentId,params) {
   return request({
-    url:'/productType/getPage.do/'+parentId,
+    url:'/productType/getPage.do',
     method:'get',
     params:params
   })
