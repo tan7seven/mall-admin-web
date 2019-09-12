@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: 'http://127.0.0.1:8080/',
+        target: 'http://127.0.0.1:8083/',
         // secure:false,
         changeOrigin: true,
         pathRewrite: {
@@ -23,7 +23,7 @@ module.exports = {
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -47,13 +47,22 @@ module.exports = {
 
   build: {
     // Template for index.vue.html
-    index: path.resolve(__dirname, '../dist/index.vue.html'),
+    index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
-
+    assetsPublicPath: './',
+    proxyTable: {
+      '/': {
+        target: 'http://127.0.0.1:8083/',
+        // secure:false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/': ''
+        }
+      }
+    },
     /**
      * Source Maps
      */
