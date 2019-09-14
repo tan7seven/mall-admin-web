@@ -359,8 +359,8 @@
 
   .total-icon {
     color: #409EFF;
-    width: 60px;
-    height: 60px;
+    width: 60px !important;
+    height: 60px !important;
   }
 
   .total-title {
