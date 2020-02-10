@@ -168,7 +168,7 @@
       checkButtonAuthority(){
         let buttonCodeList = this.$store.getters.buttonList;
         let role = this.$store.getters.role;
-        let thisMenuCode = this.$route.query.code;
+        let thisMenuCode = 'PMS:PRODUCT';
         if(auth.adminRole.indexOf(role) != -1){
           this.addAuthority = false;
           this.updateAuthority = false;

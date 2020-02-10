@@ -1,6 +1,6 @@
 <template> 
   <div class="app-container">
-    <el-card class="filter-container" shadow="never">
+    <!--<el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
@@ -50,9 +50,28 @@
           </el-form-item>
         </el-form>
       </div>
-    </el-card>
+    </el-card>-->
+    123
     <div class="table-container">
-      <el-table ref="productTable"
+      <el-table
+        :data="tableData"
+        style="width: 100%">
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址">
+        </el-table-column>
+      </el-table>
+      <!--<el-table ref="productTable"
                 :data="list"
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
@@ -126,9 +145,9 @@
             </p>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table>-->
     </div>
-    <div class="batch-operate-container">
+    <!--<div class="batch-operate-container">
       <el-select
         size="small"
         v-model="operateType" placeholder="批量操作">
@@ -160,7 +179,7 @@
         :current-page.sync="listQuery.pageNum"
         :total="total">
       </el-pagination>
-    </div>
+    </div>-->
   </div>
 </template>
 <script>
@@ -205,6 +224,23 @@
         operateType: null,
         listQuery: Object.assign({}, defaultListQuery),
         list: null,
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }],
         total: null,
         listLoading: true,
         selectProductTypeValue: null,

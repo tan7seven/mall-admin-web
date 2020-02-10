@@ -133,6 +133,7 @@ export const constantRouterMap = [
       {
         path: 'orderDetail',
         name: 'orderDetail',
+        code:'OMS:ORDER',
         component: () => import('@/views/orders/orders/orderDetail'),
         meta: {title: '订单详情', hiddenTag:true},
         hidden:true

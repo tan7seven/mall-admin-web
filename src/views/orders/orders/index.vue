@@ -337,7 +337,7 @@
       },
       handleViewOrder(index, row){
 
-        this.$router.push({path:'/oms/orderDetail',query:{id:row.ordersId}})
+        this.$router.push({path:'/oms/orderDetail',query:{id:row.ordersId,code:'OMS:ORDER'}})
       },
       handleCloseOrder(index, row){
         this.closeOrders.dialogVisible=true;
@@ -345,7 +345,7 @@
       },
       handleDeliveryOrder(index, row){
         let listItem = this.covertOrders(row);
-        this.$router.push({path:'/oms/deliverOrdersList',query:{list:[listItem]}})
+        this.$router.push({path:'/oms/deliverOrderList',query:{list:[listItem]}})
       },
       handleViewLogistics(index, row){
         this.logisticsDialogVisible=true;
@@ -469,7 +469,7 @@
           });
         })
       },
-      covertOrder(order){
+      covertOrders(order){
         let address=order.receiverProvince+order.receiverCity+order.receiverRegion+order.receiverDetailAddress;
         let listItem={
           orderId:order.ordersId,

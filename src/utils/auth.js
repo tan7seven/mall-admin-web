@@ -14,11 +14,11 @@ export function removeToken() {
   return Cookies.remove(TokenKey)
 }
 const adminRole = ['ROLE_ADMIN'];
-const ADD_CODE = ":ADD";
+const ADD_CODE = ":CREATE";
 const UPDATE_CODE = ":UPDATE";
 const DELETE_CODE = ":DELETE";
 const buttonList = [
-  {buttonName:"添加", buttonCode:"ADD"},
+  {buttonName:"添加", buttonCode:"CREATE"},
   {buttonName:"修改", buttonCode:"UPDATE"},
   {buttonName:"删除", buttonCode:"DELETE"},
 ];
