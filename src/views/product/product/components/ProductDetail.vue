@@ -24,7 +24,7 @@
 <script>
   import ProductInfoDetail from './ProductInfoDetail';
   import ProductPropertyDetail from './ProductPropertyDetail';
-  import {createProduct,getProduct,updateProduct, deletePic} from '@/mall-api/product';
+  import {createProduct,getProduct,updateProduct, deletePic} from '@/mall-api/product/product';
 
   const defaultProductParam = {
     //商品名称

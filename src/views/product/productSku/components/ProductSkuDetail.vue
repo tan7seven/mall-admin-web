@@ -98,8 +98,8 @@
 </template>
 
 <script>
-  import {createProductSku, updateProductSku, update, findById} from '@/mall-api/productSku';
-  import {getProductByName, getProduct} from '@/mall-api/product';
+  import {createProductSku, updateProductSku, update, findById} from '@/mall-api/product/productSku';
+  import {getProductByName, getProduct} from '@/mall-api/product/product';
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultProductSku = {

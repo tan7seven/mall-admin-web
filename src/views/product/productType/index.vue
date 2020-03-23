@@ -40,7 +40,7 @@
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.typeId}}</template>
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="分类名称" align="center">
           <template slot-scope="scope">{{scope.row.typeName}}</template>
@@ -52,9 +52,7 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleNavigationBarChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isNavigationBar"
+              v-model="scope.row.showed"
               :disabled="updateAuthority">
             </el-switch>
           </template>
@@ -63,9 +61,7 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleStatusChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isUsable"
+              v-model="scope.row.usable"
               :disabled="updateAuthority">
             </el-switch>
           </template>
@@ -120,12 +116,13 @@
 </template>
 
 <script>
-  import {getPage,deleteProductType,updateStatus,updateNavigationBar} from '@/mall-api/productType'
+  import {getPage,deleteProductType,updateUsable,updateShowSattus} from '@/mall-api/product/productType'
   import auth from '@/utils/auth'
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 5,
     typeName: null,
+    parentId:0
   };
   export default {
     name: "productTypeList",
@@ -159,7 +156,8 @@
           this.parentId = this.$route.query.parentId;
           this. listQuery = {
               pageNum: 1,
-              pageSize: 5
+              pageSize: 5,
+              parentId:this.parentId
           }
         } else {
           this.parentId = 0;
@@ -170,9 +168,9 @@
       },
       getPage() {
         this.listLoading = true;
-        getPage(this.parentId, this.listQuery).then(response => {
+        getPage(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },
@@ -199,10 +197,10 @@
           type: 'warning'
         }).then(() => {
           let data = {
-            'typeId':row.typeId,
-            'isNavigationBar':row.isNavigationBar
+            'id':row.id,
+            'showed':row.showed
           };
-          updateNavigationBar(data).then(response=>{
+          updateShowSattus(data).then(response=>{
             this.$message({
               message: '修改成功',
               type: 'success',
@@ -223,10 +221,10 @@
           type: 'warning'
         }).then(() => {
           let data = {
-            'typeId':row.typeId,
-            'isUsable':row.isUsable
+            'id':row.id,
+            'usable':row.usable
           };
-          updateStatus(data).then(response=>{
+          updateUsable(data).then(response=>{
             this.$message({
               message: '修改成功',
               type: 'success',
@@ -239,7 +237,7 @@
         });
       },
       handleShowNextLevel(index, row) {
-        this.$router.push({path: '/pms/productType', query: {parentId: row.typeId}})
+        this.$router.push({path: '/pms/productType', query: {parentId: row.id}})
       },
       getPropertyList(index, row){
         this.$router.push({path: '/pms/productProperty', query: {parentId: row.parentId, typeId:row.typeId}})

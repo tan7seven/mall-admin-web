@@ -38,7 +38,7 @@
 
 <script>
   import SingleUpload from '@/components/Upload/singleUpload'
-  import {getProductTypeCascader, getProductTypeProperty} from '@/mall-api/productType'
+  import {getProductTypeCascader, getProductTypeProperty} from '@/mall-api/product/productType'
   import auth from '@/utils/auth'
 
   export default {

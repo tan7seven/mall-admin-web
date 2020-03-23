@@ -178,7 +178,7 @@
 </template>
 <script>
   import {getApplyById,updateApplyStatus} from '@/mall-api/orders/returnApply';
-  import {getCompanyAddressList} from '@/mall-api/companyAddress';
+  import {getCompanyAddressList} from '@/mall-api/product/companyAddress';
   import {formatDate} from '@/utils/date';
 
   const defaultUpdateStatusParam = {

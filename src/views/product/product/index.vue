@@ -166,8 +166,8 @@
 <script>
   import {
     getPage, deleteProduct, updateIsPutaway
-  } from '@/mall-api/product'
-  import {getProductTypeCascader} from '@/mall-api/productType'
+  } from '@/mall-api/product/product'
+  import {getProductTypeCascader} from '@/mall-api/product/productType'
   import auth from '@/utils/auth'
 
   const defaultListQuery = {

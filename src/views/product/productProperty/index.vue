@@ -106,7 +106,7 @@
 </template>
 
 <script>
-  import {getPage, deleteProductProperty, updateIsSale, updateIsShow, updateIsUsable} from '@/mall-api/productProperty'
+  import {getPage, deleteProductProperty, updateIsSale, updateIsShow, updateIsUsable} from '@/mall-api/product/productProperty'
   import auth from '@/utils/auth'
   const defaultListQuery = {
     typeId:null,

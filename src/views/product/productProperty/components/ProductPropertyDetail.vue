@@ -36,9 +36,9 @@
 </template>
 
 <script>
-  import {getProductProperty, updateProductProperty, createProductProperty} from '@/mall-api/productProperty';
+  import {getProductProperty, updateProductProperty, createProductProperty} from '@/mall-api/product/productProperty';
   import SingleUpload from '@/components/Upload/singleUpload';
-  import {getProductTypeCascader} from '@/mall-api/productType';
+  import {getProductTypeCascader} from '@/mall-api/product/productType';
 
   const defaultProductProperty = {
     typeIdValue:[],

@@ -75,7 +75,7 @@
 </template>
 
 <script>
-  import {getPage, createProductType, updateProductType, getProductType} from '@/mall-api/productType';
+  import {getPage, createProductType, updateProductType, getProductType} from '@/mall-api/product/productType';
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultProductType = {

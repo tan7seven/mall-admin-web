@@ -49,7 +49,7 @@
 
 <script>
 
-  import {deletePic} from '@/mall-api/product';
+  import {deletePic} from '@/mall-api/product/product';
   export default {
     name: "ProductInfoDetail",
     props: {
