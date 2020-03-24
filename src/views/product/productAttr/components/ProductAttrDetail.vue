@@ -1,54 +1,74 @@
 <template>
   <el-card class="form-container" shadow="never">
-    <el-form :model="productProperty"
+    <el-form :model="productAttr"
              :rules="rules"
-             ref="productPropertyForm"
+             ref="productAttrForm"
              label-width="150px">
       <el-form-item label="属性名称：" prop="name">
-        <el-input v-model="productProperty.name"></el-input>
+        <el-input v-model="productAttr.name"></el-input>
       </el-form-item>
-      <el-form-item label="商品分类：">
+      <el-form-item label="商品分类：" prop="typeIdValue">
         <el-cascader
           clearable
-          v-model="productProperty.typeIdValue"
+          v-model="productAttr.typeIdValue"
           :options="productTypeOptions"
           @change="productTypeChange">
         </el-cascader>
       </el-form-item>
-      <el-form-item label="是否销售属性：">
-        <el-radio-group v-model="productProperty.isSale">
-          <el-radio label="0">是</el-radio>
-          <el-radio label="1">否</el-radio>
+      <el-form-item label="类型：">
+        <el-radio-group v-model="productAttr.type">
+          <el-radio :label=1>销售属性</el-radio>
+          <el-radio :label=2>展示参数</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否可用：">
+        <el-radio-group v-model="productAttr.usable">
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="是否显示：">
-      <el-radio-group v-model="productProperty.isShow">
-        <el-radio label="0">是</el-radio>
-        <el-radio label="1">否</el-radio>
-      </el-radio-group>
-    </el-form-item>
+        <el-radio-group v-model="productAttr.showed">
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="输入方式：">
+        <el-radio-group v-model="productAttr.inputType">
+          <el-radio :label=1>手写</el-radio>
+          <el-radio :label=2>单选</el-radio>
+          <el-radio :label=3>多选</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="输入方式：" v-if="productAttr.inputType==2 | productAttr.inputType == 3">
+        <el-input type="textarea" v-model="productAttr.inputData"></el-input>
+      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('productPropertyForm')">提交</el-button>
-        <el-button v-if="!isEdit" @click="resetForm('productPropertyForm')">重置</el-button>
+        <el-button type="primary" @click="onSubmit('productAttrForm')">提交</el-button>
+        <el-button v-if="!isEdit" @click="resetForm('productAttrForm')">重置</el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script>
-  import {getProductProperty, updateProductProperty, createProductProperty} from '@/mall-api/product/productProperty';
+  import {getProductAttrDetail, updateProductAttr, createProductAttr} from '@/mall-api/product/productAttr';
   import SingleUpload from '@/components/Upload/singleUpload';
   import {getProductTypeCascader} from '@/mall-api/product/productType';
 
-  const defaultProductProperty = {
-    typeIdValue:[],
-    typeId:null,
-    name : "",
-    isSale : "0",
-    isShow : "0",
+  const defaultProductAttr = {
+    id:null,
+    typeIdValue: [],
+    typeId: null,
+    name: "",
+    usable: true,
+    showed: true,
+    type: 1,
+    inputType:1,
+    inputData:"",
   };
   export default {
-    name: "productPropertyDetail",
+    name: "productAttrDetail",
     components: {SingleUpload},
     props: {
       isEdit: {
@@ -59,27 +79,30 @@
     data() {
       return {
         productTypeOptions: [],
-        productPropertyForm:{},
+        productAttrForm: {},
         loading: false,
-        productProperty: Object.assign({}, defaultProductProperty),
+        productAttr: Object.assign({}, defaultProductAttr),
         rules: {
           name: [
             {required: true, message: '请输入属性名称', trigger: 'blur'},
             {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
-          ]
+          ],
+          typeIdValue: [
+            {required: true, message: '请选择类目', trigger: 'change'}
+          ],
         }
       }
     },
     created() {
       if (this.isEdit) {
-        getProductProperty(this.$route.query.propertyNameId).then(response => {
-          this.productProperty = response.data;
-          this.productProperty.typeIdValue=[];
-          this.productProperty.typeIdValue.push(response.data.parentId+'');
-          this.productProperty.typeIdValue.push(response.data.typeId+'');
+        getProductAttrDetail(this.$route.query.id).then(response => {
+          this.productAttr = response.data;
+          this.productAttr.typeIdValue = [];
+          this.productAttr.typeIdValue.push(response.data.parentId + '');
+          this.productAttr.typeIdValue.push(response.data.typeId + '');
         });
       } else {
-        this.productProperty = Object.assign({}, defaultProductProperty);
+        this.productAttr = Object.assign({}, defaultProductAttr);
       }
       this.getProductTypeList();
       this.resetTypeId();
@@ -111,15 +134,16 @@
               type: 'warning'
             }).then(() => {
               if (this.isEdit) {
-                updateProductProperty(this.$route.query.propertyNameId, this.productProperty).then(response => {
+                updateProductAttr(this.productAttr).then(response => {
                   this.$message({
                     message: '修改成功',
                     type: 'success',
                     duration: 1000
                   });
+                  this.$router.back();
                 });
               } else {
-                createProductProperty(this.productProperty).then(response => {
+                createProductAttr(this.productAttr).then(response => {
                   this.resetForm(formName);
                   this.$message({
                     message: '提交成功',
@@ -142,24 +166,24 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-        this.productProperty = Object.assign({}, defaultProductProperty);
+        this.productAttr = Object.assign({}, defaultProductAttr);
       },
       //设置typeID
-      resetTypeId(){
-        if(this.$route.query.parentId != null){
-          this.productProperty.typeIdValue=[];
-          this.productProperty.typeIdValue.push(this.$route.query.parentId+'');
-          this.productProperty.typeIdValue.push(this.$route.query.typeId+'');
-          this.productProperty.typeId = this.$route.query.typeId;
+      resetTypeId() {
+        if (this.$route.query.parentId != null) {
+          this.productAttr.typeIdValue = [];
+          this.productAttr.typeIdValue.push(this.$route.query.parentId + '');
+          this.productAttr.typeIdValue.push(this.$route.query.typeId + '');
+          this.productAttr.typeId = this.$route.query.typeId;
         }
-        this.listQuery={
+        this.listQuery = {
           pageNum: 1,
           pageSize: 5
         }
       },
-      productTypeChange(){
-        if(this.productProperty.typeIdValue[1]){
-          this.productProperty.typeId = this.productProperty.typeIdValue[1];
+      productTypeChange() {
+        if (this.productAttr.typeIdValue[1]) {
+          this.productAttr.typeId = this.productAttr.typeIdValue[1];
         }
       },
     }

@@ -95,21 +95,21 @@ export const constantRouterMap = [
         meta: {title: '修改商品分类', hiddenTag:true},
         hidden: true
       },{
-        path: 'productProperty',
-        name: 'pms:productProperty',
-        code:'PMS:PRODUCTPROPERTY',
-        component: () => import('@/views/product/productProperty/index.vue'),
+        path: 'productAttr',
+        name: 'pms:productAttr',
+        code:'PMS:PRODUCTATTR',
+        component: () => import('@/views/product/productAttr/index.vue'),
         meta: {title: '分类属性', icon: 'product-attr'}
       },{
-        path: 'addProductProperty',
-        name: 'addProductProperty',
-        component: () => import('@/views/product/productProperty/add'),
+        path: 'addProductAttr',
+        name: 'addProductAttr',
+        component: () => import('@/views/product/productAttr/add'),
         meta: {title: '添加商品分类属性', hiddenTag:true},
         hidden: true
       },{
-        path: 'updateProductProperty',
-        name: 'updateProductProperty',
-        component: () => import('@/views/product/productProperty/update'),
+        path: 'updateProductAttr',
+        name: 'updateProductAttr',
+        component: () => import('@/views/product/productAttr/update'),
         meta: {title: '修改商品分类属性', hiddenTag:true},
         hidden: true
       }

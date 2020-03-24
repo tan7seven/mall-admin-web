@@ -23,35 +23,47 @@ export function updateUsable(data) {
     data:data
   })
 }
+//获取详情
+export function getDetail(id) {
+  return request({
+    url:'/product-type/detail/get/'+id,
+    method:'get',
+  })
+}
+//创建
+export function createProductType(data) {
+  return request({
+    url:'/product-type/create',
+    method:'post',
+    data:data
+  })
+}
+//修改
+export function updateProductType(typeId,data) {
+  return request({
+    url:'/product-type/modify',
+    method:'delete',
+    data:data
+  })
+}
+//删除
 export function deleteProductType(id) {
   return request({
-    url:'/product-type/delete.do/'+id,
+    url:'/product-type/delete/'+id,
+    method:'get'
+  })
+}
+// 获取类目下拉框
+export function getProductTypeCascader() {
+  return request({
+    url:'/product-type/cascader/get',
     method:'get'
   })
 }
 
-export function createProductType(data) {
-  return request({
-    url:'/product-type/create.do',
-    method:'post',
-    data:data
-  })
-}
 
-export function updateProductType(typeId,data) {
-  return request({
-    url:'/product-type/updateProductType.do/'+typeId,
-    method:'post',
-    data:data
-  })
-}
 
-export function getProductType(id) {
-  return request({
-    url:'/product-type/getById.do/'+id,
-    method:'get',
-  })
-}
+
 
 export function getProductTypeProperty(id) {
   return request({
@@ -62,10 +74,3 @@ export function getProductTypeProperty(id) {
 
 
 
-
-export function getProductTypeCascader() {
-  return request({
-    url:'/product-type/getProductTypeCascader.do',
-    method:'get'
-  })
-}

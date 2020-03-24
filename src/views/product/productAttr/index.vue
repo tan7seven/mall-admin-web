@@ -6,7 +6,7 @@
         <span>筛选搜索</span>
         <el-button
           style="float: right;margin-right: 15px"
-          @click="handleAddProductProperty()"
+          @click="handleAddProductAttr()"
           size="small"
           type="primary"
           :disabled="addAuthority">
@@ -38,12 +38,12 @@
       </div>
     </el-card>
     <div class="table-container">
-      <el-table ref="productPropertyTable"
+      <el-table ref="productAttrTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.propertyNameId}}</template>
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="属性名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
@@ -51,13 +51,11 @@
         <el-table-column label="分类名称" align="center" width="100">
           <template slot-scope="scope">{{scope.row.typeName}}</template>
         </el-table-column>
-        <el-table-column label="是否销售属性" width="150" align="center">
+        <el-table-column label="是否可用" width="150" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleIsSaleChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isSale"
+              @change="handleUsableChange(scope.$index, scope.row)"
+              v-model="scope.row.usable"
               :disabled="updateAuthority">
             </el-switch>
           </template>
@@ -66,14 +64,15 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleIsShowChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isShow"
+              v-model="scope.row.showed"
               :disabled="updateAuthority">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column label="类型" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.type | typeFilter}}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -106,7 +105,7 @@
 </template>
 
 <script>
-  import {getPage, deleteProductProperty, updateIsSale, updateIsShow, updateIsUsable} from '@/mall-api/product/productProperty'
+  import {getPage, deleteProductAttr, updateIsShow, updateIsUsable} from '@/mall-api/product/productAttr'
   import auth from '@/utils/auth'
   const defaultListQuery = {
     typeId:null,
@@ -116,7 +115,7 @@
     name:null,
   };
   export default {
-    name: "productPropertyList",
+    name: "productAttrList",
     data() {
       return {
         typeId:'0',
@@ -136,11 +135,11 @@
       this.checkButtonAuthority();
     },
     methods: {
-      handleAddProductProperty() {
-        this.$router.push({path:'/pms/addProductProperty', query:{parentId: this.parentId, typeId:this.typeId}});
+      handleAddProductAttr() {
+        this.$router.push({path:'/pms/addProductAttr', query:{parentId: this.parentId, typeId:this.typeId}});
       },
       handleUpdate(index, row) {
-        this.$router.push({path:'/pms/updateProductProperty',query:{propertyNameId:row.propertyNameId}});
+        this.$router.push({path:'/pms/updateProductAttr',query:{id:row.id}});
       },
       //设置typeID
       resetTypeId(){
@@ -159,7 +158,7 @@
         this.listLoading = true;
         getPage(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },
@@ -169,7 +168,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteProductProperty(row.propertyNameId).then(response => {
+          deleteProductAttr(row.id).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -180,17 +179,17 @@
         });
       },
       //是否销售属性
-      handleIsSaleChange(index, row){
+      handleUsableChange(index, row){
         let data = {
-          'propertyNameId':row.propertyNameId,
-          'isSale':row.isSale
+          'id':row.id,
+          'usable':row.usable
         };
-        this.$confirm('修改销售属性会删除对应的商品属性跟商品库存，是否要修改', '提示', {
+        this.$confirm('是否要修改', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          updateIsSale(data).then(response => {
+          updateIsUsable(data).then(response => {
             this.$message({
               message: '修改成功',
               type: 'success',
@@ -205,8 +204,8 @@
       //是否显示
       handleIsShowChange(index, row){
         let data = {
-          'propertyNameId':row.propertyNameId,
-          'isShow':row.isShow
+          'id':row.id,
+          'showed':row.showed
         };
         this.$confirm('是否要修改', '提示', {
           confirmButtonText: '确定',
@@ -263,8 +262,20 @@
         if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
           this.deleteAuthority = false;
         }
+        this.addAuthority = false;
+        this.updateAuthority = false;
+        this.deleteAuthority = false;
       },
-    }
+    },
+    filters: {
+      typeFilter(value) {
+        if (value === 1) {
+          return '销售属性';
+        } else if (value === 2) {
+          return '展示参数';
+        }
+      },
+    },
   }
 </script>
 

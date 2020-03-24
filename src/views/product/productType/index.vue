@@ -27,9 +27,9 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
+        <el-form :inline="true" :model="listQueryParam" size="small" label-width="140px">
           <el-form-item label="类目名称：">
-            <el-input style="width: 203px" v-model="listQuery.typeName" placeholder="类目名称" clearable> </el-input>
+            <el-input style="width: 203px" v-model="listQueryParam.typeName" placeholder="类目名称" clearable> </el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -38,7 +38,13 @@
       <el-table ref="productTypeTable"
                 style="width: 100%"
                 :data="list"
-                v-loading="listLoading" border>
+                :row-key="getRowKey"
+                lazy
+                :load="getPageChildren"
+                v-loading="listLoading"
+                :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                border
+                >
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
@@ -48,10 +54,10 @@
         <el-table-column label="级别" width="100" align="center">
           <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
         </el-table-column>
-        <el-table-column label="是否显示在导航栏" width="100" align="center">
+        <el-table-column label="是否显示" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleNavigationBarChange(scope.$index, scope.row)"
+              @change="handleShowedChange(scope.$index, scope.row)"
               v-model="scope.row.showed"
               :disabled="updateAuthority">
             </el-switch>
@@ -82,11 +88,6 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              :disabled="scope.row.level | disableNextLevel"
-              @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
-            </el-button>
-            <el-button
-              size="mini"
               @click="handleUpdate(scope.$index, scope.row)"
               :disabled="updateAuthority">编辑
             </el-button>
@@ -106,9 +107,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
-        :page-size="listQuery.pageSize"
+        :page-size="listQueryParam.pageSize"
         :page-sizes="[5,10,15]"
-        :current-page.sync="listQuery.pageNum"
+        :current-page.sync="listQueryParam.pageNum"
         :total="total">
       </el-pagination>
     </div>
@@ -128,10 +129,10 @@
     name: "productTypeList",
     data() {
       return {
-        list: null,
+        list: [],
         total: null,
         listLoading: true,
-        listQuery: Object.assign({}, defaultListQuery),
+        listQueryParam: Object.assign({}, defaultListQuery),
         parentId: 0,
         addAuthority:true,
         updateAuthority:true,
@@ -139,58 +140,56 @@
       }
     },
     created() {
-      this.resetParentId();
       this.getPage();
       this.checkButtonAuthority();
     },
-    watch: {
-      $route(to, from) {
-        console.info(to+"监听$route"+from)
-        this.resetParentId();
-        this.getPage();
-      }
-    },
+
     methods: {
-      resetParentId(){
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-          this. listQuery = {
-              pageNum: 1,
-              pageSize: 5,
-              parentId:this.parentId
-          }
-        } else {
-          this.parentId = 0;
-        }
-      },
+      // 添加页面
       handleAddProductType() {
         this.$router.push('/pms/addProductType');
       },
+      // 分页查询
       getPage() {
         this.listLoading = true;
-        getPage(this.listQuery).then(response => {
+        getPage(this.listQueryParam).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
           this.total = response.data.total;
         });
       },
+      getPageChildren(tree, treeNode, resolve) {
+        this. listQueryParam = {
+          pageNum: 1,
+          pageSize: 5,
+          parentId:tree.id
+        };
+        getPage(this.listQueryParam).then(response => {
+          this.listLoading = false;
+          resolve(response.data.records);
+        });
+      },
+      // 获取调个行key
+      getRowKey (row) {
+        return row.id
+      },
       handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
+        this.listQueryParam.pageNum = 1;
+        this.listQueryParam.pageSize = val;
         this.getPage();
       },
       handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
+        this.listQueryParam.pageNum = val;
         this.getPage();
       },
       handleResetSearch() {
-        this.listQuery = Object.assign({}, defaultListQuery);
+        this.listQueryParam = Object.assign({}, defaultListQuery);
       },
       handleSearchList() {
-        this.listQuery.pageNum = 1;
+        this.listQueryParam.pageNum = 1;
         this.getPage();
       },
-      handleNavigationBarChange(index, row) {
+      handleShowedChange(index, row) {
         this.$confirm('是否要修改', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -236,14 +235,11 @@
           this.getPage();
         });
       },
-      handleShowNextLevel(index, row) {
-        this.$router.push({path: '/pms/productType', query: {parentId: row.id}})
-      },
       getPropertyList(index, row){
-        this.$router.push({path: '/pms/productProperty', query: {parentId: row.parentId, typeId:row.typeId}})
+        this.$router.push({path: '/pms/productAttr', query: {parentId: row.parentId, id:row.id}})
       },
       handleUpdate(index, row) {
-        this.$router.push({path:'/pms/updateProductType',query:{typeId:row.typeId}});
+        this.$router.push({path:'/pms/updateProductType',query:{id:row.id}});
       },
       handleDelete(index, row) {
         this.$confirm('是否要删除该品牌', '提示', {
@@ -251,7 +247,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteProductType(row.typeId).then(response => {
+          deleteProductType(row.id).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -280,30 +276,28 @@
         if(buttonCodeList.indexOf(thisMenuCode+auth.DELETE_CODE) != -1){
           this.deleteAuthority = false;
         }
+        this.addAuthority = false;
+        this.updateAuthority = false;
+        this.deleteAuthority = false;
       },
     },
     filters: {
       levelFilter(value) {
-        if (value === 0) {
+        if (value === 1) {
           return '一级';
-        } else if (value === 1) {
+        } else if (value === 2) {
           return '二级';
+        } else if (value === 3) {
+          return '三级';
         }
       },
       disableFirstLevel(value){
-        if (value === 1) {
+        if (value === 2) {
           return false;
         } else {
           return true;
         }
       },
-      disableNextLevel(value) {
-        if (value === 0) {
-          return false;
-        } else {
-          return true;
-        }
-      }
     }
   }
 </script>
