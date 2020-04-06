@@ -11,28 +11,27 @@
       ref="ProductInfoDetail"
       @nextStep="nextStep">
     </product-info-detail>
-    <product-property-detail
+    <product-Attr-detail
       v-show="showStatus[1]"
       v-model="productParam"
       :is-edit="isEdit"
       @prevStep="prevStep"
-      ref="productPropertyDetail"
+      ref="productAttrDetail"
       @finishCommit="finishCommit">
-    </product-property-detail>
+    </product-Attr-detail>
   </el-card>
 </template>
 <script>
   import ProductInfoDetail from './ProductInfoDetail';
-  import ProductPropertyDetail from './ProductPropertyDetail';
-  import {createProduct,getProduct,updateProduct, deletePic} from '@/mall-api/product/product';
+  import ProductAttrDetail from './ProductAttrDetail';
+  import {createProduct,getProductById,updateProduct, deletePic} from '@/mall-api/product/product';
+  import {_mapToJson} from '@/utils/common';
 
   const defaultProductParam = {
     //商品名称
     productName:'',
     //商品明细
     detail:"",
-    //最低价格
-    priceMin : "",
     //计量单位
     unit : "",
     //排序
@@ -43,15 +42,13 @@
     productTypeParentId:"",
     //图片路径
     picUrl:null,
-    picUrlArray:[],
-    //销售属性值
-    productPropertyIsSaleChecked : [],
-    //非销售属性值
-    productPropertyNotSaleChecked : [],
+    picList:[],
+    attrValueMap:new Map(),
+    attrValueString:"",
   };
   export default {
     name: 'ProductDetail',
-    components: {ProductInfoDetail, ProductPropertyDetail},
+    components: {ProductInfoDetail, ProductAttrDetail},
     props: {
       isEdit: {
         type: Boolean,
@@ -67,19 +64,11 @@
     },
     created(){
       if(this.isEdit){
-        getProduct(this.$route.query.id).then(response=>{
+        getProductById(this.$route.query.id).then(response=>{
           this.productParam=response.data;
-          //防止商品没有属性值的时候报错
-          if(!this.productParam.productPropertyIsSaleChecked){
-            //销售属性值
-            this.productParam.productPropertyIsSaleChecked = [];
-          }
-          if(!this.productParam.productPropertyNotSaleChecked){
-            //非销售属性值
-            this.productParam.productPropertyNotSaleChecked = [];
-          }
+          debugger
           //调用子组件方法
-          this.$refs.productPropertyDetail.setEditData(this.productParam)
+          this.$refs.productAttrDetail.setEditData(this.productParam)
           this.$refs.ProductInfoDetail.setPicFileList(this.productParam)
         });
       } else {
@@ -112,6 +101,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          debugger
+          this.productParam.attrValueString = _mapToJson(this.productParam.attrValueMap);
           if(isEdit){
             updateProduct(this.$route.query.id,this.productParam).then(response=>{
               this.$message({

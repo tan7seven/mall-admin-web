@@ -1,8 +1,10 @@
-import request from '@/utils/request'
-export function getPage(params) {
-  return request({
-    url:'/productController/getPage.do',
-    method:'get',
-    params:params
-  })
+/**
+ *map转换为json
+ */
+export function _mapToJson(strMap) {
+  let obj= Object.create(null);
+  for (let[k,v] of strMap) {
+    obj[k] = v;
+  }
+  return JSON.stringify(obj);
 }

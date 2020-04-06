@@ -118,7 +118,7 @@
     name: "productAttrList",
     data() {
       return {
-        typeId:'0',
+        typeId:null,
         list: null,
         total: null,
         listLoading: true,
@@ -143,9 +143,9 @@
       },
       //设置typeID
       resetTypeId(){
-        if(this.$route.query.typeId != null){
+        if(this.$route.query.id != null){
           this.parentId = this.$route.query.parentId;
-          this.typeId = this.$route.query.typeId;
+          this.typeId = this.$route.query.id;
         }
         this.listQuery={
           typeId:this.typeId,

@@ -70,7 +70,7 @@
       };
       return {
         loginForm: {
-          username: 'test',
+          username: 'admin',
           password: '123456'
         },
         loginRules: {

@@ -118,10 +118,11 @@
         this.listLoading = true;
         fetchList(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },
+
       addProductAttrCate() {
         this.dialogVisible = true;
         this.dialogTitle = "添加类型";

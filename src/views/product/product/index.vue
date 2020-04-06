@@ -39,7 +39,7 @@
             </el-cascader>
           </el-form-item>
           <el-form-item label="上架状态：">
-            <el-select style="width: 203px" v-model="listQuery.isPutaway" placeholder="全部" clearable>
+            <el-select style="width: 203px" v-model="listQuery.putaway" placeholder="全部" clearable>
               <el-option
                 v-for="item in isPutawayOptions"
                 :key="item.value"
@@ -60,7 +60,7 @@
                 border>
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.productId}}</template>
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="商品图片" width="120" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl | getOnePic"></template>
@@ -75,9 +75,7 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleIsPutawayChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isPutaway"
+              v-model="scope.row.putaway"
               :disabled="updateAuthority">
             </el-switch>
           </template>
@@ -85,15 +83,13 @@
         <el-table-column label="是否可用" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              active-value="0"
-              inactive-value="1"
-              v-model="scope.row.isUsable"
+              v-model="scope.row.usable"
               disabled>
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="最低价格" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.priceMin}}</template>
+          <template slot-scope="scope">{{scope.row.minPrice}}</template>
         </el-table-column>
         <el-table-column label="点击量" width="100" align="center">
           <template slot-scope="scope">{{scope.row.hits}}</template>
@@ -212,10 +208,10 @@
         multipleSelection: [],
         productTypeOptions: [],
         isPutawayOptions: [{
-          value: 0,
+          value: true,
           label: '上架'
         },{
-          value: 1,
+          value: false,
           label: '下架'
         }],
         addAuthority:true,
@@ -252,7 +248,7 @@
         this.listLoading = true;
         getPage(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },
@@ -274,7 +270,7 @@
 
       //查看SKU
       handleShowSku(index,row){
-        this.$router.push({path:'/pms/productSku',query:{id:row.productId}});
+        this.$router.push({path:'/pms/productSku',query:{id:row.id}});
       },
       handleSearchList() {
         this.listQuery.pageNum = 1;
@@ -353,22 +349,27 @@
         });
       },
       handleUpdateProduct(index,row){
-        this.$router.push({path:'/pms/updateProduct',query:{id:row.productId}});
+        this.$router.push({path:'/pms/updateProduct',query:{id:row.id}});
       },
       //修改上下架状态
       handleIsPutawayChange(index, row){
-        let params = new URLSearchParams();
-        params.append('ids', row.productId);
-        params.append('isPutaway', row.isPutaway);
-        updateIsPutaway(params).then(response=>{
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-            duration: 1000
+        this.$confirm('是否修改，请确认?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let data = {
+            'ids':[row.id],
+            'putaway':row.putaway
+          };
+          updateIsPutaway(data).then(response=>{
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
           });
-          this.getPage();
-        }).catch(() => {
-          this.getPage();
         });
       },
       updateIsPutAwayList(isPutaway, ids) {

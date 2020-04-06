@@ -54,3 +54,11 @@ export function updateIsUsable(data){
     data:data
   })
 }
+
+export function getAttrByTypeId(params) {
+  return request({
+    url:'/product-attr/type-id/get',
+    method:'get',
+    params:params
+  })
+}

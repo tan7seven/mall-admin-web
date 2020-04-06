@@ -65,12 +65,7 @@ export function getProductTypeCascader() {
 
 
 
-export function getProductTypeProperty(id) {
-  return request({
-    url:'/product-type/getProductTypeProperty.do/'+id,
-    method:'get',
-  })
-}
+
 
 
 

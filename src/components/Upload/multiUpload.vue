@@ -1,15 +1,18 @@
 <template> 
   <div>
     <el-upload
-      action="http://macro-oss.oss-cn-shenzhen.aliyuncs.com"
-      :data="dataObj"
+      ref="upload"
+      v-model="value"
+      action="/common/oss/pic-upload"
+      :headers="authorization"
+      name="pictureUrl"
       list-type="picture-card"
       :file-list="fileList"
+      :limit="maxCount"
       :before-upload="beforeUpload"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
       :on-preview="handlePreview"
-      :limit="maxCount"
       :on-exceed="handleExceed"
     >
       <i class="el-icon-plus"></i>
@@ -20,8 +23,6 @@
   </div>
 </template>
 <script>
-  import {policy} from '@/api/oss'
-
   export default {
     name: 'multiUpload',
     props: {
@@ -35,69 +36,60 @@
     },
     data() {
       return {
-        dataObj: {
-          policy: '',
-          signature: '',
-          key: '',
-          ossaccessKeyId: '',
-          dir: '',
-          host: ''
-        },
+        fileList:[],
+        authorization: {},
         dialogVisible: false,
         dialogImageUrl:null
       };
     },
-    computed: {
-      fileList() {
-        let fileList=[];
-        for(let i=0;i<this.value.length;i++){
-          fileList.push({url:this.value[i]});
-        }
-        return fileList;
-      }
-    },
     methods: {
-      emitInput(fileList) {
-        let value=[];
-        for(let i=0;i<fileList.length;i++){
-          value.push(fileList[i].url);
-        }
-        this.$emit('input', value)
-      },
       handleRemove(file, fileList) {
-        this.emitInput(fileList);
+        this.value.remove(file.response.data);
       },
       handlePreview(file) {
         this.dialogVisible = true;
         this.dialogImageUrl=file.url;
       },
-      beforeUpload(file) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-          policy().then(response => {
-            _self.dataObj.policy = response.data.policy;
-            _self.dataObj.signature = response.data.signature;
-            _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
-            _self.dataObj.key = response.data.dir + '/${filename}';
-            _self.dataObj.dir = response.data.dir;
-            _self.dataObj.host = response.data.host;
-            resolve(true)
-          }).catch(err => {
-            console.log(err)
-            reject(false)
-          })
-        })
-      },
       handleUploadSuccess(res, file) {
-        this.fileList.push({url: file.name,url:this.dataObj.host + '/' + this.dataObj.dir + '/' + file.name});
-        this.emitInput(this.fileList);
+        this.$message({
+          type: 'info',
+          message: '图片上传成功',
+          duration: 6000
+        });
+        if (200 === res.code) {
+          this.value.push(file.response.data);
+        }
       },
+      //上传的文件个数超出设定时触发的函数
       handleExceed(files, fileList) {
         this.$message({
           message: '最多只能上传'+this.maxCount+'张图片',
           type: 'warning',
           duration:1000
         });
+      },
+      //文件上传前的前的钩子函数
+      //参数是上传的文件，若返回false，或返回Primary且被reject，则停止上传
+      beforeUpload(file) {
+        this.authorization.Authorization = this.$store.getters.token;
+        const isJPG = file.type === 'image/jpeg';
+        const isGIF = file.type === 'image/gif';
+        const isPNG = file.type === 'image/png';
+        const isBMP = file.type === 'image/bmp';
+        const isLt2M = file.size / 1024 / 1024 < 1;
+
+        if (!isJPG && !isGIF && !isPNG && !isBMP) {
+          this.$message.error('上传图片必须是JPG/GIF/PNG/BMP 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 1MB!');
+        }
+        return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
+      },
+      //点击列表中已上传的文件事的钩子函数
+      handlePreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
       },
     }
   }
