@@ -42,6 +42,8 @@ export function updateProduct(id,data) {
 
 
 
+
+
 export function getProductByName(name) {
   return request({
     url:'/product/findProductByName.do',
