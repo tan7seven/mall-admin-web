@@ -19,7 +19,7 @@
         <template>
           <el-select multiple placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)" v-model="attrValueList[index]"  v-if="attrName.inputType===2 && attrName.inputList.length > 0" >
             <el-option
-              v-for="(item, index) in attrName.inputList"
+              v-for="(item) in attrName.inputList"
               :key="item"
               :label="item"
               :value="item">
@@ -29,7 +29,7 @@
         <template>
           <el-select placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)"  v-model="attrValueList[index]"  v-if="attrName.inputType===3 && attrName.inputList.length > 0" >
             <el-option
-              v-for="(item, index) in attrName.inputList"
+              v-for="(item) in attrName.inputList"
               :key="item"
               :label="item"
               :value="item">
@@ -64,12 +64,12 @@
         rules: {
           productTypeId: [{required: true, message: '请选择商品类别', trigger: 'blur'}],
         },
-        attrValueList:[],
         disabled: false,
         productTypeId: '',
         selectProductTypeValue: [],
         productTypeOptions: [],
         attrNameList: [],
+        attrValueList:[],
         addAuthority: true,
         updateAuthority: true,
         deleteAuthority: true,
@@ -137,6 +137,46 @@
           if (200 === response.code) {
             this.attrNameList = response.data;
           }
+          // 设置商品属性值
+          if(this.value.attrValueVOList){
+            // attrValueList初始化
+            let attrNameList = this.attrNameList;
+            let attrValueVOList = this.value.attrValueVOList;
+            for (let i = 0; i < attrNameList.length; i++) {
+              // 手写
+              if(attrNameList[i].inputType === 1){
+                this.attrValueList[i] = "";
+              }
+              // 单选
+              if(attrNameList[i].inputType === 2){
+                this.attrValueList[i] = [];
+              }
+              // 多选
+              if(attrNameList[i].inputType === 3){
+                this.attrValueList[i] = [];
+              }
+            }
+            // attrValueList赋值
+            for (let i = 0; i < attrNameList.length; i++) {
+              for (let j = 0; j < attrValueVOList.length; j++) {
+                // 手写
+                if(attrNameList[i].id == attrValueVOList[j].nameId && 
+                    attrNameList[i].inputType === 1 ){
+                  this.attrValueList[i] = attrValueVOList[j].value;
+                }
+                // 单选
+                if(attrNameList[i].id == attrValueVOList[j].nameId && 
+                    attrNameList[i].inputType === 2 ){
+                  this.attrValueList[i].push(attrValueVOList[j].value);
+                }
+                // 多选
+                if(attrNameList[i].id == attrValueVOList[j].nameId && 
+                    attrNameList[i].inputType === 3 ){
+                  this.attrValueList[i].push(attrValueVOList[j].value);
+                }
+              }
+            }
+          }
         });
       },
       //上一步
@@ -158,8 +198,9 @@
         this.$emit('finishCommit', this.isEdit);
       },
       //修改时设置数据
-      setEditData(value) {
+      initUpdateDate(value) {
         if (this.isEdit) {
+          // 设置类目信息
           this.productTypeId = value.productTypeId;
           this.selectProductTypeValue.push(value.productTypeParentId.toString());
           this.selectProductTypeValue.push(value.productTypeId.toString());

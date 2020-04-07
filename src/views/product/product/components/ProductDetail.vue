@@ -66,10 +66,10 @@
       if(this.isEdit){
         getProductById(this.$route.query.id).then(response=>{
           this.productParam=response.data;
-          debugger
+          this.productParam.attrValueMap=new Map();
           //调用子组件方法
-          this.$refs.productAttrDetail.setEditData(this.productParam)
-          this.$refs.ProductInfoDetail.setPicFileList(this.productParam)
+          this.$refs.productAttrDetail.initUpdateDate(this.productParam)
+          this.$refs.ProductInfoDetail.initUpdateDate(this.productParam)
         });
       } else {
         this.productParam = Object.assign({}, defaultProductParam);

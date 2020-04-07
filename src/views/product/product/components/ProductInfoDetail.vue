@@ -18,10 +18,10 @@
         <el-input v-model="value.sort"></el-input>
       </el-form-item>
       <el-form-item label="商品主图：">
-        <multi-upload :maxCount="1" v-model="picUrlList"></multi-upload>
+        <multi-upload :maxCount="1" v-model="picUrlList" ref="picUrlMultiUpload"></multi-upload>
       </el-form-item>
       <el-form-item label="商品轮播图：">
-        <multi-upload :maxCount="5" v-model="picDetailList" ></multi-upload>
+        <multi-upload :maxCount="5" v-model="picDetailList" ref="picDetailMultiUpload"></multi-upload>
       </el-form-item>
       <el-form-item style="text-align: center">
         <el-button type="primary" size="medium" @click="handleNext('productInfoForm')">下一步，填写商品属性</el-button>
@@ -82,6 +82,15 @@
             return false;
           }
         });
+      },
+      //修改时设置数据
+      initUpdateDate(value) {
+        if (this.isEdit) {
+          this.picUrlList.push(value.picUrl);
+          this.picDetailList = value.picList;
+          this.$refs.picUrlMultiUpload.initUpdateDate(this.picUrlList)
+          this.$refs.picDetailMultiUpload.initUpdateDate(this.picDetailList)
+        }
       },
     }
   }

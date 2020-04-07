@@ -43,8 +43,14 @@
       };
     },
     methods: {
+      
       handleRemove(file, fileList) {
-        this.value.remove(file.response.data);
+        if(file.response){
+          this.value.remove(file.response.data);
+        }else{
+          this.value.remove(file.url);
+        }
+        
       },
       handlePreview(file) {
         this.dialogVisible = true;
@@ -90,6 +96,16 @@
       handlePreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      //初始化修改数据
+      initUpdateDate(value) {
+        if (value) {
+          let fileVOList = value;
+          for (let i = 0; i < fileVOList.length; i++) {
+            const element = fileVOList[i];
+            this.fileList.push({name: element, url: element});
+          }
+        }
       },
     }
   }
