@@ -29,10 +29,10 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="商品名称：">
-            <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称" clearable></el-input>
+            <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称" ></el-input>
           </el-form-item>
           <el-form-item label="商品分类：">
-            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类" clearable></el-input>
+            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类" ></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -55,20 +55,14 @@
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
-        <el-table-column label="商品类目" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.typeName}}</template>
-        </el-table-column>
         <el-table-column label="SKU属性值" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.properties}}</template>
+          <template slot-scope="scope">{{scope.row.attrJson}}</template>
         </el-table-column>
         <el-table-column label="商品销售价" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.price}}</template>
-        </el-table-column>
-        <el-table-column label="商品最低价" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.priceMin}}</template>
+          <template slot-scope="scope">{{scope.row.salePrice}}</template>
         </el-table-column>
         <el-table-column label="商品成本" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.cost}}</template>
+          <template slot-scope="scope">{{scope.row.costPrice}}</template>
         </el-table-column>
         <el-table-column label="历史销售总数" width="120" align="center">
           <template slot-scope="scope">{{scope.row.sellSum}}</template>
@@ -179,7 +173,7 @@
         this.listLoading = true;
         getPage(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },

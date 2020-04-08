@@ -14,27 +14,27 @@
                     :value="attrName.id"
                     :label="attrName.name+'：'">
         <template>
+          <el-select multiple placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)" v-model="attrValueList[index]"  v-if="attrName.inputType===3 && attrName.inputList.length > 0" >
+            <el-option
+              v-for="(item) in attrName.inputList"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </template>
+        <template>
+          <el-select placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)"  v-model="attrValueList[index]"  v-if="attrName.inputType===2 && attrName.inputList.length > 0" >
+            <el-option
+              v-for="(item) in attrName.inputList"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </template>
+        <template>
           <el-input placeholder="请输入" :change="handleInputChange(attrValueList[index], attrName)" v-model="attrValueList[index]"  v-if="attrName.inputType===1" ></el-input>
-        </template>
-        <template>
-          <el-select multiple placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)" v-model="attrValueList[index]"  v-if="attrName.inputType===2 && attrName.inputList.length > 0" >
-            <el-option
-              v-for="(item) in attrName.inputList"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-        </template>
-        <template>
-          <el-select placeholder="请选择" :change="handleSelectChange(attrValueList[index], attrName)"  v-model="attrValueList[index]"  v-if="attrName.inputType===3 && attrName.inputList.length > 0" >
-            <el-option
-              v-for="(item) in attrName.inputList"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
         </template>
       </el-form-item>
       <el-form-item style="text-align: center">
@@ -108,10 +108,24 @@
       },
       /**  inputType=1 手写 输入框值改变时*/
       handleInputChange(attrValueList, attrName){
-        this.value.attrValueMap.set(attrName.id, attrValueList);
+        let attrValueObj = {};
+        if(this.value.attrValueMap.has(attrName.id)){
+          attrValueObj = this.value.attrValueMap.get(attrName.id);
+          attrValueObj.value = attrValueList;
+        }else{
+          attrValueObj.value = attrValueList;
+        }
+        this.value.attrValueMap.set(attrName.id, attrValueObj);
       },
       handleSelectChange(attrValueList, attrName){
-        this.value.attrValueMap.set(attrName.id, attrValueList);
+        let attrValueObj = {};
+        if(this.value.attrValueMap.has(attrName.id)){
+          attrValueObj = this.value.attrValueMap.get(attrName.id);
+          attrValueObj.value = attrValueList;
+        }else{
+          attrValueObj.value = attrValueList;
+        }
+        this.value.attrValueMap.set(attrName.id, attrValueObj);
       },
       //获取分类信息
       getProductTypeList() {
@@ -143,36 +157,9 @@
             let attrNameList = this.attrNameList;
             let attrValueVOList = this.value.attrValueVOList;
             for (let i = 0; i < attrNameList.length; i++) {
-              // 手写
-              if(attrNameList[i].inputType === 1){
-                this.attrValueList[i] = "";
-              }
-              // 单选
-              if(attrNameList[i].inputType === 2){
-                this.attrValueList[i] = [];
-              }
-              // 多选
-              if(attrNameList[i].inputType === 3){
-                this.attrValueList[i] = [];
-              }
-            }
-            // attrValueList赋值
-            for (let i = 0; i < attrNameList.length; i++) {
               for (let j = 0; j < attrValueVOList.length; j++) {
-                // 手写
-                if(attrNameList[i].id == attrValueVOList[j].nameId && 
-                    attrNameList[i].inputType === 1 ){
-                  this.attrValueList[i] = attrValueVOList[j].value;
-                }
-                // 单选
-                if(attrNameList[i].id == attrValueVOList[j].nameId && 
-                    attrNameList[i].inputType === 2 ){
-                  this.attrValueList[i].push(attrValueVOList[j].value);
-                }
-                // 多选
-                if(attrNameList[i].id == attrValueVOList[j].nameId && 
-                    attrNameList[i].inputType === 3 ){
-                  this.attrValueList[i].push(attrValueVOList[j].value);
+                if(attrValueVOList[j].nameId == attrNameList[i].id){
+                  this.attrValueList[i] = attrValueVOList[j].value
                 }
               }
             }

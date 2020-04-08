@@ -40,7 +40,7 @@
           <el-radio :label=3>多选</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="输入方式：" v-if="productAttr.inputType==2 | productAttr.inputType == 3">
+      <el-form-item label="可输入数据：" v-if="productAttr.inputType==2 | productAttr.inputType == 3">
         <el-input type="textarea" v-model="productAttr.inputData"></el-input>
       </el-form-item>
       <el-form-item>

@@ -67,6 +67,16 @@
         getProductById(this.$route.query.id).then(response=>{
           this.productParam=response.data;
           this.productParam.attrValueMap=new Map();
+          if(this.productParam.attrValueVOList){
+            let attrValueVOList = this.productParam.attrValueVOList;
+            for (let i = 0; i < attrValueVOList.length; i++) {
+              let attrValueObj = {};
+              attrValueObj.id = attrValueVOList[i].id;
+              attrValueObj.value = attrValueVOList[i].value;
+              this.productParam.attrValueMap.set(attrValueVOList[i].nameId, attrValueObj);
+            }
+          }
+          
           //调用子组件方法
           this.$refs.productAttrDetail.initUpdateDate(this.productParam)
           this.$refs.ProductInfoDetail.initUpdateDate(this.productParam)
@@ -101,10 +111,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          debugger
           this.productParam.attrValueString = _mapToJson(this.productParam.attrValueMap);
           if(isEdit){
-            updateProduct(this.$route.query.id,this.productParam).then(response=>{
+            this.productParam.id = this.$route.query.id;
+            updateProduct(this.productParam).then(response=>{
               this.$message({
                 type: 'success',
                 message: '提交成功',

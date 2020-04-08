@@ -35,7 +35,7 @@
             <el-cascader style="width: 203px"
               clearable
               v-model="selectProductTypeValue"
-              :options="productTypeOptions" clearable>
+              :options="productTypeOptions">
             </el-cascader>
           </el-form-item>
           <el-form-item label="上架状态：">
@@ -63,7 +63,7 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="商品图片" width="120" align="center">
-          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl | getOnePic"></template>
+          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
         </el-table-column>
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
@@ -420,11 +420,7 @@
       },
     },
     filters: {
-      getOnePic(value) {
-        return value;
-        /*let result = value.split(',')
-        return result[0];*/
-      }
+     
     }
   }
 </script>

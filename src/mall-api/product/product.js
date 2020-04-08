@@ -31,10 +31,10 @@ export function getProductById(id) {
     method:'get',
   })
 }
-
-export function updateProduct(id,data) {
+// 修改商品
+export function updateProduct(data) {
   return request({
-    url:'/product/update.do/'+id,
+    url:'/product/update',
     method:'post',
     data:data
   })

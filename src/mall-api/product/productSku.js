@@ -1,7 +1,9 @@
 import request from '@/utils/request'
+
+// 分页查询
 export function getPage(params) {
   return request({
-    url:'/productSkuController/getPage.do',
+    url:'/product-sku/page/get',
     method:'get',
     params:params
   })
