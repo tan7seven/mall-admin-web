@@ -8,6 +8,14 @@ export function getPage(params) {
     params:params
   })
 }
+// 创建
+export function createProductSku(data) {
+  return request({
+    url:'/product-sku/create',
+    method:'post',
+    data:data
+  })
+}
 
 export function findById(id) {
   return request({
@@ -22,13 +30,7 @@ export function updateProductSku(id, data) {
     data:data
   })
 }
-export function createProductSku(data) {
-  return request({
-    url:'/productSkuController/create.do',
-    method:'post',
-    data:data
-  })
-}
+
 
 export function deleteSku(id ){
   return request({

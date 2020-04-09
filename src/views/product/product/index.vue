@@ -157,6 +157,12 @@
         :total="total">
       </el-pagination>
     </div>
+    <product-attr-dialog
+        ref="productAttrDialog"
+        :dialogTableVisible = "diaLogInfo.dialogTableVisible"
+        :productId = "diaLogInfo.productId"
+        @on-change-visible = "changeVisible">
+    </product-attr-dialog>
   </div>
 </template>
 <script>
@@ -165,6 +171,7 @@
   } from '@/mall-api/product/product'
   import {getProductTypeCascader} from '@/mall-api/product/productType'
   import auth from '@/utils/auth'
+  import ProductAttrDialog from './components/ProductAttrDialog';
 
   const defaultListQuery = {
     productId: null,
@@ -176,6 +183,7 @@
   };
   export default {
     name: "productList",
+    components: {ProductAttrDialog},
     data() {
       return {
         editSkuInfo:{
@@ -217,6 +225,10 @@
         addAuthority:true,
         updateAuthority:true,
         deleteAuthority:true,
+        diaLogInfo:{
+            dialogTableVisible:false,
+            productId:null
+        }
       }
     },
     created() {
@@ -235,15 +247,6 @@
       }
     },
     methods: {
-      getProductSkuSp(row, index) {
-        if (index === 0) {
-          return row.sp1;
-        } else if (index === 1) {
-          return row.sp2;
-        } else {
-          return row.sp3;
-        }
-      },
       getPage() {
         this.listLoading = true;
         getPage(this.listQuery).then(response => {
@@ -268,9 +271,15 @@
         });
       },
 
-      //查看SKU
+      //编辑sku dialog
       handleShowSku(index,row){
-        this.$router.push({path:'/pms/productSku',query:{id:row.id}});
+        //调用子组件方法
+        this.diaLogInfo.dialogTableVisible = true
+        this.diaLogInfo.productId = row.id
+      },
+      //修改sku dialog显示状态
+      changeVisible(newVal){
+        this.diaLogInfo.dialogTableVisible = newVal
       },
       handleSearchList() {
         this.listQuery.pageNum = 1;
@@ -338,7 +347,7 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
       handleDelete(index, row){
-        this.$confirm('将同时删除商品的SKU库存信息，请确认?', '提示', {
+        this.$confirm('请确认?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -353,7 +362,7 @@
       },
       //修改上下架状态
       handleIsPutawayChange(index, row){
-        this.$confirm('是否修改，请确认?', '提示', {
+        this.$confirm('请确认?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

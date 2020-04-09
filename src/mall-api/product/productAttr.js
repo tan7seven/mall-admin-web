@@ -54,10 +54,19 @@ export function updateIsUsable(data){
     data:data
   })
 }
-
+// 根据类目ID获取属性列表
 export function getAttrByTypeId(params) {
   return request({
     url:'/product-attr/type-id/get',
+    method:'get',
+    params:params
+  })
+}
+
+// 根据商品ID获取属性值列表
+export function getAttrByProductId(params) {
+  return request({
+    url:'/product-attr/product-id/get',
     method:'get',
     params:params
   })
