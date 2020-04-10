@@ -7,11 +7,14 @@
       <el-form-item label="属性名称：" prop="name">
         <el-input v-model="productAttr.name"></el-input>
       </el-form-item>
-      <el-form-item label="商品分类：" prop="typeIdValue">
+      <el-form-item label="属性分类：" prop="typeIdValue">
         <el-cascader
           clearable
           v-model="productAttr.typeIdValue"
-          :options="productTypeOptions"
+          :options="attrTypeOptions"
+          filterable
+          :loading="loading"
+          :remote-method="remoteAttrType"
           @change="productTypeChange">
         </el-cascader>
       </el-form-item>
@@ -52,9 +55,7 @@
 </template>
 
 <script>
-  import {getProductAttrDetail, updateProductAttr, createProductAttr} from '@/mall-api/product/productAttr';
-  import SingleUpload from '@/components/Upload/singleUpload';
-  import {getProductTypeCascader} from '@/mall-api/product/productType';
+  import {getProductAttrDetail, updateProductAttr, createProductAttr, getAtteTypePage} from '@/mall-api/product/productAttr';
 
   const defaultProductAttr = {
     id:null,
@@ -69,7 +70,6 @@
   };
   export default {
     name: "productAttrDetail",
-    components: {SingleUpload},
     props: {
       isEdit: {
         type: Boolean,
@@ -78,7 +78,7 @@
     },
     data() {
       return {
-        productTypeOptions: [],
+        attrTypeOptions: [],
         productAttrForm: {},
         loading: false,
         productAttr: Object.assign({}, defaultProductAttr),
@@ -104,25 +104,39 @@
       } else {
         this.productAttr = Object.assign({}, defaultProductAttr);
       }
-      this.getProductTypeList();
+      this.getAttrTypeList();
       this.resetTypeId();
     },
     methods: {
       //获取商品分类列表
-      getProductTypeList() {
-        getProductTypeCascader().then(response => {
-          let list = response.data;
-          this.productTypeOptions = [];
+      getAttrTypeList() {
+        let getParam = {};
+        getAtteTypePage(getParam).then(response => {
+          let list = response.data.records;
+          this.attrTypeOptions = [];
           for (let i = 0; i < list.length; i++) {
-            let children = [];
-            if (list[i].children != null && list[i].children.length > 0) {
-              for (let j = 0; j < list[i].children.length; j++) {
-                children.push({label: list[i].children[j].label, value: list[i].children[j].value});
-              }
-            }
-            this.productTypeOptions.push({label: list[i].label, value: list[i].value, children: children});
+            this.attrTypeOptions.push({label: list[i].name, value: list[i].id});
           }
         });
+      },
+      // 下拉款远程搜索
+      remoteAttrType(query){
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            let getParam = {name:query};
+            getAtteTypePage(getParam).then(response => {
+              let list = response.data.records;
+              this.attrTypeOptions = [];
+              for (let i = 0; i < list.length; i++) {
+                this.attrTypeOptions.push({label: list[i].name, value: list[i].id});
+              }
+            });
+          }, 200);
+        } else {
+          this.attrTypeOptions = [];
+        }
       },
       //表单提交
       onSubmit(formName) {

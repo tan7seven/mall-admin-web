@@ -103,7 +103,7 @@
   </div>
 </template>
 <script>
-  import { getPage, deleteSku} from '@/mall-api/product/productSku'
+  import { getPage} from '@/mall-api/product/productSku'
   import {getProductTypeCascader} from '@/mall-api/product/productType'
   import auth from '@/utils/auth'
 

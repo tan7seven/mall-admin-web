@@ -101,6 +101,12 @@ export const constantRouterMap = [
         component: () => import('@/views/product/productAttr/index.vue'),
         meta: {title: '分类属性', icon: 'product-attr'}
       },{
+        path: 'productAttrList',
+        name: 'pms:productAttrList',
+        component: () => import('@/views/product/productAttr/attrList.vue'),
+        meta: {title: '属性列表', hiddenTag:true},
+        hidden: true
+      },{
         path: 'addProductAttr',
         name: 'addProductAttr',
         component: () => import('@/views/product/productAttr/add'),

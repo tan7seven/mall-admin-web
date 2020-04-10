@@ -16,26 +16,11 @@ export function createProductSku(data) {
     data:data
   })
 }
-
-export function findById(id) {
+// 根据商品ID获取SKU列表
+export function findByProductId(params){
   return request({
-    url:'/productSkuController/findById.do/'+id,
-    method:'get'
+    url:'/product-sku/product-id/get',
+    method:'get',
+    params:params
   })
 }
-export function updateProductSku(id, data) {
-  return request({
-    url:'/productSkuController/update.do/'+id,
-    method:'post',
-    data:data
-  })
-}
-
-
-export function deleteSku(id ){
-  return request({
-    url:'/productSkuController/delete.do/'+id,
-    method:'get'
-  })
-}
-

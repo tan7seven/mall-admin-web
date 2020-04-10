@@ -6,7 +6,7 @@
         <span>筛选搜索</span>
         <el-button
           style="float: right;margin-right: 15px"
-          @click="dialogFormVisible = true"
+          @click="handleAddProductAttr()"
           size="small"
           type="primary"
           :disabled="addAuthority">
@@ -26,13 +26,6 @@
           重置
         </el-button>
       </div>
-      <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="名称：">
-            <el-input style="width: 203px" v-model="listQuery.name" placeholder="名称" clearable> </el-input>
-          </el-form-item>
-        </el-form>
-      </div>
     </el-card>
     <div class="table-container">
       <el-table ref="productAttrTable"
@@ -45,25 +38,34 @@
         <el-table-column label="属性名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="销售规格数量" align="center" width="150">
-          <template slot-scope="scope">{{scope.row.attrNum}}</template>
-        </el-table-column>
-        <el-table-column label="显示参数数量" align="center" width="150">
-          <template slot-scope="scope">{{scope.row.paramNum}}</template>
-        </el-table-column>
-        <el-table-column label="设置" width="300" align="center">
+        <el-table-column label="是否可用" width="150" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="getAttrList(scope.$index, scope.row)">属性列表
-            </el-button>
-            <el-button
-              size="mini"
-              @click="getParamList(scope.$index, scope.row)">参数列表
-            </el-button>
+            <el-switch
+              @change="handleUsableChange(scope.$index, scope.row)"
+              v-model="scope.row.usable"
+              :disabled="updateAuthority">
+            </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column label="是否显示" width="100" align="center">
+          <template slot-scope="scope">
+            <el-switch
+              @change="handleIsShowChange(scope.$index, scope.row)"
+              v-model="scope.row.showed"
+              :disabled="updateAuthority">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="类型" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.type | typeFilter}}</template>
+        </el-table-column>
+        <el-table-column label="输入方式" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.inputTypeName}}</template>
+        </el-table-column>
+        <el-table-column label="可选择数据" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.inputData}}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -92,84 +94,128 @@
         :total="total">
       </el-pagination>
     </div>
-      <!--  dialog  -->
-    <el-dialog title="添加" :visible.sync="dialogFormVisible">
-      <el-form :model="addFrom">
-        <el-form-item label="名称">
-          <el-input v-model="addFrom.name" ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-  import {getAtteTypePage, createAttrType} from '@/mall-api/product/productAttr'
+  import {getPage, deleteProductAttr, updateIsShow, updateIsUsable} from '@/mall-api/product/productAttr'
   import auth from '@/utils/auth'
   const defaultListQuery = {
+    typeId:null,
+    type:null,
     pageNum: 1,
     pageSize: 5,
-    name:null,
-  };
-  const defaultAddFrom = {
-    id:null,
-    name: "",
   };
   export default {
-    name: "productAttrTypeList",
+    name: "productAttrList",
     data() {
       return {
-        addFrom:Object.assign({}, defaultAddFrom),
-        dialogFormVisible: false,
+        typeId:null,
         list: null,
         total: null,
         listLoading: true,
         listQuery: Object.assign({}, defaultListQuery),
+        parentId:null,
         addAuthority:true,
         updateAuthority:true,
         deleteAuthority:true,
       }
     },
     created() {
+      this.resetTypeId();
       this.getPage();
       this.checkButtonAuthority();
     },
     methods: {
+      handleAddProductAttr() {
+        this.$router.push({path:'/pms/addProductAttr', query:{parentId: this.parentId, typeId:this.typeId}});
+      },
+      handleUpdate(index, row) {
+        this.$router.push({path:'/pms/updateProductAttr',query:{id:row.id}});
+      },
+      //设置typeID
+      resetTypeId(){
+        if(this.$route.query.id != null){
+          this.typeId = this.$route.query.id;
+        }
+        let type= this.$route.query.type;
+        this.listQuery={
+          type: type,
+          typeId:this.typeId,
+          pageNum: 1,
+          pageSize: 5
+        }
+      },
       //获取表格信息
       getPage(){
         this.listLoading = true;
-        getAtteTypePage(this.listQuery).then(response => {
+        getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
           this.total = response.data.total;
         });
       },
-      //  提交创建
-      onSubmit(){
-        createAttrType(this.addFrom).then(response => {
+      handleDelete(index, row){
+        this.$confirm('是否要删除该类目', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteProductAttr(row.id).then(response => {
             this.$message({
-              message: '创建成功',
+              message: '删除成功',
               type: 'success',
               duration: 1000
             });
             this.getPage();
-            this.dialogFormVisible = false;
           });
+        });
       },
-      handleUpdate(index, row){
-        this.addFrom.id = row.id;
-        this.addFrom.name = row.name;
-        this.dialogFormVisible = true;
+      //是否销售属性
+      handleUsableChange(index, row){
+        let data = {
+          'id':row.id,
+          'usable':row.usable
+        };
+        this.$confirm('是否要修改', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          updateIsUsable(data).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
+          });
+        }).catch(() => {
+          this.getPage();
+        });
       },
-      getAttrList(index, row) {
-        this.$router.push({path: '/pms/productAttrList',query:{id:row.id, type:1}})
-      },
-      getParamList(index, row) {
-        this.$router.push({path: '/pms/productAttrList',query:{id:row.id, type:2}})
+      //是否显示
+      handleIsShowChange(index, row){
+        let data = {
+          'id':row.id,
+          'showed':row.showed
+        };
+        this.$confirm('是否要修改', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          updateIsShow(data).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 1000
+            });
+            this.getPage();
+          });
+        }).catch(() => {
+          this.getPage();
+        });
       },
       //分页插件
       handleSizeChange(val) {
@@ -212,6 +258,15 @@
         this.addAuthority = false;
         this.updateAuthority = false;
         this.deleteAuthority = false;
+      },
+    },
+    filters: {
+      typeFilter(value) {
+        if (value === 1) {
+          return '销售属性';
+        } else if (value === 2) {
+          return '展示参数';
+        }
       },
     },
   }

@@ -1,5 +1,26 @@
 import request from '@/utils/request'
-/*params紧跟url后面，data设置form表单里，需要加@RequestBody*/
+
+
+
+
+// 分类属性-分页查询
+export function getAtteTypePage(params) {
+  return request({
+    url:'/product-attr/attr-type/page/get',
+    method:'get',
+    params:params
+  })
+}
+
+// 分类属性-创建
+export function createAttrType(data) {
+  return request({
+    url:'/product-attr/attr-type/create',
+    method:'post',
+    data:data
+  })
+}
+
 // 分页查询
 export function getPage(params) {
   return request({
@@ -8,6 +29,7 @@ export function getPage(params) {
     params:params
   })
 }
+
 //获取详情
 export function getProductAttrDetail(id) {
   return request({

@@ -98,7 +98,7 @@
 </template>
 
 <script>
-  import {createProductSku, updateProductSku, update, findById} from '@/mall-api/product/productSku';
+  import {createProductSku} from '@/mall-api/product/productSku';
   import {getProductByName, getProductById} from '@/mall-api/product/product';
   import SingleUpload from '@/components/Upload/singleUpload';
 

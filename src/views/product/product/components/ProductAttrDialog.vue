@@ -2,9 +2,14 @@
   <div style="margin-top: 50px">
     <el-dialog title="商品SKU" :visible.sync="dialogTVisible" @open="handleDialogOpen()">
         <el-table :data="tableList">
-            <el-table-column label="SKU属性" width="300" align="center" >
+          <!-- <el-table-column label="SKU图片" width="200" align="center">
+              <template slot-scope="scope">
+                 <multi-upload :maxCount="1" v-model="scope.row.picUrl" ref="picMultiUpload"></multi-upload>
+              </template>
+          </el-table-column> -->
+            <el-table-column label="SKU属性" width="150" align="center" >
                 <template  slot-scope="scope">
-                    <el-select placeholder="请选择" 
+                    <el-select :placeholder="attrValue.skuName" 
                     v-for="(attrValue,index) in scope.row.attrValueList"
                     v-model="scope.row.attrValueList[index].skuValue" 
                     :key="attrValue.id">
@@ -53,7 +58,8 @@
 
 <script>
   import {getAttrByProductId} from '@/mall-api/product/productAttr';
-  import {createProductSku} from '@/mall-api/product/productSku';
+  import {createProductSku, findByProductId} from '@/mall-api/product/productSku';
+  import MultiUpload from '@/components/Upload/multiUpload'
 
   const defaultList = {
       attrValueList: [],
@@ -62,6 +68,7 @@
       stock: 100,
     };
   export default {
+    components:{MultiUpload},
     name: "ProductAttrDialog",
     props: {
       productId:String,
@@ -98,6 +105,7 @@
                           salePrice: 0,
                           costPrice: 0,
                           stock: 100,
+                          picUrl:[],
                         };
           let getParam = {productId:this.productId};
           getAttrByProductId(getParam).then(response => {
@@ -123,9 +131,16 @@
             });
           });
         });
-        
        },
        handleDialogOpen(){
+         let getParam = {productId: this.productId};
+         findByProductId(getParam).then(response => {
+            this.tableList = response.data;
+            for (let i = 0; i < this.tableList.length; i++) {
+              const element = this.tableList[i];
+            }
+            
+          });
        },
     }
   }
