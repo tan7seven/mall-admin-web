@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" :rules="rules" label-width="120px" style="width: 720px" size="small">
-      <el-form-item label="商品分类：" prop="productTypeId">
+      <el-form-item label="属性分类：" prop="productTypeId">
         <el-cascader
           clearable
           v-model="selectProductTypeValue"
