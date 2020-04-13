@@ -101,10 +101,6 @@
                          size="mini"
                          @click="handleShowSku(scope.$index, scope.row)"
                          :disabled="updateAuthority">库存编辑</el-button>
-              <el-button
-                size="mini"
-                @click="handleUpdateProduct(scope.$index, scope.row)">查看
-              </el-button>
             </p>
             <p>
               <el-button
@@ -113,6 +109,8 @@
                 type="primary"
                 :disabled="updateAuthority">商品编辑
               </el-button>
+            </p>
+            <p>
               <el-button
                 size="mini"
                 type="danger"
@@ -353,7 +351,7 @@
           type: 'warning'
         }).then(() => {
           let ids = [];
-          ids.push(row.productId);
+          ids.push(row.id);
           this.deleteProduct(ids);
         });
       },
