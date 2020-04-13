@@ -128,22 +128,23 @@
     },
     methods: {
       handleAddProductAttr() {
-        this.$router.push({path:'/pms/addProductAttr', query:{parentId: this.parentId, typeId:this.typeId}});
+        this.$router.push({path:'/pms/addProductAttr', query:{typeId:this.typeId, type:this.type}});
       },
       handleUpdate(index, row) {
-        this.$router.push({path:'/pms/updateProductAttr',query:{id:row.id}});
+        this.$router.push({path:'/pms/updateProductAttr',query:{id:row.id, type:row.type, typeId:this.typeId}});
       },
       //设置typeID
       resetTypeId(){
         if(this.$route.query.id != null){
           this.typeId = this.$route.query.id;
-        }
-        let type= this.$route.query.type;
-        this.listQuery={
-          type: type,
-          typeId:this.typeId,
-          pageNum: 1,
-          pageSize: 5
+          this.type = this.$route.query.type;
+          let type= this.$route.query.type;
+          this.listQuery={
+            type: type,
+            typeId:this.typeId,
+            pageNum: 1,
+            pageSize: 5
+          }
         }
       },
       //获取表格信息
@@ -171,7 +172,7 @@
           });
         });
       },
-      //是否销售属性
+      //是否可用
       handleUsableChange(index, row){
         let data = {
           'id':row.id,

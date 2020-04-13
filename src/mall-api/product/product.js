@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { debug } from 'webpack'
 
 // 分页查询
 export function getPage(params) {
@@ -39,31 +40,19 @@ export function updateProduct(data) {
     data:data
   })
 }
-
-
-
-
+// 删除商品
+export function deleteProduct(data) {
+  return request({
+    url:'/product/delete',
+    method:'delete',
+    data:data
+  })
+}
 
 export function getProductByName(name) {
   return request({
     url:'/product/findProductByName.do',
     method:'post',
     params:{name:name}
-  })
-}
-export function deleteProduct(params) {
-  return request({
-    url:'/product/delete.do',
-    method:'post',
-    params:params
-  })
-}
-
-
-export  function deletePic(picUrl){
-  return request({
-    url:'/product/deletePic.do',
-    method:'post',
-    params:{picUrl:picUrl}
   })
 }

@@ -4,9 +4,9 @@
       <el-form-item label="属性分类：" prop="productTypeId">
         <el-cascader
           clearable
-          v-model="selectProductTypeValue"
+          v-model="selectAttrTypeValue"
           :disabled="disabled"
-          :options="productTypeOptions">
+          :options="attrTypeOptions">
         </el-cascader>
       </el-form-item>
       <el-form-item v-for="(attrName,index) in attrNameList"
@@ -47,7 +47,7 @@
 
 <script>
   import {getProductTypeCascader} from '@/mall-api/product/productType'
-  import {getAttrByTypeId} from '@/mall-api/product/productAttr'
+  import {getAttrByTypeId, getAtteTypePage} from '@/mall-api/product/productAttr'
   import auth from '@/utils/auth'
 
   export default {
@@ -66,8 +66,8 @@
         },
         disabled: false,
         productTypeId: '',
-        selectProductTypeValue: [],
-        productTypeOptions: [],
+        selectAttrTypeValue: [],
+        attrTypeOptions: [],
         attrNameList: [],
         attrValueList:[],
         addAuthority: true,
@@ -76,25 +76,15 @@
       }
     },
     watch: {
-      selectProductTypeValue: function (newValue) {
-        if (newValue.length != 2) {
-          this.value.productTypeId = null;
-          this.productTypeId = null;
-          this.$message({
-            message: '只能选择第二级分类信息',
-            type: 'error',
-            duration: 1000
-          });
-          return false;
-        }
-        this.value.productTypeId = newValue[1];
-        this.productTypeId = newValue[1];
+      selectAttrTypeValue: function (newValue) {
+        this.value.productTypeId = newValue[0];
+        this.productTypeId = newValue[0];
         this.attrValueList=[];
         this.handleGetProductTypeAttr();
       }
     },
     created() {
-      this.getProductTypeList();
+      this.getAttrTypeList();
       this.checkButtonAuthority();
     },
     methods: {
@@ -128,18 +118,13 @@
         this.value.attrValueMap.set(attrName.id, attrValueObj);
       },
       //获取分类信息
-      getProductTypeList() {
-        getProductTypeCascader().then(response => {
-          let list = response.data;
-          this.productTypeOptions = [];
+      getAttrTypeList() {
+        let getParam = {};
+        getAtteTypePage(getParam).then(response => {
+          let list = response.data.records;
+          this.attrTypeOptions = [];
           for (let i = 0; i < list.length; i++) {
-            let children = [];
-            if (list[i].children != null && list[i].children.length > 0) {
-              for (let j = 0; j < list[i].children.length; j++) {
-                children.push({label: list[i].children[j].label, value: list[i].children[j].value});
-              }
-            }
-            this.productTypeOptions.push({label: list[i].label, value: list[i].value, children: children});
+            this.attrTypeOptions.push({label: list[i].name, value: list[i].id});
           }
         });
       },
@@ -189,10 +174,9 @@
         if (this.isEdit) {
           // 设置类目信息
           this.productTypeId = value.productTypeId;
-          this.selectProductTypeValue.push(value.productTypeParentId.toString());
-          this.selectProductTypeValue.push(value.productTypeId.toString());
           this.disabled = true;
-          this.getProductTypeList();
+          this.getAttrTypeList();
+          this.selectAttrTypeValue.push(value.attrTypeId);
         }
       },
       //属性值不能输入非法字符

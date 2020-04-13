@@ -7,7 +7,7 @@
       <el-form-item label="属性名称：" prop="name">
         <el-input v-model="productAttr.name"></el-input>
       </el-form-item>
-      <el-form-item label="属性分类：" prop="typeIdValue">
+      <el-form-item label="属性分类：" :disabled="isEdit" prop="typeIdValue">
         <el-cascader
           clearable
           v-model="productAttr.typeIdValue"
@@ -15,11 +15,11 @@
           filterable
           :loading="loading"
           :remote-method="remoteAttrType"
-          @change="productTypeChange">
+          @change="handleTypeIdVanleChange">
         </el-cascader>
       </el-form-item>
       <el-form-item label="类型：">
-        <el-radio-group v-model="productAttr.type">
+        <el-radio-group :disabled="isEdit" v-model="productAttr.type" @change="handleTypeChange">
           <el-radio :label=1>销售属性</el-radio>
           <el-radio :label=2>展示参数</el-radio>
         </el-radio-group>
@@ -37,10 +37,10 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="输入方式：">
-        <el-radio-group v-model="productAttr.inputType">
-          <el-radio :label=1>手写</el-radio>
-          <el-radio :label=2>单选</el-radio>
-          <el-radio :label=3>多选</el-radio>
+        <el-radio-group :disabled="isEdit" v-model="productAttr.inputType">
+          <el-radio :label=1 :disabled="productAttr.type==1">手写</el-radio>
+          <el-radio :label=2 :disabled="productAttr.type==1">单选</el-radio>
+          <el-radio :label=3 :disabled="productAttr.type==2">多选</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="可输入数据：" v-if="productAttr.inputType==2 | productAttr.inputType == 3">
@@ -59,13 +59,13 @@
 
   const defaultProductAttr = {
     id:null,
-    typeIdValue: [],
     typeId: null,
+    typeIdValue: [],
     name: "",
     usable: true,
     showed: true,
     type: 1,
-    inputType:1,
+    inputType:null,
     inputData:"",
   };
   export default {
@@ -80,6 +80,10 @@
       return {
         attrTypeOptions: [],
         productAttrForm: {},
+        listQuery: {
+          pageNum: 1,
+          pageSize: 5
+        },
         loading: false,
         productAttr: Object.assign({}, defaultProductAttr),
         rules: {
@@ -98,14 +102,15 @@
         getProductAttrDetail(this.$route.query.id).then(response => {
           this.productAttr = response.data;
           this.productAttr.typeIdValue = [];
-          this.productAttr.typeIdValue.push(response.data.parentId + '');
-          this.productAttr.typeIdValue.push(response.data.typeId + '');
+          this.productAttr.typeIdValue.push(this.$route.query.typeId + '');
         });
       } else {
         this.productAttr = Object.assign({}, defaultProductAttr);
+        this.productAttr.typeId=this.$route.query.typeId;
+        this.productAttr.typeIdValue = [];
+        this.productAttr.typeIdValue.push(this.$route.query.typeId + '');
       }
       this.getAttrTypeList();
-      this.resetTypeId();
     },
     methods: {
       //获取商品分类列表
@@ -182,24 +187,19 @@
         this.$refs[formName].resetFields();
         this.productAttr = Object.assign({}, defaultProductAttr);
       },
-      //设置typeID
-      resetTypeId() {
-        if (this.$route.query.parentId != null) {
-          this.productAttr.typeIdValue = [];
-          this.productAttr.typeIdValue.push(this.$route.query.parentId + '');
-          this.productAttr.typeIdValue.push(this.$route.query.typeId + '');
-          this.productAttr.typeId = this.$route.query.typeId;
+      handleTypeChange(val){
+        if(val===1){
+          this.productAttr.inputType =3;
         }
-        this.listQuery = {
-          pageNum: 1,
-          pageSize: 5
+        if(val===2){
+          this.productAttr.inputType =1;
         }
       },
-      productTypeChange() {
-        if (this.productAttr.typeIdValue[1]) {
-          this.productAttr.typeId = this.productAttr.typeIdValue[1];
+      handleTypeIdVanleChange(val){
+        if(val){
+          this.productAttr.typeId = val[0];
         }
-      },
+      }
     }
   }
 </script>

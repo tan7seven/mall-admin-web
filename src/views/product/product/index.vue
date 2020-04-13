@@ -395,9 +395,8 @@
         });
       },
       deleteProduct(ids) {
-        let params = new URLSearchParams();
-        params.append('ids', ids);
-        deleteProduct(params).then(response => {
+        let data = {'ids': ids};
+        deleteProduct(data).then(response => {
           this.$message({
             message: '删除成功',
             type: 'success',
