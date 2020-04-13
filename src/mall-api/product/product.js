@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { debug } from 'webpack'
 
 // 分页查询
 export function getPage(params) {
