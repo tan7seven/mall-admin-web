@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 50px">
-    <el-form :model="value" :rules="rules" ref="productInfoForm" label-width="120px" style="width: 600px" size="small">
+    <el-form :model="value" :rules="rules" ref="productInfoForm" label-width="120px"  size="small">
       <el-form-item label="商品分类：" prop="productTypeId">
         <el-cascader
           clearable
@@ -11,13 +11,7 @@
       <el-form-item label="商品名称：" prop="productName">
         <el-input v-model="value.productName"></el-input>
       </el-form-item>
-      <el-form-item label="商品介绍：" prop="detail">
-        <el-input
-          :autoSize="true"
-          v-model="value.detail"
-          type="textarea"
-          placeholder="请输入内容"></el-input>
-      </el-form-item>
+      
       <el-form-item label="计量单位：" prop="unit">
         <el-input v-model="value.unit"></el-input>
       </el-form-item>
@@ -30,6 +24,9 @@
       <el-form-item label="商品轮播图：">
         <multi-upload :maxCount="5" v-model="picDetailList" ref="picDetailMultiUpload"></multi-upload>
       </el-form-item>
+      <el-form-item label="商品详情：" prop="detail">
+        <tinymce :width="600" :height="300" v-model="value.detail"></tinymce>
+      </el-form-item>
       <el-form-item style="text-align: center">
         <el-button type="primary" size="medium" @click="handleNext('productInfoForm')">下一步，填写商品属性</el-button>
       </el-form-item>
@@ -41,10 +38,11 @@
 
   import MultiUpload from '@/components/Upload/multiUpload'
   import {getProductTypeCascader} from '@/mall-api/product/productType'
+  import Tinymce from '@/components/Tinymce'
 
   export default {
     name: "ProductInfoDetail",
-    components:{MultiUpload},
+    components:{MultiUpload, Tinymce},
     props: {
       value: Object,
       isEdit: {

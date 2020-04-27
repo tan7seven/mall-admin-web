@@ -5,8 +5,9 @@
     </el-button>
     <el-dialog append-to-body :visible.sync="dialogVisible">
       <el-upload class="editor-slide-upload"
-                 action="http://macro-oss.oss-cn-shenzhen.aliyuncs.com"
-                 :data="dataObj"
+                 action="/common/oss/pic-upload"
+                 :headers="authorization"
+                 name="pictureUrl"
                  :multiple="true"
                  :file-list="fileList"
                  :show-file-list="true"
@@ -23,7 +24,6 @@
 </template>
 
 <script>
-  import {policy} from '@/api/oss'
 
   export default {
     name: 'editorSlideUpload',
@@ -36,16 +36,9 @@
     data() {
       return {
         dialogVisible: false,
+        authorization: {},
         listObj: {},
         fileList: [],
-        dataObj: {
-          policy: '',
-          signature: '',
-          key: '',
-          ossaccessKeyId: '',
-          dir: '',
-          host: ''
-        }
       }
     },
     methods: {
@@ -67,14 +60,19 @@
       handleSuccess(response, file) {
         const uid = file.uid;
         const objKeyArr = Object.keys(this.listObj)
+        if(200 !== response.code){
+          return;
+        }
         for (let i = 0, len = objKeyArr.length; i < len; i++) {
           if (this.listObj[objKeyArr[i]].uid === uid) {
-            this.listObj[objKeyArr[i]].url = this.dataObj.host + '/' + this.dataObj.dir + '/' + file.name;
+            this.listObj[objKeyArr[i]].url = response.data;
             this.listObj[objKeyArr[i]].hasSuccess = true;
+            
             return
           }
         }
       },
+
       handleRemove(file) {
         const uid = file.uid;
         const objKeyArr = Object.keys(this.listObj);
@@ -86,24 +84,11 @@
         }
       },
       beforeUpload(file) {
+        this.authorization.Authorization = this.$store.getters.token;
         const _self = this
         const fileName = file.uid;
         this.listObj[fileName] = {};
-        return new Promise((resolve, reject) => {
-          policy().then(response => {
-            _self.dataObj.policy = response.data.policy;
-            _self.dataObj.signature = response.data.signature;
-            _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
-            _self.dataObj.key = response.data.dir + '/${filename}';
-            _self.dataObj.dir = response.data.dir;
-            _self.dataObj.host = response.data.host;
-            _self.listObj[fileName] = {hasSuccess: false, uid: file.uid, width: this.width, height: this.height};
-            resolve(true)
-          }).catch(err => {
-            console.log(err)
-            reject(false)
-          })
-        })
+        _self.listObj[fileName] = {hasSuccess: false, uid: file.uid, width: this.width, height: this.height};
       }
     }
   }

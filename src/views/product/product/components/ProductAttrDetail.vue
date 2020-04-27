@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" :rules="rules" label-width="120px" style="width: 720px" size="small">
-      <el-form-item label="属性分类：" prop="productTypeId">
+      <el-form-item label="属性分类：" prop="attrTypeId">
         <el-cascader
           clearable
           v-model="selectAttrTypeValue"
@@ -62,10 +62,10 @@
     data() {
       return {
         rules: {
-          productTypeId: [{required: true, message: '请选择商品类别', trigger: 'blur'}],
+          attrTypeId: [{required: true, message: '请选择属性类别', trigger: 'blur'}],
         },
         disabled: false,
-        productTypeId: '',
+        attrTypeId: '',
         selectAttrTypeValue: [],
         attrTypeOptions: [],
         attrNameList: [],
@@ -77,8 +77,8 @@
     },
     watch: {
       selectAttrTypeValue: function (newValue) {
-        this.value.productTypeId = newValue[0];
-        this.productTypeId = newValue[0];
+        this.value.attrTypeId = newValue[0];
+        this.attrTypeId = newValue[0];
         this.attrValueList=[];
         this.handleGetProductTypeAttr();
       }
@@ -131,7 +131,7 @@
       //获取分类属性
       handleGetProductTypeAttr() {
         let param = new URLSearchParams();
-        param.append("typeId", this.productTypeId);
+        param.append("typeId", this.attrTypeId);
         getAttrByTypeId(param).then(response => {
           if (200 === response.code) {
             this.attrNameList = response.data;
@@ -173,7 +173,7 @@
       initUpdateDate(value) {
         if (this.isEdit) {
           // 设置类目信息
-          this.productTypeId = value.productTypeId;
+          this.attrTypeId = value.attrTypeId;
           this.disabled = true;
           this.getAttrTypeList();
           this.selectAttrTypeValue.push(value.attrTypeId);

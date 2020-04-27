@@ -52,11 +52,11 @@
         <el-table-column label="商品图片" width="120" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
         </el-table-column>
-        <el-table-column label="商品名称" align="center">
+        <el-table-column label="商品名称" width="200" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
-        <el-table-column label="SKU属性值" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.attrJson}}</template>
+        <el-table-column label="SKU属性值" align="center">
+          <template slot-scope="scope">{{scope.row.attrValue}}</template>
         </el-table-column>
         <el-table-column label="商品销售价" width="100" align="center">
           <template slot-scope="scope">{{scope.row.salePrice}}</template>

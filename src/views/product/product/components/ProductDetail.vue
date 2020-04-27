@@ -38,6 +38,8 @@
     sort : "",
     //分类ID,
     productTypeId:"",
+    // 属性分类ID
+    attrTypeId:"",
     //类目父类ID
     productTypeParentId:"",
     //图片路径

@@ -19,7 +19,7 @@
             v-for="item in selectProductTypeList"
             :key="item.id"
             :label="item.typeName"
-            :value="item.typeId">
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -106,13 +106,14 @@
         var page = this;
         getPage(this.listQueryParam).then(response => {
           page.selectProductTypeList = response.data.records;
-          page.selectProductTypeList.unshift({typeId: 0, typeName: '无上级分类'});
+          page.selectProductTypeList.unshift({id: 0, typeName: '无上级分类'});
           this.loading = false;
         });
       },
       //点击类目时修改parentId
       parentIdChange(parentId){
         this.parentId = parentId;
+        this.productType.parentId = parentId;
       },
       //获取类目信息列表
       getSelectProductTypeList() {
@@ -120,7 +121,7 @@
         var page = this;
         getPage(this.listQueryParam).then(response => {
           page.selectProductTypeList = response.data.records;
-          page.selectProductTypeList.unshift({typeId: 0, typeName: '无上级分类'});
+          page.selectProductTypeList.unshift({id: 0, typeName: '无上级分类'});
         });
       },
       onSubmit(formName) {
