@@ -45,9 +45,9 @@
                 @selection-change="handleSelectionChange"
                 v-loading="listLoading"
                 border>
-        <el-table-column type="selection" width="60" align="center"></el-table-column>
+        <el-table-coilumn type="selection" width="60" align="center"></el-table-coilumn>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.skuId}}</template>
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="商品图片" width="120" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
