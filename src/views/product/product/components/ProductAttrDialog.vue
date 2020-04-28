@@ -2,11 +2,11 @@
   <div style="margin-top: 50px">
     <el-dialog title="商品SKU" :visible.sync="dialogTVisible" @open="handleDialogOpen()">
         <el-table :data="tableList">
-          <!-- <el-table-column label="SKU图片" width="200" align="center">
+          <el-table-column label="SKU图片" width="200" align="center">
               <template slot-scope="scope">
-                 <multi-upload :maxCount="1" v-model="scope.row.picUrl" ref="picMultiUpload"></multi-upload>
+                 <single-upload :picUrl="scope.row.picUrl" ref="picMultiUpload" v-on:imageUrlChange="singleUploadSuccess(scope.row, val)"></single-upload>
               </template>
-          </el-table-column> -->
+          </el-table-column>
             <el-table-column label="SKU属性" width="150" align="center" >
                 <template  slot-scope="scope">
                     <el-select :placeholder="attrValue.skuName" 
@@ -59,7 +59,8 @@
 <script>
   import {getAttrByProductId} from '@/mall-api/product/productAttr';
   import {createProductSku, findByProductId} from '@/mall-api/product/productSku';
-  import MultiUpload from '@/components/Upload/multiUpload'
+  import MultiUpload from '@/components/Upload/multiUpload';
+  import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultList = {
       attrValueList: [],
@@ -68,7 +69,7 @@
       stock: 100,
     };
   export default {
-    components:{MultiUpload},
+    components:{MultiUpload, SingleUpload},
     name: "ProductAttrDialog",
     props: {
       productId:String,
@@ -105,7 +106,7 @@
                           salePrice: 0,
                           costPrice: 0,
                           stock: 100,
-                          picUrl:[],
+                          picUrl:"",
                         };
           let getParam = {productId:this.productId};
           getAttrByProductId(getParam).then(response => {
@@ -142,6 +143,9 @@
             
           });
        },
+       singleUploadSuccess(row, newVal){
+        debugger
+      },
     }
   }
 </script>

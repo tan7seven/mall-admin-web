@@ -310,14 +310,14 @@
         }).then(() => {
           let ids=[];
           for(let i=0;i<this.multipleSelection.length;i++){
-            ids.push(this.multipleSelection[i].productId);
+            ids.push(this.multipleSelection[i].id);
           }
           switch (this.operateType) {
             case this.operates[0].value:
-              this.updateIsPutAwayList(0,ids);
+              this.updateIsPutAwayList(true,ids);
               break;
             case this.operates[1].value:
-              this.updateIsPutAwayList(1,ids);
+              this.updateIsPutAwayList(false,ids);
               break;
             case this.operates[2].value:
               this.deleteProduct(ids);
@@ -380,10 +380,11 @@
         });
       },
       updateIsPutAwayList(isPutaway, ids) {
-        let params = new URLSearchParams();
-        params.append('ids', ids);
-        params.append('isPutaway', isPutaway);
-        updateIsPutaway(params).then(response => {
+        let data = {
+            'ids':ids,
+            'putaway':isPutaway
+          };
+        updateIsPutaway(data).then(response => {
           this.$message({
             message: '修改成功',
             type: 'success',

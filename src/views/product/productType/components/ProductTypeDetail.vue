@@ -23,6 +23,9 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="图片">
+        <Single-upload :picUrl="productType.picUrl" ref="picUrlSingleUpload" v-on:imageUrlChange="singleUploadSuccess"></Single-upload>
+      </el-form-item>
       <el-form-item label="排序：">
         <el-input v-model="productType.sort" type="number" min="1" placeholder="默认999"></el-input>
       </el-form-item>
@@ -49,6 +52,8 @@
 <script>
   import {getPage, createProductType, updateProductType, getDetail} from '@/mall-api/product/productType';
   import SingleUpload from '@/components/Upload/singleUpload';
+  import MultiUpload from '@/components/Upload/multiUpload';
+  
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -57,12 +62,13 @@
   };
   const defaultProductType = {
     parentId : 0,
+    picUrl:"",
     usable : true,
     showed : true,
   };
   export default {
     name: "productTypeDetail",
-    components: {SingleUpload},
+    components: {SingleUpload, MultiUpload},
     props: {
       isEdit: {
         type: Boolean,
@@ -171,6 +177,9 @@
         this.parentId = 0;
         this.getSelectProductTypeList();
       },
+      singleUploadSuccess(newVal){
+        this.productType.picUrl = newVal;
+      }
     }
   }
 </script>

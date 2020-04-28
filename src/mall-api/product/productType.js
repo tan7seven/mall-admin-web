@@ -42,7 +42,7 @@ export function createProductType(data) {
 export function updateProductType(typeId,data) {
   return request({
     url:'/product-type/modify',
-    method:'delete',
+    method:'post',
     data:data
   })
 }

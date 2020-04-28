@@ -31,9 +31,6 @@
           <el-form-item label="商品名称：">
             <el-input style="width: 203px" v-model="listQuery.productName" :clearable="clearable" placeholder="商品名称" ></el-input>
           </el-form-item>
-          <el-form-item label="商品分类：">
-            <el-input style="width: 203px" v-model="listQuery.typeName" :clearable="clearable" placeholder="商品分类" ></el-input>
-          </el-form-item>
         </el-form>
       </div>
     </el-card>
@@ -45,7 +42,7 @@
                 @selection-change="handleSelectionChange"
                 v-loading="listLoading"
                 border>
-        <el-table-coilumn type="selection" width="60" align="center"></el-table-coilumn>
+        <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
@@ -111,15 +108,7 @@
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 5,
-    skuId: null,
-    properties: null,
     productName: null,
-    productId:null,
-    price: null,
-    priceMin:null,
-    cost:null,
-    sellSum:null,
-    stock:null,
   };
   export default {
     name: "productSku",
