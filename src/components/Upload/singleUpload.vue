@@ -24,11 +24,17 @@
         type:String,
         default:""
       },
+      oldParam:{
+        type:[String, Number, Object]
+      }
     },
     watch: {
       picUrl: function (newValue) {
         this.imageUrl = newValue;
       }
+    },
+    created(){
+      this.imageUrl = this.picUrl;
     },
     data() {
       return {
@@ -47,7 +53,7 @@
         });
         if (200 === res.code) {
           this.imageUrl=file.response.data;
-          this.$emit('imageUrlChange', this.imageUrl)
+          this.$emit('imageUrlChange', this.oldParam, this.imageUrl)
         }
       },
       //文件上传前的前的钩子函数
@@ -67,11 +73,6 @@
           this.$message.error('上传图片大小不能超过 1MB!');
         }
         return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
-      },
-      //初始化修改数据
-      initUpdateDate(value) {
-        if (value) {
-        }
       },
     }
   }

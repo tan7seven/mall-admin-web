@@ -4,7 +4,7 @@
         <el-table :data="tableList">
           <el-table-column label="SKU图片" width="200" align="center">
               <template slot-scope="scope">
-                 <single-upload :picUrl="scope.row.picUrl" ref="picMultiUpload" v-on:imageUrlChange="singleUploadSuccess(scope.row, val)"></single-upload>
+                 <single-upload :picUrl="scope.row.picUrl" :oldParam="scope.$index" ref="picMultiUpload" v-on:imageUrlChange="singleUploadSuccess"></single-upload>
               </template>
           </el-table-column>
             <el-table-column label="SKU属性" width="150" align="center" >
@@ -68,6 +68,14 @@
       costPrice: 0,
       stock: 100,
     };
+  const defaultColum = {
+    attrValueList: [
+    ],
+    salePrice: 0,
+    costPrice: 0,
+    stock: 100,
+    picUrl:"",
+  }
   export default {
     components:{MultiUpload, SingleUpload},
     name: "ProductAttrDialog",
@@ -143,8 +151,8 @@
             
           });
        },
-       singleUploadSuccess(row, newVal){
-        debugger
+       singleUploadSuccess(rowIndex, newVal){
+        this.tableList[rowIndex].picUrl = newVal;
       },
     }
   }
