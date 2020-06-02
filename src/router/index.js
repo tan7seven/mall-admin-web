@@ -285,6 +285,61 @@ export const constantRouterMap = [
         hidden:true
       }
     ]
+  },{
+    path:'/advert',
+    component: Layout,
+    redirect: '/advert/list',
+    name: 'advert',
+    code:'ADVERT',
+    meta: {title: '广告管理', icon: 'setting'},
+    children: [
+      {
+        path: 'list',
+        name: 'list',
+        code:'ADVERT:LIST',
+        component: () => import('@/views/advert/advert/index.vue'),
+        meta: {title: '广告列表', icon: 'menu-list'}
+      },
+      {
+        path: 'add',
+        name: 'add',
+        code:'ADVERT:ADD',
+        component: () => import('@/views/advert/advert/add'),
+        meta: {title: '广告添加', hiddenTag:true},
+        hidden:true
+      },
+      {
+        path: 'update',
+        name: 'update',
+        code:'ADVERT:UPDATE',
+        component: () => import('@/views/advert/advert/update'),
+        meta: {title: '广告修改', hiddenTag:true},
+        hidden:true
+      },
+      {
+        path: 'product-list',
+        name: 'product-list',
+        code:'ADVERT:PRODUCTLIST',
+        component: () => import('@/views/advert/product/index.vue'),
+        meta: {title: '广告商品列表', icon: 'menu-list'},
+      },
+      {
+        path: 'product-add',
+        name: 'product-add',
+        code:'ADVERT:PRODUCTADD',
+        component: () => import('@/views/advert/product/add'),
+        meta: {title: '广告商品添加', hiddenTag:true},
+        hidden:true
+      },
+      {
+        path: 'product-update',
+        name: 'product-update',
+        code:'ADVERT:PRODUCTUPDATE',
+        component: () => import('@/views/advert/product/update'),
+        meta: {title: '广告商品修改', hiddenTag:true},
+        hidden:true
+      }
+      ]
   },
   {
     path:'/system',

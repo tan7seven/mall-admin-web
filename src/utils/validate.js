@@ -27,3 +27,8 @@ export function validatAlphabets(str) {
   return reg.test(str)
 }
 
+/* 手机号码*/
+export function validatMobile(str) {
+  const reg = /^1[345789]\d{9}$/
+  return reg.test(str)
+}

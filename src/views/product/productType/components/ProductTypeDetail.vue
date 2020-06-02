@@ -177,7 +177,7 @@
         this.parentId = 0;
         this.getSelectProductTypeList();
       },
-      singleUploadSuccess(newVal){
+      singleUploadSuccess(oldParam, newVal){
         this.productType.picUrl = newVal;
       }
     }
