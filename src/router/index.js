@@ -321,7 +321,8 @@ export const constantRouterMap = [
         name: 'product-list',
         code:'ADVERT:PRODUCTLIST',
         component: () => import('@/views/advert/product/index.vue'),
-        meta: {title: '广告商品列表', icon: 'menu-list'},
+        meta: {title: '广告商品列表',  hiddenTag:true},
+        hidden:true
       },
       {
         path: 'product-add',

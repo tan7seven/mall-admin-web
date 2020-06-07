@@ -4,24 +4,23 @@
              :rules="rules"
              ref="advertModelForm"
              label-width="150px">
-      <el-form-item label="标题：" prop="title">
+      <el-form-item label="商品：" prop="title">
         <el-input v-model="advertModel.title"></el-input>
       </el-form-item>
       <el-form-item label="类型：" prop="type">
-        <el-select v-model="advertModel.type" prop="type" placeholder="全部" clearable>
+        <el-select
+          v-model="advertModel.productName"
+          filterable
+          remote
+          placeholder="请输入关键词"
+          :remote-method="productOptions">
           <el-option
-            v-for="item in typeOptions"
+            v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="跳转地址：" prop="skipUrl">
-        <el-input v-model="advertModel.skipUrl"></el-input>
-      </el-form-item>
-      <el-form-item label="背景颜色：">
-        <el-input v-model="advertModel.backColor"></el-input>
       </el-form-item>
       <el-form-item label="图片">
         <Single-upload :picUrl="advertModel.picUrl" ref="picUrlSingleUpload" v-on:imageUrlChange="singleUploadSuccess"></Single-upload>
@@ -38,6 +37,7 @@
 </template>
 
 <script>
+  import {getPage} from '@/mall-api/product/product'
   import advertRequest from '@/mall-api/advert/advert-request.js';
   import SingleUpload from '@/components/Upload/singleUpload';
 
@@ -61,11 +61,8 @@
     data() {
       return {
         advertModel : Object.assign({}, defaultAdvertModel),
-        authorization:{},
-        dialogImageUrl:"",
-        picFileList: [],
         dialogVisible:false,
-        typeOptions:[],
+        productOptions:[],
         rules: {
           title: [{
             required: true,
@@ -95,6 +92,14 @@
       }
     },
     methods: {
+      remoteMethod(query){
+        if(query != ''){
+          let productParm ={ productName : query};
+          getPage(productParm).then(res => {
+            console.info(res);
+          });
+        }
+      },
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

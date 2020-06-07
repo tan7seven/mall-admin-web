@@ -34,7 +34,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleAddProduct(scope.$index, scope.row)">添加商品
+              @click="handleAddProduct(scope.$index, scope.row)">商品管理
             </el-button>
             <el-button
               size="mini"

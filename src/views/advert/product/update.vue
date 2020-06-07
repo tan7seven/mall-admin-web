@@ -1,11 +1,11 @@
 <template> 
-  <advert-detail :is-edit='true'></advert-detail>
+  <advert-product-detail :is-edit='true'></advert-product-detail>
 </template>
 <script>
-  import AdvertDetail from './components/AdvertDetail'
+  import AdvertProductDetail from './components/AdvertProductDetail'
   export default {
     name: 'updateAdvert',
-    components: { AdvertDetail }
+    components: { AdvertProductDetail }
   }
 </script>
 <style>

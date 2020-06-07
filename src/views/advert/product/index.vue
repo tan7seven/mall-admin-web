@@ -18,24 +18,17 @@
         <el-table-column label="序号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="标题" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
+        <el-table-column label="商品名称" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
-        <el-table-column label="类型" width="150" align="center">
-          <template slot-scope="scope">{{scope.row.typeName}}</template>
+        <el-table-column label="价格" width="150" align="center">
+          <template slot-scope="scope">{{scope.row.price}}</template>
         </el-table-column>
         <el-table-column label="图片" width="150" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
         </el-table-column>
-        <el-table-column label="排序" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.sort}}</template>
-        </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleAddProduct(scope.$index, scope.row)">添加商品
-            </el-button>
             <el-button
               size="mini"
               @click="handleUpdate(scope.$index, scope.row)">编辑
@@ -66,7 +59,7 @@
 
 <script>
   import {formatDate} from '@/utils/date';
-  import advertRequest from '@/mall-api/advert/advert-request.js';
+  import advertProductRequest from '@/mall-api/advert/advertProduct-request.js';
 
   export default {
     name: "advert",
@@ -76,6 +69,7 @@
         total: null,
         listLoading: true,
         listQuery: {
+          advertId:null,
           pageNum: 1,
           pageSize: 10
         },
@@ -86,8 +80,13 @@
     },
     methods: {
       getPage() {
+        let advertId = this.$route.query.id;
+        if(advertId != 'undefined'){
+
+        }
         this.listLoading = true;
-        advertRequest.getPage(this.listQuery).then(response => {
+        this.listQuery.advertId = advertId;
+        advertProductRequest.getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
           this.total = response.data.total;
@@ -95,11 +94,11 @@
       },
       // 添加
       handleAdd() {
-        this.$router.push({path:'/advert/add'});
+        this.$router.push({path:'/advert/product-add'});
       },
       // 修改
       handleUpdate(index, row) {
-        this.$router.push({path:'/advert/update',query:{id:row.id}});
+        this.$router.push({path:'/advert/product-update',query:{id:row.id}});
       },
       // 删除
       handleDelete(index, row){
@@ -118,9 +117,7 @@
           });
         });
       },
-      handleAddProduct(index, row){
-        this.$router.push({path:'/advert/update',query:{id:row.id}});
-      },
+
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
@@ -138,16 +135,6 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
     },
-    filters: {
-      formatType(val) {
-        var advertTypeMap = new Map();
-        advertTypeMap.set(1, "首页轮播");
-        advertTypeMap.set(2, "首页分类tab");
-        advertTypeMap.set(3, "首页分类加商品推荐");
-        advertTypeMap.set(4, "猜你喜欢");
-        return advertTypeMap.get(val);
-      },
-    }
   }
 </script>
 
