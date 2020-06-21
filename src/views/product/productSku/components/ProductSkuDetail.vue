@@ -99,7 +99,7 @@
 
 <script>
   import {createProductSku} from '@/mall-api/product/productSku';
-  import {getProductByName, getProductById} from '@/mall-api/product/product';
+  import {getProductById} from '@/mall-api/product/product';
   import SingleUpload from '@/components/Upload/singleUpload';
 
   const defaultProductSku = {
@@ -209,11 +209,6 @@
       findProductName(query){
         let name = query?query:"";
         this.loading = true;
-        getProductByName(name).then(response => {
-          this.loading = false;
-          let list = response.data;
-          this.productNameOptions = list;
-        });
       },
       productNameChange(newValue){
         getProductById(newValue).then(response =>{

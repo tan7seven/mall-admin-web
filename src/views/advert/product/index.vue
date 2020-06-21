@@ -18,12 +18,18 @@
         <el-table-column label="序号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
+<<<<<<< HEAD
         <el-table-column label="商品编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.productId}}</template>
         </el-table-column>
         <el-table-column label="商品名称" width="200" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
+=======
+        <el-table-column label="商品名称" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.productName}}</template>
+        </el-table-column>
+>>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
         <el-table-column label="价格" width="150" align="center">
           <template slot-scope="scope">{{scope.row.price}}</template>
         </el-table-column>
@@ -62,7 +68,11 @@
 
 <script>
   import {formatDate} from '@/utils/date';
+<<<<<<< HEAD
   import advertProductRequest from '@/mall-api/advert/advert-product-request.js';
+=======
+  import advertProductRequest from '@/mall-api/advert/advertProduct-request.js';
+>>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
 
   export default {
     name: "advert-product",
@@ -93,7 +103,15 @@
     },
     methods: {
       getPage() {
+        let advertId = this.$route.query.id;
+        if(advertId != 'undefined'){
+
+        }
         this.listLoading = true;
+<<<<<<< HEAD
+=======
+        this.listQuery.advertId = advertId;
+>>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
         advertProductRequest.getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
@@ -125,6 +143,10 @@
           });
         });
       },
+<<<<<<< HEAD
+=======
+
+>>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
@@ -142,8 +164,11 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
     },
+<<<<<<< HEAD
     filters: {
     }
+=======
+>>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
   }
 </script>
 

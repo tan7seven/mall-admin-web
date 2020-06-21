@@ -48,10 +48,3 @@ export function deleteProduct(data) {
   })
 }
 
-export function getProductByName(name) {
-  return request({
-    url:'/product/findProductByName.do',
-    method:'post',
-    params:{name:name}
-  })
-}
