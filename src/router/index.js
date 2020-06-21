@@ -263,26 +263,6 @@ export const constantRouterMap = [
         name: 'homeSubject',
         component: () => import('@/views/sms/subject/index.vue'),
         meta: {title: '专题推荐', icon: 'sms-subject'}
-      },
-      {
-        path: 'advertise',
-        name: 'homeAdvertise',
-        component: () => import('@/views/sms/advertise/index.vue'),
-        meta: {title: '广告列表', icon: 'sms-ad'}
-      },
-      {
-        path: 'addAdvertise',
-        name: 'addHomeAdvertise',
-        component: () => import('@/views/sms/advertise/add'),
-        meta: {title: '添加广告'},
-        hidden:true
-      },
-      {
-        path: 'updateAdvertise',
-        name: 'updateHomeAdvertise',
-        component: () => import('@/views/sms/advertise/update'),
-        meta: {title: '编辑广告'},
-        hidden:true
       }
     ]
   },{
@@ -321,7 +301,8 @@ export const constantRouterMap = [
         name: 'product-list',
         code:'ADVERT:PRODUCTLIST',
         component: () => import('@/views/advert/product/index.vue'),
-        meta: {title: '广告商品列表', icon: 'menu-list'},
+        meta: {title: '广告商品列表', hiddenTag:true},
+        hidden:true
       },
       {
         path: 'product-add',

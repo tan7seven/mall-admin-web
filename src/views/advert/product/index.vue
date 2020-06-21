@@ -18,24 +18,20 @@
         <el-table-column label="序号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="标题" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
+        <el-table-column label="商品编号" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.productId}}</template>
         </el-table-column>
-        <el-table-column label="类型" width="150" align="center">
-          <template slot-scope="scope">{{scope.row.typeName}}</template>
+        <el-table-column label="商品名称" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.productName}}</template>
+        </el-table-column>
+        <el-table-column label="价格" width="150" align="center">
+          <template slot-scope="scope">{{scope.row.price}}</template>
         </el-table-column>
         <el-table-column label="图片" width="150" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.picUrl"></template>
         </el-table-column>
-        <el-table-column label="排序" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.sort}}</template>
-        </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleAddProduct(scope.$index, scope.row)">添加商品
-            </el-button>
             <el-button
               size="mini"
               @click="handleUpdate(scope.$index, scope.row)">编辑
@@ -66,28 +62,39 @@
 
 <script>
   import {formatDate} from '@/utils/date';
-  import advertRequest from '@/mall-api/advert/advert-request.js';
+  import advertProductRequest from '@/mall-api/advert/advert-product-request.js';
 
   export default {
-    name: "advert",
+    name: "advert-product",
     data() {
       return {
+        advertId:null,
         list: null,
         total: null,
         listLoading: true,
         listQuery: {
+          advertId:null,
           pageNum: 1,
           pageSize: 10
         },
       }
     },
     created() {
+      if(undefined == this.$route.query.id){
+            this.$message({
+              message: '请选择对应广告',
+              type: 'success',
+              duration: 1000
+            });
+            this.$router.back();
+      }
+      this.listQuery.advertId = this.$route.query.id;
       this.getPage();
     },
     methods: {
       getPage() {
         this.listLoading = true;
-        advertRequest.getPage(this.listQuery).then(response => {
+        advertProductRequest.getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
           this.total = response.data.total;
@@ -95,11 +102,11 @@
       },
       // 添加
       handleAdd() {
-        this.$router.push({path:'/advert/add'});
+        this.$router.push({path:'/advert/product-add'});
       },
       // 修改
       handleUpdate(index, row) {
-        this.$router.push({path:'/advert/update',query:{id:row.id}});
+        this.$router.push({path:'/advert/product-update',query:{id:row.id}});
       },
       // 删除
       handleDelete(index, row){
@@ -108,7 +115,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          advertRequest.removeAdvert(row.id).then(res =>{
+          advertProductRequest.removeAdvert(row.id).then(res =>{
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -117,9 +124,6 @@
             this.getPage();
           });
         });
-      },
-      handleAddProduct(index, row){
-        this.$router.push({path:'/advert/update',query:{id:row.id}});
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
@@ -139,14 +143,6 @@
       },
     },
     filters: {
-      formatType(val) {
-        var advertTypeMap = new Map();
-        advertTypeMap.set(1, "首页轮播");
-        advertTypeMap.set(2, "首页分类tab");
-        advertTypeMap.set(3, "首页分类加商品推荐");
-        advertTypeMap.set(4, "猜你喜欢");
-        return advertTypeMap.get(val);
-      },
     }
   }
 </script>
