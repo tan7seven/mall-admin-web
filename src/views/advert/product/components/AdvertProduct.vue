@@ -22,24 +22,25 @@
         <el-button v-if="!isEdit" @click="resetForm('advertProductModelForm')">重置</el-button>
       </el-form-item>
     </el-form>
-    <Product-Dialog :dialogTableVisible="true"></Product-Dialog>
+    <Single-Product-Dialog :dialogTableVisible="productDialogVisible" v-on:productSelectSubmit="productSelectSuccess"></Single-Product-Dialog>
   </el-card>
 </template>
 
 <script>
-  import advertRequest from '@/mall-api/advert/advert-product-request.js';
+  import advertRequest from '@/mall-api/advert/advertProduct-request.js';
   import SingleUpload from '@/components/Upload/singleUpload';
-  import ProductDialog from'@/components/ProductDialog/productDialog';
+  import SingleProductDialog from'@/components/ProductDialog/singleProductDialog';
 
   const defaultadvertProductModel = {
     procudtId:null,
     productName : null,
     picUrl : null,
+    advertId:null,
     price: null
   };
   export default {
     name: "advertProduct",
-    components: {SingleUpload, ProductDialog},
+    components: {SingleUpload, SingleProductDialog},
     props: {
       isEdit: {
         type: Boolean,
@@ -48,7 +49,9 @@
     },
     data() {
       return {
+        productDialogVisible:false,
         advertProductModel : Object.assign({}, defaultadvertProductModel),
+
         rules: {
           procudtId: [{
             required: true,
@@ -64,7 +67,15 @@
       }
     },
     created() {
-     
+      if(undefined == this.$route.query.advertId){
+        this.$message({
+          message: '请选择对应广告',
+          type: 'success',
+          duration: 1000
+        });
+        this.$router.back();
+      }
+      this.advertProductModel.advertId = this.$route.query.advertId;
       if (this.isEdit) {
         advertRequest.getAdvertInfo(this.$route.query.id).then(response => {
           this.advertProductModel = response.data;
@@ -121,8 +132,16 @@
         this.advertProductModel.picUrl = newVal;
       },
       selectProductHandle(){
-
+        this.productDialogVisible=true;
       },
+      productSelectSuccess(oldParam, selectRow){
+        this.advertProductModel.productName = selectRow.productName;
+        this.advertProductModel.picUrl = selectRow.picUrl;
+        this.advertProductModel.productId = selectRow.id;
+        this.advertProductModel.price = selectRow.minPrice;
+        this.productDialogVisible = false;
+
+      }
     }
   }
 </script>

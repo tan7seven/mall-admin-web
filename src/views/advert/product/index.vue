@@ -18,18 +18,12 @@
         <el-table-column label="序号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-<<<<<<< HEAD
         <el-table-column label="商品编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.productId}}</template>
         </el-table-column>
         <el-table-column label="商品名称" width="200" align="center">
           <template slot-scope="scope">{{scope.row.productName}}</template>
         </el-table-column>
-=======
-        <el-table-column label="商品名称" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.productName}}</template>
-        </el-table-column>
->>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
         <el-table-column label="价格" width="150" align="center">
           <template slot-scope="scope">{{scope.row.price}}</template>
         </el-table-column>
@@ -68,17 +62,12 @@
 
 <script>
   import {formatDate} from '@/utils/date';
-<<<<<<< HEAD
-  import advertProductRequest from '@/mall-api/advert/advert-product-request.js';
-=======
   import advertProductRequest from '@/mall-api/advert/advertProduct-request.js';
->>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
 
   export default {
     name: "advert-product",
     data() {
       return {
-        advertId:null,
         list: null,
         total: null,
         listLoading: true,
@@ -104,14 +93,8 @@
     methods: {
       getPage() {
         let advertId = this.$route.query.id;
-        if(advertId != 'undefined'){
-
-        }
         this.listLoading = true;
-<<<<<<< HEAD
-=======
         this.listQuery.advertId = advertId;
->>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
         advertProductRequest.getPage(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.records;
@@ -120,11 +103,11 @@
       },
       // 添加
       handleAdd() {
-        this.$router.push({path:'/advert/product-add'});
+        this.$router.push({path:'/advert/product-add',query:{advertId:this.listQuery.advertId}});
       },
       // 修改
       handleUpdate(index, row) {
-        this.$router.push({path:'/advert/product-update',query:{id:row.id}});
+        this.$router.push({path:'/advert/product-update',query:{id:row.id, advertId:this.listQuery.advertId}});
       },
       // 删除
       handleDelete(index, row){
@@ -143,10 +126,6 @@
           });
         });
       },
-<<<<<<< HEAD
-=======
-
->>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
@@ -164,11 +143,8 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
     },
-<<<<<<< HEAD
     filters: {
     }
-=======
->>>>>>> cc3541848b5c948b43290971e4e00eda1004aa03
   }
 </script>
 
