@@ -19,7 +19,7 @@
         <el-table-column label="登录账号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.loginCode}}</template>
         </el-table-column>
-        <el-table-column label="姓名" align="center">
+        <el-table-column label="姓名" width="150" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
         <el-table-column label="电话号码" width="150" align="center">
@@ -29,8 +29,8 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleUsableChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
+              active-value=true
+              inactive-value=false
               v-model="scope.row.isUsable"
               :disabled="updateAuthority">
             </el-switch>
@@ -208,7 +208,7 @@
         this.listLoading = true;
         getPage(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.list = response.data.records;
           this.total = response.data.total;
         });
       },

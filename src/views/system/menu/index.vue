@@ -34,8 +34,8 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleHiddenChange(scope.$index, scope.row)"
-              active-value="0"
-              inactive-value="1"
+              active-value="true"
+              inactive-value="false"
               v-model="scope.row.isHidden"
               :disabled="updateAuthority">
             </el-switch>
