@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(username, password) {
   return request({
-    url: '/adminController/login.do',
+    url: '/admin/login.do',
     method: 'post',
     params: {
       username,
@@ -13,14 +13,14 @@ export function login(username, password) {
 
 export function getInfo() {
   return request({
-    url: '/adminController/getAdminInfo.do',
+    url: '/admin/getAdminInfo.do',
     method: 'get',
   })
 }
 
 export function logout() {
   return request({
-    url: '/adminController/logout.do',
+    url: '/admin/logout.do',
     method: 'post'
   })
 }

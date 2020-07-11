@@ -32,9 +32,9 @@
         <el-input v-model="menuModel.menuIcon" ></el-input>
       </el-form-item>
       <el-form-item label="是否显示：">
-        <el-radio-group v-model="menuModel.isHidden">
-          <el-radio label="0">是</el-radio>
-          <el-radio label="1">否</el-radio>
+        <el-radio-group v-model="menuModel.hidden">
+          <el-radio label="true">是</el-radio>
+          <el-radio label="false">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="按钮列表：" v-if="menuModel.parentId != 0">
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import {getPage, updateMenu, createMenu, getMenuInfo, getMenuList} from '@/mall-api/system/menu'
+  import { updateMenu, createMenu, getMenuInfo, getMenuList} from '@/mall-api/system/menu'
   import SingleUpload from '@/components/Upload/singleUpload';
   import auth from '@/utils/auth';
 
@@ -77,7 +77,7 @@
     parentTitle:null,
     menuCode : null,
     menuUrl : null,
-    isHidden:"0",
+    hidden:false,
     buttonList:[],
   };
   export default {

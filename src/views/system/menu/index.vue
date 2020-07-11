@@ -64,23 +64,11 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--<div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :page-size="listQuery.pageSize"
-        :page-sizes="[5,10,15]"
-        :current-page.sync="listQuery.pageNum"
-        :total="total">
-      </el-pagination>
-    </div>-->
   </div>
 </template>
 
 <script>
-  import {getPage, deleteMenu, updateIsHidden, getMenuListById} from '@/mall-api/system/menu'
+  import {deleteMenu, updateIsHidden, getMenuListByParentId} from '@/mall-api/system/menu'
   import {formatDate} from '@/utils/date';
   import auth from '@/utils/auth'
 
@@ -89,29 +77,22 @@
     data() {
       return {
         list: null,
-        total: null,
         listLoading: true,
-        listQuery: {
-          menuId:0,
-         /* pageNum: 1,
-          pageSize: 5*/
-        },
         addAuthority:true,
         updateAuthority:true,
         deleteAuthority:true,
       }
     },
     created() {
-      this.getMenuListById();
+      this.getMenuList();
       this.checkButtonAuthority();
     },
     methods: {
-      getMenuListById() {
+      getMenuList() {
         this.listLoading = true;
-        getMenuListById(this.listQuery).then(response => {
+        getMenuListByParentId(0).then(response => {
           this.listLoading = false;
           this.list = response.data;
-          this.total = response.data.total;
         });
       },
       handleUpdate(index, row){
@@ -136,7 +117,7 @@
               type: 'success',
               duration: 1000
             });
-            this.getMenuListById();
+            this.getMenuList();
           });
         });
       },
@@ -156,27 +137,17 @@
               type: 'success',
               duration: 1000
             });
-            this.getMenuListById();
+            this.getMenuList();
           });
         }).catch(() => {
-          this.getMenuListById();
+          this.getMenuList();
         });
       },
-      /*handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
-        this.getMenuListById();
-      },
-      handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
-        this.getMenuListById();
-      },*/
       loadChildren(tree, treeNode, resolve){
         this.listLoading = true;
-        getMenuListById(tree).then(response => {
+        getMenuListByParentId(tree.menuId).then(response => {
           this.listLoading = false;
           resolve(response.data);
-          this.total = response.data.total;
         });
       },
       //验证按钮权限

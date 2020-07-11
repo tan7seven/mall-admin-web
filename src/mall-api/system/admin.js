@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 export function getPage(params) {
   return request({
-    url:'/adminController/getPage.do',
-    method:'post',
+    url:'/admin/page',
+    method:'get',
     params:params
   })
 }
 
 export function updateAdmin(id, data) {
   return request({
-    url:'/adminController/updateAdmin.do/'+id,
+    url:'/admin/updateAdmin.do/'+id,
     method:'post',
     data:data
   })
@@ -17,7 +17,7 @@ export function updateAdmin(id, data) {
 
 export function createAdmin(data) {
   return request({
-    url:'/adminController/createAdmin.do',
+    url:'/admin/createAdmin.do',
     method:'post',
     data:data
   })
@@ -25,41 +25,41 @@ export function createAdmin(data) {
 
 export function getAdminInfo(id) {
   return request({
-    url:'/adminController/getAdminInfo.do/'+id,
+    url:'/admin/getAdminInfo.do/'+id,
     method:'get',
   })
 }
 export function deleteAdmin(params) {
   return request({
-    url:'/adminController/deleteAdmin.do',
+    url:'/admin/deleteAdmin.do',
     method:'post',
     params:params
   })
 }
 export function updateIsUsable(data) {
   return request({
-    url:'/adminController/updateIsUsable.do',
+    url:'/admin/updateIsUsable.do',
     method:'post',
     data:data
   })
 }
 export function menuAuthorityConfirm(data) {
   return request({
-    url:'/adminController/menuAuthorityConfirm.do',
+    url:'/admin/menuAuthorityConfirm.do',
     method:'post',
     data:data
   })
 }
 export function buttonAuthorityConfirm(data) {
   return request({
-    url:'/adminController/buttonAuthorityConfirm.do',
+    url:'/admin/buttonAuthorityConfirm.do',
     method:'post',
     data:data
   })
 }
 export function getAdminMenuAuthority(id) {
   return request({
-    url:'/adminController/getAdminMenuAuthority.do/'+id,
+    url:'/admin/getAdminMenuAuthority.do/'+id,
     method:'get',
   })
 }

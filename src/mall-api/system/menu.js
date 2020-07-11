@@ -1,21 +1,14 @@
 import request from '@/utils/request'
-export function getPage(params) {
+export function getMenuListByParentId(parentId) {
   return request({
-    url:'/menuController/getPage.do',
-    method:'post',
-    params:params
+    url:'/menu/sub-list/'+parentId,
+    method:'get'
   })
-}
-export function getMenuListById(params) {
-  return request({
-    url:'/menuController/getMenuListById.do',
-    method:'post',
-    params:params
-  })
+  
 }
 export function updateMenu(id, data) {
   return request({
-    url:'/menuController/updateMenu.do/'+id,
+    url:'/menu/updateMenu.do/'+id,
     method:'post',
     data:data
   })
@@ -23,7 +16,7 @@ export function updateMenu(id, data) {
 
 export function createMenu(data) {
   return request({
-    url:'/menuController/createMenu.do',
+    url:'/menu/createMenu.do',
     method:'post',
     data:data
   })
@@ -31,27 +24,27 @@ export function createMenu(data) {
 
 export function getMenuInfo(id) {
   return request({
-    url:'/menuController/getMenuInfo.do/'+id,
+    url:'/menu/detail/'+id,
     method:'get',
   })
 }
 export function deleteMenu(params) {
   return request({
-    url:'/menuController/deleteMenu.do',
+    url:'/menu/deleteMenu.do',
     method:'post',
     params:params
   })
 }
 export function updateIsHidden(data) {
   return request({
-    url:'/menuController/updateIsHidden.do',
+    url:'/menu/updateIsHidden.do',
     method:'post',
     data:data
   })
 }
 export function getMenuList(id, data) {
   return request({
-    url:'/menuController/getMenuList.do/'+id,
+    url:'/menu/getMenuList.do/'+id,
     method:'post',
     data:data
   })
@@ -60,7 +53,7 @@ export function getMenuList(id, data) {
 export function getMenuTree(params) {
   params?params:{};
   return request({
-    url:'/menuController/getMenuTree.do',
+    url:'/menu/getMenuTree.do',
     method:'get',
     params:params,
   })
@@ -68,7 +61,7 @@ export function getMenuTree(params) {
 
 export function getButtonList(params) {
   return request({
-    url:'/menuController/getButtonList.do',
+    url:'/menu/getButtonList.do',
     method:'post',
     params:params,
   })
